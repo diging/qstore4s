@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xs:schema xmlns="http://digitalhps.org/creationEvents-model"
+	elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://digitalhps.org/creationEvents-model">
+
+	<xs:annotation>
+		<xs:appinfo>QStore4S Search Schema</xs:appinfo>
+		<xs:documentation xml:lang="en">
+			This Schema defines how a
+			XML request and response should be structured for search method to
+			communicate with
+			QStore4S.
+		</xs:documentation>
+	</xs:annotation>
+
+
+	<xs:attribute name="search">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="equals"></xs:enumeration>
+				<xs:enumeration value="regex"></xs:enumeration>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:attribute>
+
+
+	<xs:element name="connector">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="and"></xs:enumeration>
+				<xs:enumeration value="or"></xs:enumeration>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+
+
+	<!-- Start with this element -->
+	<xs:element name="element_events" type="elementEventsType" />
+
+	<!-- Root element type -->
+	<xs:complexType name="elementEventsType">
+		<xs:choice minOccurs="1" maxOccurs="1">
+			<xs:element name="relation_event" type="relationEventType" />
+			<xs:element name="appellation_event" type="appellationEventType" />
+		</xs:choice>
+	</xs:complexType>
+
+
+
+
+	<!-- Event types -->
+	<xs:complexType name="creationEvent" abstract="true">
+		<xs:choice maxOccurs="unbounded">
+			<xs:element ref="connector" />
+			<xs:element name="id" minOccurs="0" maxOccurs="1">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="creator">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:anyURI">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+
+			</xs:element>
+			<xs:element name="creation_date">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:dateTime">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="creation_place">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:anyURI">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="source_reference">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:anyURI">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="interpretation_creator">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:anyURI">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+
+		</xs:choice>
+	</xs:complexType>
+
+	<xs:complexType name="relationEventType">
+		<xs:complexContent>
+			<xs:extension base="creationEvent">
+				<xs:choice maxOccurs="2">
+					<xs:element name="relation_creator">
+						<xs:complexType>
+							<xs:simpleContent>
+								<xs:extension base="xs:anyURI">
+									<xs:attribute ref="search" />
+								</xs:extension>
+							</xs:simpleContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="relation" type="RelationType">
+					</xs:element>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="appellationEventType">
+		<xs:complexContent>
+			<xs:extension base="creationEvent">
+				<xs:choice maxOccurs="2">
+					<xs:element name="term" type="termType" />
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- Relation type -->
+	<xs:complexType name="RelationType">
+		<xs:choice maxOccurs="unbounded">
+
+			<xs:element ref="connector" />
+
+
+
+			<xs:element name="id" minOccurs="0" maxOccurs="1">
+
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+
+			</xs:element>
+			<xs:element name="creator">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:anyURI">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+
+			</xs:element>
+			<xs:element name="creation_date">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:dateTime">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+
+
+			</xs:element>
+			<xs:element name="creation_place">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:anyURI">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+
+
+			</xs:element>
+			<xs:element name="source_reference">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:anyURI">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+
+
+			</xs:element>
+
+
+			<xs:element name="subject" type="subjectObjectType" />
+			<xs:element name="predicate" type="predicateType" />
+			<xs:element name="object" type="subjectObjectType" />
+
+		</xs:choice>
+	</xs:complexType>
+
+	<xs:complexType name="subjectObjectType">
+		<xs:choice>
+			<xs:element name="relation_event" type="relationEventType" />
+			<xs:element name="appellation_event" type="appellationEventType" />
+		</xs:choice>
+	</xs:complexType>
+
+	<xs:complexType name="predicateType">
+		<xs:sequence>
+			<xs:element name="appellation_event" type="appellationEventType" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- Appellation type stuff -->
+	<xs:complexType name="termType">
+		<xs:choice maxOccurs="unbounded">
+			<xs:element ref="connector" />
+
+			<xs:element name="id" minOccurs="0" maxOccurs="1">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="creator">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:anyURI">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+
+			</xs:element>
+
+			<xs:element name="creation_date">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:dateTime">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+
+
+			</xs:element>
+			<xs:element name="creation_place">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:anyURI">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+
+			</xs:element>
+			<xs:element name="source_reference">
+
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:anyURI">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="interpretation">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:anyURI">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+
+			</xs:element>
+			<xs:element name="normalized_representation" minOccurs="0"
+				maxOccurs="1">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:anyURI">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+
+
+			</xs:element>
+			<xs:element name="printed_representation" type="printedRepresentationType"
+				minOccurs="0" maxOccurs="1"></xs:element>
+
+
+			<xs:element name="certain" minOccurs="0" maxOccurs="1"
+				type="xs:boolean">
+
+			</xs:element>
+
+		</xs:choice>
+	</xs:complexType>
+
+
+
+	<xs:complexType name="printedRepresentationType">
+		<xs:sequence maxOccurs="1">
+
+			<xs:element ref="connector" />
+			<xs:element name="id" maxOccurs="1">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+
+
+			</xs:element>
+			<xs:element name="creator" maxOccurs="1">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:anyURI">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+
+			</xs:element>
+			<xs:element name="creation_date" maxOccurs="1">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:dateTime">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+
+
+			</xs:element>
+			<xs:element name="creation_place" maxOccurs="1">
+
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:anyURI">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+
+			</xs:element>
+			<xs:element name="source_reference" maxOccurs="1">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:anyURI">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+
+			</xs:element>
+
+
+			<xs:element name="term_part" type="termPartType"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="termPartType">
+		<xs:choice maxOccurs="10">
+			<xs:element ref="connector" />
+			<xs:element name="id">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+
+
+			</xs:element>
+			<xs:element name="creator">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:anyURI">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+
+			</xs:element>
+			<xs:element name="creation_date">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:dateTime">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="creation_place">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:anyURI">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="source_reference">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:anyURI">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="position" type="xs:integer">
+			</xs:element>
+			<xs:element name="expression">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="normalization">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:anyURI">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="format">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="formatted_pointer">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute ref="search" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+</xs:schema>

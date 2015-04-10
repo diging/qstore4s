@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xs:schema xmlns="http://digitalhps.org/creationEvents-model"
+	elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://digitalhps.org/creationEvents-model">
+
+	<xs:annotation>
+		<xs:appinfo>QStore4S Schema</xs:appinfo>
+		<xs:documentation xml:lang="en">
+			This Schema defines how a
+			XML request and response should be structured to communicate with
+			QStore4S while dealing with GET method.
+		</xs:documentation>
+	</xs:annotation>
+
+	<!-- Start with this element -->
+	<xs:element name="element_events" type="elementEventsType" />
+
+
+	
+	<!-- Root element type -->
+	<xs:complexType name="elementEventsType">
+			<xs:choice maxOccurs="unbounded">
+			<xs:element name="id" type="xs:string"/>
+	</xs:choice>
+		</xs:complexType>
+
+
+
+</xs:schema>

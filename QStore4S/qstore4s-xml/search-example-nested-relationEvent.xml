@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<element_events xmlns="http://digitalhps.org/creationEvents-model"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://digitalhps.org/creationEvents-model QStore4S-Search-schema">
+	<relation_event>
+		<creation_place>http://www.digitalhps.org/concepts/WID-08769645-N-??-sanJose</creation_place>
+		<relation_creator>http://www.digitalhps.org/concepts/CON49f66a30-6e3c-44fc-9557-d87a2936e954</relation_creator>
+		<creation_date>2012-07-30T09:00:00</creation_date>
+		<relation>
+			<creator>http://www.digitalhps.org/concepts/CON49f66a30-6e3c-44fc-9557-d87a2936e850</creator>
+			<subject>
+				<relation_event>
+					<relation>
+						<creation_place>http://www.digitalhps.org/concepts/WID-08769645-N-??-seattle</creation_place>
+						<subject>
+							<appellation_event>
+								<interpretation_creator>http://www.digitalhps.org/concepts/CON49f66a30-6e3c-44fc-9557-d87a2936e650</interpretation_creator>
+								<term>
+									<source_reference>http://www.digitalhps.org/concepts/CONda66ba9a-04d4-4f278-ae58-22132212bf66</source_reference>
+									<printed_representation>
+											<term_part>
+											<position>2</position>
+											<expression>Exp2</expression>
+											</term_part>
+									</printed_representation>
+									<certain>true</certain>
+									</term>
+							</appellation_event>
+						</subject>
+						<object>
+							<appellation_event>
+								<term>
+									<interpretation>URI6</interpretation>
+						<printed_representation>
+										<term_part>
+											<normalization>URI13</normalization>
+											</term_part>
+									</printed_representation>
+									<certain>true</certain>
+								</term>
+							</appellation_event>
+						</object>
+						</relation>
+				</relation_event>
+			</subject>
+						
+		</relation>
+	</relation_event>
+</element_events>
