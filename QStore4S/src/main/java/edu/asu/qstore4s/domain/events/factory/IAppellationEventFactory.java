@@ -1,0 +1,16 @@
+package edu.asu.qstore4s.domain.events.factory;
+
+import edu.asu.qstore4s.domain.events.IAppellationEvent;
+
+/**
+ * This is the interface class for AppellationEventFactory class
+ * which has the following methods:
+ * createAppellationEvent()
+ * @author Veena Borannagowda
+ *
+ */
+public interface IAppellationEventFactory {
+
+	IAppellationEvent createAppellationEvent();
+
+}

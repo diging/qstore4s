@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:neo4j="http://www.springframework.org/schema/data/neo4j"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc 
+	    http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/data/neo4j
+		http://www.springframework.org/schema/data/neo4j/spring-neo4j-2.0.xsd">
+	<!-- DispatcherServlet Context: defines this servlet's request-processing 
+		infrastructure -->
+
+	<annotation-driven />
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving 
+		up static resources in the ${webappRoot}/resources directory -->
+	<resources mapping="/resources/**" location="/resources/" />
+
+	<context:annotation-config></context:annotation-config>
+	<context:component-scan base-package="edu.asu.qstore4s">
+	</context:component-scan>
+
+	<neo4j:repositories base-package="edu.asu"></neo4j:repositories>
+	<neo4j:config graphDatabaseService="graphDatabaseService" />
+
+	<!-- <beans:bean id="graphDatabaseService"
+		class="org.springframework.data.neo4j.rest.SpringRestGraphDatabase">
+		<beans:constructor-arg value="http://localhost:7474/db/data/"
+			index="0" />
+	</beans:bean> -->
+
+	<beans:bean id="template"
+		class="org.springframework.data.neo4j.support.Neo4jTemplate">
+		<beans:constructor-arg ref="graphDatabaseService">
+		</beans:constructor-arg>
+	</beans:bean>
+
+
+	<context:spring-configured />
+</beans:beans>
