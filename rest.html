@@ -23,6 +23,8 @@
       <h2>
 <a id="welcome-to-qstore4s" class="anchor" href="#welcome-to-qstore4s" aria-hidden="true"><span class="octicon octicon-link"></span></a>QStore4S Rest API</h2>
 
+        
+<p>Please also refer to the examples and schemas <a href="https://github.com/diging/qstore4s/tree/master/QStore4S/qstore4s-xml">here</a>.</p>
 <dl class="rest">
     <dt><span class="method method_post"></span> /add</dt>
     <dd>
@@ -94,6 +96,18 @@
             </li>
         </ul>
     </dd>
+    
+    <dt><span class="method method_post"></span> /search </dt>
+    <dd>
+        <p>This method searches for events that match the given XML. The given XML could for example specify to search for all relations that have a subject appellation that points to the concept of the animal "dog".</p>
+        <ul>
+            <li>Returns: XML or JSON</li>
+            <li>Expects: XML of a paritally filled graph. The method will find all graphs that match the given XML.           </li>
+            <li>Example: <a href="https://github.com/diging/qstore4s/blob/master/QStore4S/qstore4s-xml/search-example_appellation_event.xml">search-example_appellation_event.xml</a>, <a href="https://github.com/diging/qstore4s/blob/master/QStore4S/qstore4s-xml/search-example-relation_event.xml">search-example-relation_event.xml</a>, <a href="https://github.com/diging/qstore4s/blob/master/QStore4S/qstore4s-xml/search-example-nested-relationEvent.xml">search-example-nested-relationEvent.xml</a>.
+            </li>
+        </ul>
+    </dd>
+    
 </dl>
 
 
