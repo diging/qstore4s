@@ -52,6 +52,48 @@
         </ul>
     </dd>
     
+    <dt><span class="method method_post"></span> /get</dt>
+    <dd>
+        <p>Using this method you can retrieve information about multiple relation and appellation events.</p>
+        <p>The method expects XML listing the IDs of all the requested appellation and relation events.</p>
+        <ul>
+            <li>Returns: XML or JSON</li>
+            <li>Expects: XML listing the IDs of the requested relation and appellation events.            </li>
+            <li>Example: <a href="https://github.com/diging/qstore4s/blob/master/QStore4S/qstore4s-xml/input-get-example.xml">input-get-example.xml</a>
+                <pre>
+<code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;element_events xmlns="http://digitalhps.org/creationEvents-model"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://digitalhps.org/creationEvents-model QStore4S-GET-schema"&gt;
+	&lt;id&gt;APP_EVN7047499249615914638&lt;/id&gt;
+	&lt;id&gt;REL_EVN-2604468172392217040&lt;/id&gt;
+	&lt;id&gt;APP_EVN-2778900838723337460&lt;/id&gt;
+&lt;/element_events&gt;</code></pre>
+            </li>
+        </ul>
+    </dd>
+    
+    <dt><span class="method method_post"></span> /searchByAppellationId </dt>
+    <dd>
+        <p>This method returns all relation events that reference the appellation event with the given ID. For example, if the request contains the appellation event ID 123, the method returns all relation events that reference the appellation event with ID 123.</p>
+        <p>The method expects the XML of an appellation or relation event with the ID property filled.</p>
+        
+        <ul>
+            <li>Returns: XML or JSON</li>
+            <li>Expects: XML of an appellation or relation event with the ID filled in.           </li>
+            <li>Example: 
+                <pre>
+<code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;element_events xmlns="http://digitalhps.org/creationEvents-model"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://digitalhps.org/creationEvents-model qstore4s-schema.xsd"&gt;
+  &lt;relation_event&gt;
+    &lt;id&gt;REL_EVN-2604468172392217040&lt;/id&gt;
+  &lt;/relation_event&gt;
+&lt;/element_events&gt;</code></pre>
+            </li>
+        </ul>
+    </dd>
 </dl>
 
 
