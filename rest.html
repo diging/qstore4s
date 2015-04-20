@@ -29,7 +29,56 @@
     <dt><span class="method method_post"></span> /add</dt>
     <dd>
         <p>This method lets you add new graphs to QStore4s.</p>
-        <p>It expects XML describing the graph to be stored and will return the stored graph with IDs in either XML or JSON (depending on the <code>accept</code> attribute in the request header).</p>
+        <p>It expects XML describing the graph to be stored and will return the stored graph with IDs in either XML or JSON (depending on the <code>accept</code> attribute in the request header). In the XML describing a graph to be added you can either nest appellation and relation events or have them on the same level and then refer to them by id (using the attribute <code>internal_refId</code>). For example, the relation event [subj A - pred B - obj C] could be described as (pseudo code and only partial):</p>
+<pre><code>&lt;relation_event&gt;
+    &lt;relation&gt;
+      &lt;subject&gt;
+        &lt;appellation_event&gt;
+            &lt;!-- info about subject appellation event here --&gt;
+        &lt;/appellation_event&gt;
+      &lt;/subject&gt;
+      &lt;predicate&gt;
+        &lt;appellation_event&gt;
+            &lt;!-- info about predicate appellation event here --&gt;
+        &lt;/appellation_event&gt;
+      &lt;/predicate&gt;
+      &lt;object&gt;
+        &lt;appellation_event&gt;
+            &lt;!-- info about object appellation event here --&gt;
+        &lt;/appellation_event&gt;
+      &lt;/object&gt;
+    &lt;/relation&gt;
+&lt;/relation_event&gt;</code></pre>
+Or the information about any of the appellation events (or a relation event if referred to in a relation) can be moved up to the first level of the XML structure and then linked from within the relation part.
+<pre><code>&lt;relation_event&gt;
+    &lt;relation&gt;   
+      &lt;subject&gt;
+        &lt;appellation_event&gt;
+          &lt;internal_refId&gt;APP_INT_ID_1&lt;/internal_refId&gt;
+        &lt;/appellation_event&gt;
+      &lt;/subject&gt;
+      &lt;!-- predicate and object can be described here or referenced in the same manner --&gt;
+    &lt;/relation&gt;
+    
+    &lt;!-- more elements --&gt;
+    &lt;appellation_event&gt;
+        &lt;refId&gt;APP_INT_ID_1&lt;/refId&gt;
+        &lt;!-- info about object appellation event here --&gt;
+    &lt;/appellation_event&gt;   
+&lt;/relation_event&gt;</code></pre>
+        
+        Similarly, you can link to appellation and relation events that are already stored. Instead of the tag <code>internal_refId</code>, however, you would use <code>external_refId</code>.
+<pre><code>&lt;relation_event&gt;
+    &lt;relation&gt;   
+      &lt;subject&gt;
+        &lt;appellation_event&gt;
+          &lt;external_refId&gt;APP_ID_123&lt;/external_refId&gt;
+        &lt;/appellation_event&gt;
+      &lt;/subject&gt;
+      &lt;!-- predicate and object elements --&gt;
+    &lt;/relation&gt;
+&lt;/relation_event&gt;</code></pre>
+        
         <ul>
             <li>Returns: XML or JSON</li>
             <li>Expects: XML input describing the graph to be stored</li>
