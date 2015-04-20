@@ -65,8 +65,6 @@ public class RepositoryManager implements IRepositoryManager {
 			throws URISyntaxException, ParserException, IOException,
 			ParseException, JSONException, InvalidDataException {
 
-		logger.info("inside processXML method of repository manager");
-
 		List<List<IElement>> creationEventList = new ArrayList<List<IElement>>();
 		List<ICreationEvent> creationEventListwithID = new ArrayList<ICreationEvent>();
 

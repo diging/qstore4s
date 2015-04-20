@@ -65,8 +65,6 @@ public class QStore {
 			IOException, URISyntaxException, ParseException, JSONException,
 			InvalidDataException {
 
-		logger.info("acceptheader value--->" + accept);
-
 		if (xml.equals("")) {
 			response.setStatus(500);
 			return "Please provide XML in body of the post request.";

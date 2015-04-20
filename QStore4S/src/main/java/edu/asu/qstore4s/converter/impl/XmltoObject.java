@@ -166,8 +166,7 @@ public class XmltoObject extends AXmlParser implements IXmltoObject  {
 			throws ParserException, IOException, URISyntaxException,
 			ParseException, InvalidDataException {
 
-		DateFormat formatter;
-		formatter = new SimpleDateFormat(IXmlElements.DATE_FORMAT);
+		DateFormat formatter = new SimpleDateFormat(IXmlElements.DATE_FORMAT);
 
 		IRelationEvent relationEventObject = relationEventFactory
 				.createRelationEvent();
