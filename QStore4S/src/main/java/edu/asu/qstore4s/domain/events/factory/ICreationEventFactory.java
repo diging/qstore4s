@@ -1,6 +1,6 @@
 package edu.asu.qstore4s.domain.events.factory;
 
-import edu.asu.qstore4s.domain.events.ICreationEvent;
+import edu.asu.qstore4s.domain.events.impl.CreationEvent;
 
 /**
  * This is the interface class for CreationEventFactory class
@@ -11,6 +11,6 @@ import edu.asu.qstore4s.domain.events.ICreationEvent;
  */
 public interface ICreationEventFactory {
 
-	ICreationEvent createCreationEvent();
+	CreationEvent createCreationEvent();
 
 }

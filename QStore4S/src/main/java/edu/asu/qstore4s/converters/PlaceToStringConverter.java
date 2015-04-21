@@ -2,13 +2,13 @@ package edu.asu.qstore4s.converters;
 
 import org.springframework.core.convert.converter.Converter;
 
-import edu.asu.qstore4s.domain.elements.IPlace;
+import edu.asu.qstore4s.domain.elements.impl.Place;
 /**
  * 
  * @author Bhargav Desai
  *
  */
-public class PlaceToStringConverter implements Converter<IPlace, String> {
+public class PlaceToStringConverter implements Converter<Place, String> {
 
 	
 	/**
@@ -17,7 +17,7 @@ public class PlaceToStringConverter implements Converter<IPlace, String> {
 	 * 
 	 */
 	@Override
-	public String convert(IPlace place) {
+	public String convert(Place place) {
 		return place.getSourceURI();
 	}
 

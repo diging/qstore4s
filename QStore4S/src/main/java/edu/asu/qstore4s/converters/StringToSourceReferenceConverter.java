@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Service;
 
-import edu.asu.qstore4s.domain.elements.ISourceReference;
 import edu.asu.qstore4s.domain.elements.factory.impl.SourceReferenceFactory;
+import edu.asu.qstore4s.domain.elements.impl.SourceReference;
 /**
  * 
  * @author Bhargav Desai
@@ -13,7 +13,7 @@ import edu.asu.qstore4s.domain.elements.factory.impl.SourceReferenceFactory;
  */
 
 @Service
-public class StringToSourceReferenceConverter implements Converter<String, ISourceReference> {
+public class StringToSourceReferenceConverter implements Converter<String, SourceReference> {
 	@Autowired 
 	SourceReferenceFactory sourceReferenceFactory;
 	
@@ -24,10 +24,9 @@ public class StringToSourceReferenceConverter implements Converter<String, ISour
 	 */
 	
 	@Override
-	public ISourceReference convert(String source)
+	public SourceReference convert(String source)
 	{
-		ISourceReference sourcReference = sourceReferenceFactory.createSourceReference(source);
-		return sourcReference;
+		return sourceReferenceFactory.createSourceReference(source);
 	}
 
 }

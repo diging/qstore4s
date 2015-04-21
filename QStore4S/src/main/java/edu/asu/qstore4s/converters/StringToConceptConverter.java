@@ -4,15 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Service;
 
-import edu.asu.qstore4s.domain.elements.IConcept;
 import edu.asu.qstore4s.domain.elements.factory.IConceptFactory;
+import edu.asu.qstore4s.domain.elements.impl.Concept;
 /**
  * 
  * @author Bhargav Desai
  *
  */
 @Service
-public class StringToConceptConverter implements Converter<String, IConcept> {
+public class StringToConceptConverter implements Converter<String, Concept> {
 	@Autowired
 	IConceptFactory conceptFactory;
 	
@@ -22,10 +22,9 @@ public class StringToConceptConverter implements Converter<String, IConcept> {
 	 * The method convert String object to Concept object.
 	 * 
 	 */	@Override
-	public IConcept convert(String source)
+	public Concept convert(String source)
 	{
-		IConcept concept = conceptFactory.createConcept(source);
-		return concept;
+		return conceptFactory.createConcept(source);
 	}
 
 }

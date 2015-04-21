@@ -2,7 +2,6 @@ package edu.asu.qstore4s.domain.elements.factory.impl;
 
 import org.springframework.stereotype.Service;
 
-import edu.asu.qstore4s.domain.elements.IVocabularyEntry;
 import edu.asu.qstore4s.domain.elements.factory.IVocabularyEntryFactory;
 import edu.asu.qstore4s.domain.elements.impl.VocabularyEntry;
 
@@ -15,16 +14,15 @@ import edu.asu.qstore4s.domain.elements.impl.VocabularyEntry;
 @Service
 public class VocabularyEntryFactory implements IVocabularyEntryFactory {
 	@Override
-	public IVocabularyEntry createVocabularyEntry()
+	public VocabularyEntry createVocabularyEntry()
 	{
-		IVocabularyEntry vocabularyEntryObject = new VocabularyEntry();
-		return vocabularyEntryObject;
+		return new VocabularyEntry();
 	}
 	
 	@Override
-	public IVocabularyEntry createVocabularyEntry(String sourceUri)
+	public VocabularyEntry createVocabularyEntry(String sourceUri)
 	{
-		IVocabularyEntry vocabularyEntryObject = new VocabularyEntry();
+		VocabularyEntry vocabularyEntryObject = new VocabularyEntry();
 		if(sourceUri==null){
 			vocabularyEntryObject.setSourceURI("");
 		}

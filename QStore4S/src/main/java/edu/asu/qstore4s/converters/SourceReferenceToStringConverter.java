@@ -2,13 +2,13 @@ package edu.asu.qstore4s.converters;
 
 import org.springframework.core.convert.converter.Converter;
 
-import edu.asu.qstore4s.domain.elements.ISourceReference;
+import edu.asu.qstore4s.domain.elements.impl.SourceReference;
 /**
  * 
  * @author Bhargav Desai
  *
  */
-public class SourceReferenceToStringConverter implements Converter<ISourceReference, String> {
+public class SourceReferenceToStringConverter implements Converter<SourceReference, String> {
    
 	/**
 	 * {@inheritDoc}
@@ -16,7 +16,7 @@ public class SourceReferenceToStringConverter implements Converter<ISourceRefere
 	 * 
 	 */
 	@Override
-	public String convert(ISourceReference sourceReference)
+	public String convert(SourceReference sourceReference)
 	{
 		return sourceReference.getSourceURI();
 	}

@@ -17,15 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import edu.asu.qstore4s.converter.IXmlElements;
 import edu.asu.qstore4s.db.neo4j.IStoreObjectsToDb;
-import edu.asu.qstore4s.domain.elements.IElement;
-import edu.asu.qstore4s.domain.elements.IRelation;
-import edu.asu.qstore4s.domain.elements.ITerm;
-import edu.asu.qstore4s.domain.elements.ITermPart;
-import edu.asu.qstore4s.domain.elements.ITermParts;
-import edu.asu.qstore4s.domain.events.IAppellationEvent;
-import edu.asu.qstore4s.domain.events.ICreationEvent;
-import edu.asu.qstore4s.domain.events.IRelationEvent;
+import edu.asu.qstore4s.domain.elements.impl.Element;
+import edu.asu.qstore4s.domain.elements.impl.Relation;
+import edu.asu.qstore4s.domain.elements.impl.Term;
+import edu.asu.qstore4s.domain.elements.impl.TermPart;
+import edu.asu.qstore4s.domain.elements.impl.TermParts;
 import edu.asu.qstore4s.domain.events.impl.AppellationEvent;
+import edu.asu.qstore4s.domain.events.impl.CreationEvent;
 import edu.asu.qstore4s.domain.events.impl.RelationEvent;
 import edu.asu.qstore4s.exception.InvalidDataException;
 import edu.asu.qstore4s.repository.AppellationEventRepository;
@@ -80,29 +78,29 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
  */
 
 	@Transactional
-	public List<ICreationEvent> writeObjectsToDb(
-			List<List<IElement>> creationEventList) throws URISyntaxException,
+	public List<CreationEvent> writeObjectsToDb(
+			List<List<Element>> creationEventList) throws URISyntaxException,
 			InvalidDataException {
 
-		List<ICreationEvent> newCreationEventList = new ArrayList<ICreationEvent>();
-		List<IElement> creationEventObjects = (creationEventList.get(0));
-		List<IElement> referencedList = creationEventList.get(1);
-		Iterator<IElement> creationEventIterator = creationEventObjects
+		List<CreationEvent> newCreationEventList = new ArrayList<CreationEvent>();
+		List<Element> creationEventObjects = (creationEventList.get(0));
+		List<Element> referencedList = creationEventList.get(1);
+		Iterator<Element> creationEventIterator = creationEventObjects
 				.iterator();
 		while (creationEventIterator.hasNext()) {
-			ICreationEvent creationEventObject = (ICreationEvent) (creationEventIterator
+			CreationEvent creationEventObject = (CreationEvent) (creationEventIterator
 					.next());
 
 			if (creationEventObject instanceof AppellationEvent) {
-				IAppellationEvent appellation = getAppellationObject(
-						(IAppellationEvent) creationEventObject, referencedList);
+				AppellationEvent appellation = getAppellationObject(
+						(AppellationEvent) creationEventObject, referencedList);
 
 				appellationEventRepository.save((AppellationEvent) appellation);
 				newCreationEventList.add(appellation);
 
 			} else if (creationEventObject instanceof RelationEvent) {
-				IRelationEvent relation = getRelationEventObject(
-						(IRelationEvent) creationEventObject, referencedList);
+				RelationEvent relation = getRelationEventObject(
+						(RelationEvent) creationEventObject, referencedList);
 
 				relationEventRepository.save((RelationEvent) relation);
 				newCreationEventList.add(relation);
@@ -126,21 +124,21 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 	 * @return URI of the node in the database.
 	 */
 
-	public IRelationEvent getRelationEventObject(
-			IRelationEvent relationEventObject, List<IElement> referencedList)
+	public RelationEvent getRelationEventObject(
+			RelationEvent relationEventObject, List<Element> referencedList)
 					throws URISyntaxException, InvalidDataException {
 		
 		int refFoundFlag=0;
 		if (relationEventObject.getInternal_refId() != null
 				&& !relationEventObject.getInternal_refId().trim().equals("")) {
 
-			for (IElement element : referencedList) {
+			for (Element element : referencedList) {
 				if (element.getRefId().equals(
 						relationEventObject.getInternal_refId())) {
 					
 					String internalRefId= relationEventObject.getInternal_refId();
 					
-					relationEventObject = (IRelationEvent) element;
+					relationEventObject = (RelationEvent) element;
 					
 					
 					relationEventObject.setInternal_refId(internalRefId);
@@ -184,7 +182,7 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 				throw new InvalidDataException(
 						"The Id for the relation event is already assigned");
 		}
-		IRelation relationObject = relationEventObject.getRelation();
+		Relation relationObject = relationEventObject.getRelation();
 
 		relationObject = getRelationObjcet(relationObject, referencedList);
 
@@ -202,19 +200,19 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 	 * @throws URISyntaxException
 	 */
 
-	public IRelation getRelationObjcet(IRelation relationObject,
-			List<IElement> referencedList) throws InvalidDataException,
+	public Relation getRelationObjcet(Relation relationObject,
+			List<Element> referencedList) throws InvalidDataException,
 			URISyntaxException {
 
 		int refFoundFlag = 0;
 		if (relationObject.getInternal_refId() != null
 				&& !relationObject.getInternal_refId().trim().equals("")) {
 
-			for (IElement element : referencedList) {
+			for (Element element : referencedList) {
 				if (element.getRefId().equals(
 						relationObject.getInternal_refId())) {
 					String internalRefId= relationObject.getInternal_refId();
-					relationObject = (IRelation) element;
+					relationObject = (Relation) element;
                     refFoundFlag = 1;
                     relationObject.setInternal_refId(internalRefId);
                     return relationObject;
@@ -260,35 +258,35 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 		}
 
 		{
-			ICreationEvent relationChild = relationObject.getSubject();
+			CreationEvent relationChild = relationObject.getSubject();
 			if (relationChild instanceof AppellationEvent) {
-				IAppellationEvent subject = getAppellationObject(
-						(IAppellationEvent) relationChild, referencedList);
+				AppellationEvent subject = getAppellationObject(
+						(AppellationEvent) relationChild, referencedList);
 				relationObject.setSubject(subject);
 			} else if (relationChild instanceof RelationEvent) {
-				IRelationEvent childRelationEvent = getRelationEventObject(
-						(IRelationEvent) relationChild, referencedList);
+				RelationEvent childRelationEvent = getRelationEventObject(
+						(RelationEvent) relationChild, referencedList);
 				relationObject.setSubject(childRelationEvent);
 			}
 		}
 		{
-			ICreationEvent relationChild = relationObject.getPredicate();
+			CreationEvent relationChild = relationObject.getPredicate();
 			if (relationChild instanceof AppellationEvent) {
-				IAppellationEvent predicate = getAppellationObject(
-						(IAppellationEvent) relationChild, referencedList);
+				AppellationEvent predicate = getAppellationObject(
+						(AppellationEvent) relationChild, referencedList);
 				relationObject.setPredicate(predicate);
 			}
 
 		}
 		{
-			ICreationEvent relationChild = relationObject.getObject();
+			CreationEvent relationChild = relationObject.getObject();
 			if (relationChild instanceof AppellationEvent) {
-				IAppellationEvent object = getAppellationObject(
-						(IAppellationEvent) relationChild, referencedList);
+				AppellationEvent object = getAppellationObject(
+						(AppellationEvent) relationChild, referencedList);
 				relationObject.setObject(object);
 			} else if (relationChild instanceof RelationEvent) {
-				IRelationEvent childRelationEvent = getRelationEventObject(
-						(IRelationEvent) relationChild, referencedList);
+				RelationEvent childRelationEvent = getRelationEventObject(
+						(RelationEvent) relationChild, referencedList);
 				relationObject.setObject(childRelationEvent);
 			}
 		}
@@ -306,18 +304,18 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 	 *            the list of the terms already stored in the db.
 	 * @return URI of the node in the database.
 	 */
-	public IAppellationEvent getAppellationObject(
-			IAppellationEvent appellationObject, List<IElement> referencedList)
+	public AppellationEvent getAppellationObject(
+			AppellationEvent appellationObject, List<Element> referencedList)
 					throws URISyntaxException, InvalidDataException {
 
 		int refFoundFlag = 0;
 		if (appellationObject.getInternal_refId() != null
 				&& !appellationObject.getInternal_refId().trim().equals("")) {
-			for (IElement element : referencedList) {
+			for (Element element : referencedList) {
 				if (element.getRefId().equals(
 						appellationObject.getInternal_refId())) {
 					String internalRefID = appellationObject.getInternal_refId();
-					appellationObject = (IAppellationEvent) element;
+					appellationObject = (AppellationEvent) element;
                     refFoundFlag = 1;
                     appellationObject.setInternal_refId(internalRefID);
                     return appellationObject;
@@ -362,8 +360,8 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 						"The Id for the appellation event is already assigned");
 		}
 
-		ITerm termObject = appellationObject.getTerm();
-		ITerm termNode = getTermObject(termObject, referencedList);
+		Term termObject = appellationObject.getTerm();
+		Term termNode = getTermObject(termObject, referencedList);
 		appellationObject.setTerm(termNode);
 
 		return appellationObject;
@@ -376,16 +374,16 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 	 *            Object the term object to store in the database.
 	 * @return URI of the node in the database.
 	 */
-	public ITerm getTermObject(ITerm termObject, List<IElement> referencedList)
+	public Term getTermObject(Term termObject, List<Element> referencedList)
 			throws URISyntaxException, InvalidDataException {
 		
 		int refFoundFlag = 0;
 		if (termObject.getInternal_refId() != null
 				&& !termObject.getInternal_refId().trim().equals("")) {
-			for (IElement element : referencedList) {
+			for (Element element : referencedList) {
 				if (element.getRefId().equals(termObject.getInternal_refId())
-						&& element instanceof ITerm) {
-					termObject = (ITerm) element;
+						&& element instanceof Term) {
+					termObject = (Term) element;
 					refFoundFlag = 1;
 				}
 			}
@@ -424,16 +422,16 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 						"The Id for the term event is already assigned");
 		}
 
-		ITermParts termPartsObject = termObject.getPrintedRepresentation();
-		ITermParts termParts = getTermPartsObject(termPartsObject,
+		TermParts termPartsObject = termObject.getPrintedRepresentation();
+		TermParts termParts = getTermPartsObject(termPartsObject,
 				referencedList);
 
-		Set<ITermPart> termPartSet = termPartsObject.getTermParts();
-		Iterator<ITermPart> termPartIterator = termPartSet.iterator();
-		Set<ITermPart> newTermPartSet = new HashSet<ITermPart>();
+		Set<TermPart> termPartSet = termPartsObject.getTermParts();
+		Iterator<TermPart> termPartIterator = termPartSet.iterator();
+		Set<TermPart> newTermPartSet = new HashSet<TermPart>();
 		while (termPartIterator.hasNext()) {
-			ITermPart termPartObject = termPartIterator.next();
-			ITermPart termPartNode = getTermPartObject(termPartObject,
+			TermPart termPartObject = termPartIterator.next();
+			TermPart termPartNode = getTermPartObject(termPartObject,
 					referencedList);
 			newTermPartSet.add(termPartNode);
 		}
@@ -441,13 +439,13 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 
 		termObject.setPrintedRepresentation(termParts);
 
-		Set<ITerm> referencedTermsList = termObject.getReferencedTerms();
-		Iterator<ITerm> referencedTermsIterator = referencedTermsList
+		Set<Term> referencedTermsList = termObject.getReferencedTerms();
+		Iterator<Term> referencedTermsIterator = referencedTermsList
 				.iterator();
-		Set<ITerm> newReferencedTermsList = new HashSet<ITerm>();
+		Set<Term> newReferencedTermsList = new HashSet<Term>();
 		while (referencedTermsIterator.hasNext()) {
-			ITerm refTerm = referencedTermsIterator.next();
-			ITerm refNode = getTermObject(refTerm, referencedList);
+			Term refTerm = referencedTermsIterator.next();
+			Term refNode = getTermObject(refTerm, referencedList);
 			newReferencedTermsList.add(refNode);
 		}
 		termObject.setReferencedTerms(newReferencedTermsList);
@@ -464,17 +462,17 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 	 * @return URI of the node in the database.
 	 * @throws URISyntaxException
 	 */
-	public ITermParts getTermPartsObject(ITermParts termPartsObject,
-			List<IElement> referencedList) throws InvalidDataException,
+	public TermParts getTermPartsObject(TermParts termPartsObject,
+			List<Element> referencedList) throws InvalidDataException,
 			URISyntaxException {
 		
 		int refFoundFlag = 0;
 		if (termPartsObject.getInternal_refId() != null
 				&& !termPartsObject.getInternal_refId().trim().equals("")) {
-			for (IElement element : referencedList) {
+			for (Element element : referencedList) {
 				if (element.getRefId().equals(
 						termPartsObject.getInternal_refId())) {
-					termPartsObject = (ITermParts) element;
+					termPartsObject = (TermParts) element;
 					refFoundFlag = 1;
 
 				}
@@ -528,17 +526,17 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 	 * @return URI of the node in the database.
 	 * @throws URISyntaxException
 	 */
-	public ITermPart getTermPartObject(ITermPart termPartObject,
-			List<IElement> referencedList) throws URISyntaxException,
+	public TermPart getTermPartObject(TermPart termPartObject,
+			List<Element> referencedList) throws URISyntaxException,
 			InvalidDataException {
 		
 		int refFoundFlag = 0;
 		if (termPartObject.getInternal_refId() != null
 				&& !termPartObject.getInternal_refId().trim().equals("")) {
-			for (IElement element : referencedList) {
+			for (Element element : referencedList) {
 				if (element.getRefId().equals(
 						termPartObject.getInternal_refId())) {
-					termPartObject = (ITermPart) element;
+					termPartObject = (TermPart) element;
 				    refFoundFlag = 1;
 				}
 			}

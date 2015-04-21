@@ -24,9 +24,8 @@ import edu.asu.qstore4s.converter.IConverter;
 import edu.asu.qstore4s.converter.IGetConverter;
 import edu.asu.qstore4s.converter.ISearchXmlParser;
 import edu.asu.qstore4s.converter.IXmltoObject;
-import edu.asu.qstore4s.domain.elements.IElement;
 import edu.asu.qstore4s.domain.elements.impl.Element;
-import edu.asu.qstore4s.domain.events.ICreationEvent;
+import edu.asu.qstore4s.domain.events.impl.CreationEvent;
 import edu.asu.qstore4s.exception.InvalidDataException;
 import edu.asu.qstore4s.exception.ParserException;
 import edu.asu.qstore4s.search.events.ISearchCreationEvent;
@@ -53,9 +52,9 @@ public class RepositoryManagerTest {
 	ISearchXmlParser serachXmlParser;
 	
 	
-	List<List<IElement>> creationEventList;
-	List<ICreationEvent> creationEventListwithID;
-	IElement element;
+	List<List<Element>> creationEventList;
+	List<CreationEvent> creationEventListwithID;
+	Element element;
 
 	@InjectMocks
 	IRepositoryManager repositoryManager = new RepositoryManager();
@@ -64,8 +63,8 @@ public class RepositoryManagerTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		creationEventList = new ArrayList<List<IElement>>();
-		creationEventListwithID = new ArrayList<ICreationEvent>();
+		creationEventList = new ArrayList<List<Element>>();
+		creationEventListwithID = new ArrayList<CreationEvent>();
 		element = new Element();
 
 	}
@@ -160,7 +159,7 @@ public class RepositoryManagerTest {
 		
 		
 		List<String> idList = new ArrayList<String>();
-		List<ICreationEvent> icreationEventList=new ArrayList<ICreationEvent>();
+		List<CreationEvent> icreationEventList=new ArrayList<CreationEvent>();
 		
 		when(storeManager.getObjectFromDb(idList)).thenReturn(
 				icreationEventList);
@@ -196,7 +195,7 @@ public class RepositoryManagerTest {
 		
 	
 		ISearchCreationEvent icreationEvent= new SearchRelationEvent();
-		List<ICreationEvent> icreationEventList=new ArrayList<ICreationEvent>();
+		List<CreationEvent> icreationEventList=new ArrayList<CreationEvent>();
 		
 		when(storeManager.searchObjectFromDb(icreationEvent)).thenReturn(
 				icreationEventList);

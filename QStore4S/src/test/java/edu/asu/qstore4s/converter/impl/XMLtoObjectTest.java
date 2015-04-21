@@ -22,11 +22,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import edu.asu.qstore4s.converter.IXmlElements;
-import edu.asu.qstore4s.domain.elements.IElement;
-import edu.asu.qstore4s.domain.elements.IRelation;
-import edu.asu.qstore4s.domain.elements.ITerm;
-import edu.asu.qstore4s.domain.elements.ITermPart;
-import edu.asu.qstore4s.domain.elements.ITermParts;
 import edu.asu.qstore4s.domain.elements.factory.impl.ActorFactory;
 import edu.asu.qstore4s.domain.elements.factory.impl.ConceptFactory;
 import edu.asu.qstore4s.domain.elements.factory.impl.PlaceFactory;
@@ -38,6 +33,7 @@ import edu.asu.qstore4s.domain.elements.factory.impl.TermPartsFactory;
 import edu.asu.qstore4s.domain.elements.factory.impl.VocabularyEntryFactory;
 import edu.asu.qstore4s.domain.elements.impl.Actor;
 import edu.asu.qstore4s.domain.elements.impl.Concept;
+import edu.asu.qstore4s.domain.elements.impl.Element;
 import edu.asu.qstore4s.domain.elements.impl.Place;
 import edu.asu.qstore4s.domain.elements.impl.Relation;
 import edu.asu.qstore4s.domain.elements.impl.SourceReference;
@@ -45,8 +41,6 @@ import edu.asu.qstore4s.domain.elements.impl.Term;
 import edu.asu.qstore4s.domain.elements.impl.TermPart;
 import edu.asu.qstore4s.domain.elements.impl.TermParts;
 import edu.asu.qstore4s.domain.elements.impl.VocabularyEntry;
-import edu.asu.qstore4s.domain.events.IAppellationEvent;
-import edu.asu.qstore4s.domain.events.IRelationEvent;
 import edu.asu.qstore4s.domain.events.factory.impl.AppellationEventFactory;
 import edu.asu.qstore4s.domain.events.factory.impl.RelationEventFactory;
 import edu.asu.qstore4s.domain.events.impl.AppellationEvent;
@@ -161,14 +155,14 @@ public class XMLtoObjectTest {
 		
 		
 		String content = new Scanner(new File("src/test/resources/input-example.xml")).useDelimiter("\\Z").next();
-		List<List<IElement>> creationEventList = xmlToObject.parseXML(content);
-		List<IElement> objectsList = creationEventList.get(0);
+		List<List<Element>> creationEventList = xmlToObject.parseXML(content);
+		List<Element> objectsList = creationEventList.get(0);
 		DateFormat formatter = new SimpleDateFormat(IXmlElements.DATE_FORMAT);
 	
 		
 		//checking size of relationevent list
         Assert.assertEquals(1, objectsList.size());
-		IRelationEvent element = (IRelationEvent)objectsList.get(0);
+		RelationEvent element = (RelationEvent)objectsList.get(0);
 		Assert.assertEquals("creator1", element.getCreator().getSourceURI());
 		Assert.assertEquals(formatter.parse("2002-05-30T09:00:00").toString(), element.getCreationDate().toString());
 		Assert.assertEquals("berlin", element.getCreationPlace().getSourceURI());
@@ -176,18 +170,18 @@ public class XMLtoObjectTest {
 		Assert.assertEquals("test_interpretation_creator", element.getInterpretationCreator().getSourceURI());
 		Assert.assertEquals("test_relation_creator", element.getRelationCreator().getSourceURI());
 		
-		IRelation relation = (IRelation)element.getRelation();
+		Relation relation = (Relation)element.getRelation();
 		Assert.assertEquals("creator1", relation.getCreator().getSourceURI());
 		Assert.assertEquals(formatter.parse("2002-05-30T09:00:00").toString(), relation.getCreationDate().toString());
 		Assert.assertEquals("berlin", relation.getCreationPlace().getSourceURI());
 		
-		IAppellationEvent appellation = (IAppellationEvent)relation.getSubject();
+		AppellationEvent appellation = (AppellationEvent)relation.getSubject();
 		Assert.assertEquals("creator1", appellation.getCreator().getSourceURI());
 		Assert.assertEquals(formatter.parse("2002-05-30T09:00:00").toString(), appellation.getCreationDate().toString());
 		Assert.assertEquals("berlin", appellation.getCreationPlace().getSourceURI());
 		Assert.assertEquals("test_source_reference", appellation.getSourceReference().getSourceURI());
 		
-		ITerm term = appellation.getTerm();
+		Term term = appellation.getTerm();
 		Assert.assertEquals("creator1", term.getCreator().getSourceURI());
 		Assert.assertEquals(formatter.parse("2002-05-30T09:00:00").toString(), term.getCreationDate().toString());
 		Assert.assertEquals("berlin", term.getCreationPlace().getSourceURI());
@@ -195,16 +189,16 @@ public class XMLtoObjectTest {
 		Assert.assertEquals("URI1", term.getNormalizedRepresentation().getSourceURI());
 		Assert.assertEquals(true, term.isCertain());
 		
-		ITermParts termParts = term.getPrintedRepresentation();
+		TermParts termParts = term.getPrintedRepresentation();
 		Assert.assertEquals("creator1", termParts.getCreator().getSourceURI());
 		Assert.assertEquals(formatter.parse("2002-05-30T09:00:00").toString(), termParts.getCreationDate().toString());
 		Assert.assertEquals("berlin", termParts.getCreationPlace().getSourceURI());
 		Assert.assertEquals("test_source_reference", termParts.getReferencedSource().getSourceURI());
 		
-		Set<ITermPart> termpartList =  termParts.getTermParts();
-		Iterator<ITermPart> termPartIterator = termpartList.iterator();
+		Set<TermPart> termpartList =  termParts.getTermParts();
+		Iterator<TermPart> termPartIterator = termpartList.iterator();
 		while(termPartIterator.hasNext()){
-			ITermPart termPart = termPartIterator.next();
+			TermPart termPart = termPartIterator.next();
 			Assert.assertEquals("creator1", termPart.getCreator().getSourceURI());
 			Assert.assertEquals(formatter.parse("2002-05-30T09:00:00").toString(), termPart.getCreationDate().toString());
 			Assert.assertEquals("berlin", termPart.getCreationPlace().getSourceURI());

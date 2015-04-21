@@ -14,19 +14,20 @@ import org.jdom2.output.XMLOutputter;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.data.neo4j.support.Neo4jTemplate;
 import org.springframework.stereotype.Service;
 
 import edu.asu.qstore4s.converter.IConverter;
 import edu.asu.qstore4s.converter.IXmlElements;
-import edu.asu.qstore4s.domain.elements.IElement;
-import edu.asu.qstore4s.domain.elements.IRelation;
-import edu.asu.qstore4s.domain.elements.ITerm;
-import edu.asu.qstore4s.domain.elements.ITermPart;
-import edu.asu.qstore4s.domain.elements.ITermParts;
-import edu.asu.qstore4s.domain.events.IAppellationEvent;
-import edu.asu.qstore4s.domain.events.ICreationEvent;
-import edu.asu.qstore4s.domain.events.IRelationEvent;
+import edu.asu.qstore4s.domain.elements.impl.Relation;
+import edu.asu.qstore4s.domain.elements.impl.Term;
+import edu.asu.qstore4s.domain.elements.impl.TermPart;
+import edu.asu.qstore4s.domain.elements.impl.TermParts;
 import edu.asu.qstore4s.domain.events.impl.AppellationEvent;
+import edu.asu.qstore4s.domain.events.impl.CreationEvent;
 import edu.asu.qstore4s.domain.events.impl.RelationEvent;
 
 /**
@@ -37,9 +38,14 @@ import edu.asu.qstore4s.domain.events.impl.RelationEvent;
  */
 
 @Service
+@Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class Converter implements IConverter {
 
 	List<String> idList;
+	
+	@Autowired
+	private Neo4jTemplate template;
+
 
 	public Converter() {
 		idList = new ArrayList<String>();
@@ -50,7 +56,7 @@ public class Converter implements IConverter {
 	 */
 	
 	@Override
-	public String convertToJson(IElement element) throws JSONException {
+	public String convertToJson(edu.asu.qstore4s.domain.elements.impl.Element element) throws JSONException {
 
 		JSONObject jsonObj;
 
@@ -67,7 +73,7 @@ public class Converter implements IConverter {
 	 */
 	
 	@Override
-	public String convertToJson(List<ICreationEvent> creationEventList)
+	public String convertToJson(List<CreationEvent> creationEventList)
 			throws JSONException {
 
 		JSONObject jsonObj;
@@ -85,7 +91,7 @@ public class Converter implements IConverter {
 	
 	
 	@Override
-	public String convertToJsonShallow(IElement element) throws JSONException {
+	public String convertToJsonShallow(edu.asu.qstore4s.domain.elements.impl.Element element) throws JSONException {
 
 		JSONObject jsonObj;
 
@@ -127,25 +133,15 @@ public class Converter implements IConverter {
 	 */
 	
 	@Override
-	public String convertToXML(List<ICreationEvent> creationEventList) {
+	public String convertToXML(List<CreationEvent> creationEventList) {
 
 		
 		Document xmldocument = instanstiateXML();
 		Namespace namespace = Namespace.getNamespace(IXmlElements.NAMESPACE);
 
-		for (ICreationEvent creationEvent : creationEventList) {
+		for (CreationEvent creationEvent : creationEventList) {
 			idList.clear();
-			if (creationEvent instanceof AppellationEvent) {
-
-				Element appellationEvent = addAppellationNode(
-						(IAppellationEvent) creationEvent, namespace);
-				xmldocument.getRootElement().addContent(appellationEvent);
-			} else if (creationEvent instanceof RelationEvent) {
-				Element relationEvent = addRelationEventNode(
-						(IRelationEvent) creationEvent, namespace, false);
-				xmldocument.getRootElement().addContent(relationEvent);
-
-			}
+			addElementToXML(xmldocument, namespace, creationEvent, false);
 		}
 
 		XMLOutputter xmloutput = new XMLOutputter();
@@ -162,23 +158,13 @@ public class Converter implements IConverter {
 	 */
 	
 	@Override
-	public String convertToXML(IElement element) {
+	public String convertToXML(edu.asu.qstore4s.domain.elements.impl.Element element) {
 		Document xmldocument = instanstiateXML();
 		Namespace namespace = Namespace.getNamespace(IXmlElements.NAMESPACE);
 
 		idList.clear();
 		
-		if (element instanceof AppellationEvent) {
-			Element appellationEvent = addAppellationNode(
-					(IAppellationEvent) element, namespace);
-			xmldocument.getRootElement().addContent(appellationEvent);
-
-		} else if (element instanceof RelationEvent) {
-			Element relationEvent = addRelationEventNode(
-					(IRelationEvent) element, namespace, false);
-			xmldocument.getRootElement().addContent(relationEvent);
-
-		}
+		addElementToXML(xmldocument, namespace, element, false);
 		XMLOutputter xmloutput = new XMLOutputter();
 
 		xmloutput.setFormat(Format.getPrettyFormat());
@@ -186,30 +172,32 @@ public class Converter implements IConverter {
 		return xmloutput.outputString(xmldocument);
 
 	}
+	
+	private void addElementToXML(Document document, Namespace namespace, edu.asu.qstore4s.domain.elements.impl.Element element, boolean shallow) {
+		if (element instanceof AppellationEvent) {
+			Element appellationEvent = addAppellationNode(
+					(AppellationEvent) element, namespace);
+			document.getRootElement().addContent(appellationEvent);
+
+		} else if (element instanceof RelationEvent) {
+			Element relationEvent = addRelationEventNode(
+					(RelationEvent) element, namespace, shallow);
+			document.getRootElement().addContent(relationEvent);
+
+		}
+	}
 
 	/**
 	 * {@inheritDoc}}
 	 */
-	
-	
 	@Override
-	public String convertToXMLShallow(IElement element) {
+	public String convertToXMLShallow(edu.asu.qstore4s.domain.elements.impl.Element element) {
 		Document xmldocument = instanstiateXML();
 		Namespace namespace = Namespace.getNamespace(IXmlElements.NAMESPACE);
 
 		idList.clear();
 		
-		if (element instanceof AppellationEvent) {
-			Element appellationEvent = addAppellationNode(
-					(IAppellationEvent) element, namespace);
-			xmldocument.getRootElement().addContent(appellationEvent);
-
-		} else if (element instanceof RelationEvent) {
-			Element relationEvent = addRelationEventNode(
-					(IRelationEvent) element, namespace, true);
-			xmldocument.getRootElement().addContent(relationEvent);
-
-		}
+		addElementToXML(xmldocument, namespace, element, true);
 		XMLOutputter xmloutput = new XMLOutputter();
 
 		xmloutput.setFormat(Format.getPrettyFormat());
@@ -226,7 +214,7 @@ public class Converter implements IConverter {
 	 * @param isShallow
 	 * @return relationeventnode
 	 */
-	private Element addRelationEventNode(IRelationEvent creationEvent,
+	private Element addRelationEventNode(RelationEvent creationEvent,
 			Namespace namespace, boolean isShallow) {
 
 		Element relationEvent = new Element(IXmlElements.RELATION_EVENT,
@@ -321,8 +309,8 @@ public class Converter implements IConverter {
 //				}
 				
 
-				IRelation relation = creationEvent.getRelation();
-
+				Relation relation = creationEvent.getRelation();
+				
 				if (isShallow) {
 					Element relationNode = addRelationNode(relation, namespace,
 							true);
@@ -352,7 +340,7 @@ public class Converter implements IConverter {
 	 * @return appellationevent node
 	 */
 
-	private Element addAppellationNode(IAppellationEvent creationEvent,
+	private Element addAppellationNode(AppellationEvent creationEvent,
 			Namespace namespace) {
 
 		Element appellationevent = new Element(IXmlElements.APPELLATION_EVENT,
@@ -430,7 +418,8 @@ public class Converter implements IConverter {
 //			}
 			
 			
-			ITerm term = creationEvent.getTerm();
+			Term term = creationEvent.getTerm();
+			
 			Element termnode = addTermNode(term, namespace);
 
 			appellationevent.addContent(termnode);
@@ -447,7 +436,7 @@ public class Converter implements IConverter {
 	 * @return relation node
 	 */
 
-	private Element addRelationNode(IRelation relation, Namespace namespace,
+	private Element addRelationNode(Relation relation, Namespace namespace,
 			boolean isShallow) {
 
 
@@ -515,10 +504,10 @@ public class Converter implements IConverter {
 		
 			
 			
-			ICreationEvent subject = relation.getSubject();
+			CreationEvent subject = relation.getSubject();
 
 			Element subjectnode = new Element(IXmlElements.SUBJECT, namespace);
-
+			
 			if (isShallow) {
 				Element idNode = new Element(IXmlElements.ID, namespace);
 				idNode.setText(subject.getId());
@@ -527,12 +516,13 @@ public class Converter implements IConverter {
 			} else {
 
 				if (subject instanceof AppellationEvent) {
+					
 					Element appellationEvent = addAppellationNode(
-							(IAppellationEvent) subject, namespace);
+							(AppellationEvent) subject, namespace);
 					subjectnode.addContent(appellationEvent);
 				} else if (subject instanceof RelationEvent) {
 					Element relationsubEvent = addRelationEventNode(
-							(IRelationEvent) subject, namespace, false);
+							(RelationEvent) subject, namespace, false);
 					subjectnode.addContent(relationsubEvent);
 				}
 
@@ -540,7 +530,7 @@ public class Converter implements IConverter {
 			relationNode.addContent(subjectnode);
 
 			Element objectnode = new Element(IXmlElements.OBJECT, namespace);
-			ICreationEvent object = relation.getObject();
+			CreationEvent object = relation.getObject();
 
 			if (isShallow) {
 				Element idNode = new Element(IXmlElements.ID, namespace);
@@ -550,12 +540,16 @@ public class Converter implements IConverter {
 			} else {
 
 				if (object instanceof AppellationEvent) {
+					if (((AppellationEvent) object).getTerm() == null)
+						template.fetch(object);
 					Element appellationEvent = addAppellationNode(
-							(IAppellationEvent) object, namespace);
+							(AppellationEvent) object, namespace);
 					objectnode.addContent(appellationEvent);
 				} else if (object instanceof RelationEvent) {
+					if (((RelationEvent) object).getRelation() == null)
+						template.fetch(object);
 					Element relationsubEvent = addRelationEventNode(
-							(IRelationEvent) object, namespace, false);
+							(RelationEvent) object, namespace, false);
 					objectnode.addContent(relationsubEvent);
 				}
 			}
@@ -563,8 +557,8 @@ public class Converter implements IConverter {
 
 			Element predicatenode = new Element(IXmlElements.PREDICATE,
 					namespace);
-			ICreationEvent predicate = relation.getPredicate();
-
+			AppellationEvent predicate = relation.getPredicate();
+			
 			if (isShallow) {
 				Element idNode = new Element(IXmlElements.ID, namespace);
 				idNode.setText(predicate.getId());
@@ -574,7 +568,7 @@ public class Converter implements IConverter {
 
 				{
 					Element appellationEvent = addAppellationNode(
-							(IAppellationEvent) predicate, namespace);
+							(AppellationEvent) predicate, namespace);
 					predicatenode.addContent(appellationEvent);
 				}
 			}
@@ -591,7 +585,7 @@ public class Converter implements IConverter {
 	 * @return TermNode
 	 */
 
-	private Element addTermNode(ITerm term, Namespace namespace) {
+	private Element addTermNode(Term term, Namespace namespace) {
 
 		Element termnode = new Element(IXmlElements.TERM, namespace);
 		{
@@ -647,8 +641,8 @@ public class Converter implements IConverter {
 			}
 		}
 
-		ITermParts printedrepresentation = term.getPrintedRepresentation();
-
+		TermParts printedrepresentation = term.getPrintedRepresentation();
+		
 		Element printed_representation = addTermPartsNode(
 				printedrepresentation, namespace);
 
@@ -664,9 +658,9 @@ public class Converter implements IConverter {
 		Element referenced_terms = new Element(IXmlElements.REFERENCED_TERMS,
 				namespace);
 
-		Set<ITerm> referencedTerms = term.getReferencedTerms();
+		Set<Term> referencedTerms = term.getReferencedTerms();
 
-		for (ITerm referenceTerm : referencedTerms) {
+		for (Term referenceTerm : referencedTerms) {
 
 			Element subTerm = addTermNode(referenceTerm, namespace);
 			referenced_terms.addContent(subTerm);
@@ -690,7 +684,7 @@ public class Converter implements IConverter {
 	 * @return TermPartsnode
 	 */
 
-	private Element addTermPartsNode(ITermParts printedrepresentation,
+	private Element addTermPartsNode(TermParts printedrepresentation,
 			Namespace namespace) {
 
 		Element printed_representation = new Element(
@@ -736,9 +730,9 @@ public class Converter implements IConverter {
 			}
 		}
 
-		Set<ITermPart> termpartList = printedrepresentation.getTermParts();
+		Set<TermPart> termpartList = printedrepresentation.getTermParts();
 
-		for (ITermPart termpart : termpartList) {
+		for (TermPart termpart : termpartList) {
 
 			Element termpartnode = addTermPartNode(termpart, namespace);
 
@@ -757,7 +751,7 @@ public class Converter implements IConverter {
 	 * @return TermPartNode
 	 */
 
-	private Element addTermPartNode(ITermPart termpart, Namespace namespace) {
+	private Element addTermPartNode(TermPart termpart, Namespace namespace) {
 
 		Element termpartnode = new Element(IXmlElements.TERM_PART, namespace);
 

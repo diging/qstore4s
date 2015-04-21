@@ -4,15 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Service;
 
-import edu.asu.qstore4s.domain.elements.IVocabularyEntry;
 import edu.asu.qstore4s.domain.elements.factory.IVocabularyEntryFactory;
+import edu.asu.qstore4s.domain.elements.impl.VocabularyEntry;
 /**
  * 
  * @author Bhargav Desai
  *
  */
 @Service
-public class StringToVocabularyEntryConverter implements Converter<String, IVocabularyEntry> {
+public class StringToVocabularyEntryConverter implements Converter<String, VocabularyEntry> {
 	@Autowired
 	IVocabularyEntryFactory vocabularyEntryFactory;
 	/**
@@ -21,10 +21,9 @@ public class StringToVocabularyEntryConverter implements Converter<String, IVoca
 	 * 
 	 */
 	@Override
-	public IVocabularyEntry convert(String source)
+	public VocabularyEntry convert(String source)
 	{
-		IVocabularyEntry vocabularyEntry = vocabularyEntryFactory.createVocabularyEntry(source);
-		return vocabularyEntry;
+		return vocabularyEntryFactory.createVocabularyEntry(source);
 	}
 
 }

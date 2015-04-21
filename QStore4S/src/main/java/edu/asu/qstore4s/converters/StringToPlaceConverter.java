@@ -4,15 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Service;
 
-import edu.asu.qstore4s.domain.elements.IPlace;
 import edu.asu.qstore4s.domain.elements.factory.IPlaceFactory;
+import edu.asu.qstore4s.domain.elements.impl.Place;
 /**
  * 
  * @author Bhargav Desai
  *
  */
 @Service
-public class StringToPlaceConverter implements Converter<String, IPlace> {
+public class StringToPlaceConverter implements Converter<String, Place> {
 	@Autowired
 	IPlaceFactory placeFactory;
 	
@@ -23,9 +23,9 @@ public class StringToPlaceConverter implements Converter<String, IPlace> {
 	 */
 	
 	@Override
-	public IPlace convert(String sourceURI) {
+	public Place convert(String sourceURI) {
 	
-	IPlace place = placeFactory.createPlace();	
+		Place place = placeFactory.createPlace();	
 		
 		place.setSourceURI(sourceURI);
 		return place;

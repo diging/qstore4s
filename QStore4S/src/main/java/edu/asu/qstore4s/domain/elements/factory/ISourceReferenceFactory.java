@@ -1,6 +1,7 @@
 package edu.asu.qstore4s.domain.elements.factory;
 
-import edu.asu.qstore4s.domain.elements.ISourceReference;
+import edu.asu.qstore4s.domain.elements.impl.SourceReference;
+
 
 /**
  * This is the interface class for SourceReferenceFactory class
@@ -11,8 +12,8 @@ import edu.asu.qstore4s.domain.elements.ISourceReference;
  */
 public interface ISourceReferenceFactory {
 
-	ISourceReference createSourceReference();
+	SourceReference createSourceReference();
 
-	ISourceReference createSourceReference(String sourceUri);
+	SourceReference createSourceReference(String sourceUri);
 
 }

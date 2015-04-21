@@ -1,16 +1,15 @@
 package edu.asu.qstore4s.domain.elements.impl;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import edu.asu.qstore4s.domain.elements.ISourceReference;
+import org.springframework.data.annotation.TypeAlias;
 
 /**
  * This file contains the definition of SourceReference class.
  *
  */
 @XmlRootElement
-public class SourceReference extends Element implements ISourceReference {
+public class SourceReference extends Element {
 
 	private String sourceURI;
 	
@@ -19,18 +18,12 @@ public class SourceReference extends Element implements ISourceReference {
 	sourceURI="";
 	}
 	
-	@Override
 	public String getSourceURI() {
 		return sourceURI;
 	}
 
-	@Override
 	public void setSourceURI(String uri) {
 		this.sourceURI = uri;
 	}
 
-	public static class Adapter extends XmlAdapter<SourceReference,ISourceReference> {
-		public ISourceReference unmarshal(SourceReference v) { return v; }
-		public SourceReference marshal(ISourceReference v) { return (SourceReference)v; }
-	}
 }

@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 
 import edu.asu.qstore4s.db.neo4j.IDbConnector;
 import edu.asu.qstore4s.db.neo4j.IStoreObjectsToDb;
-import edu.asu.qstore4s.domain.elements.IElement;
-import edu.asu.qstore4s.domain.events.ICreationEvent;
+import edu.asu.qstore4s.domain.elements.impl.Element;
+import edu.asu.qstore4s.domain.events.impl.CreationEvent;
 import edu.asu.qstore4s.exception.InvalidDataException;
 import edu.asu.qstore4s.search.events.ISearchCreationEvent;
 import edu.asu.qstore4s.service.IStoreManager;
@@ -34,11 +34,11 @@ public class StoreManager implements IStoreManager {
 	 */
 
 	@Override
-	public List<ICreationEvent> insertIntoDb(
-			List<List<IElement>> creationEventList) throws URISyntaxException,
+	public List<CreationEvent> insertIntoDb(
+			List<List<Element>> creationEventList) throws URISyntaxException,
 			InvalidDataException {
 
-		List<ICreationEvent> creationEventListwithID = new ArrayList<ICreationEvent>();
+		List<CreationEvent> creationEventListwithID = new ArrayList<CreationEvent>();
 
 		creationEventListwithID = storeObjectsToDb
 				.writeObjectsToDb(creationEventList);
@@ -52,11 +52,11 @@ public class StoreManager implements IStoreManager {
 	 */
 
 	@Override
-	public List<ICreationEvent> searchRelationFromDb(
-			List<List<IElement>> creationEventList) throws URISyntaxException,
+	public List<CreationEvent> searchRelationFromDb(
+			List<List<Element>> creationEventList) throws URISyntaxException,
 			InvalidDataException {
 
-		List<ICreationEvent> creationEventListwithID = new ArrayList<ICreationEvent>();
+		List<CreationEvent> creationEventListwithID = new ArrayList<CreationEvent>();
 
 		creationEventListwithID = dbConnector
 				.searchRelationInDb(creationEventList.get(0));
@@ -69,8 +69,8 @@ public class StoreManager implements IStoreManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public IElement getObjectFromDb(String id) throws InvalidDataException {
-		IElement element = dbConnector.get(id);
+	public Element getObjectFromDb(String id) throws InvalidDataException {
+		Element element = dbConnector.get(id);
 
 		return element;
 
@@ -80,9 +80,9 @@ public class StoreManager implements IStoreManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<ICreationEvent> searchObjectFromDb(
+	public List<CreationEvent> searchObjectFromDb(
 			ISearchCreationEvent queryObject) throws InvalidDataException {
-		List<ICreationEvent> elementList = dbConnector
+		List<CreationEvent> elementList = dbConnector
 				.searchFromDb(queryObject);
 		return elementList;
 
@@ -92,7 +92,7 @@ public class StoreManager implements IStoreManager {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<ICreationEvent> getObjectFromDb(List<String> idList)
+	public List<CreationEvent> getObjectFromDb(List<String> idList)
 			throws InvalidDataException {
 		return dbConnector.get(idList);
 	}

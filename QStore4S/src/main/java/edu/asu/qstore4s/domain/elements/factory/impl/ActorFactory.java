@@ -2,7 +2,6 @@ package edu.asu.qstore4s.domain.elements.factory.impl;
 
 import org.springframework.stereotype.Service;
 
-import edu.asu.qstore4s.domain.elements.IActor;
 import edu.asu.qstore4s.domain.elements.factory.IActorFactory;
 import edu.asu.qstore4s.domain.elements.impl.Actor;
 
@@ -16,16 +15,15 @@ import edu.asu.qstore4s.domain.elements.impl.Actor;
 @Service
 public class ActorFactory implements IActorFactory {
 	@Override
-	public IActor createActor()
+	public Actor createActor()
 	{
-		IActor actorObject = new Actor();
-		return actorObject;
+		return new Actor();
 	}
 	
 	@Override
-	public IActor createActor(String sourceUri)
+	public Actor createActor(String sourceUri)
 	{
-		IActor actorObject = new Actor();
+		Actor actorObject = new Actor();
 		if(sourceUri==null)
 		{
 			actorObject.setSourceURI("");

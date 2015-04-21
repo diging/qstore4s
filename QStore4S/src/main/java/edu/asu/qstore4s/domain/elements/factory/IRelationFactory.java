@@ -1,6 +1,7 @@
 package edu.asu.qstore4s.domain.elements.factory;
 
-import edu.asu.qstore4s.domain.elements.IRelation;
+import edu.asu.qstore4s.domain.elements.impl.Relation;
+
 
 /**
  * This is the interface class for RelationFactory class
@@ -10,5 +11,5 @@ import edu.asu.qstore4s.domain.elements.IRelation;
  *
  */
 public interface IRelationFactory {
-	public IRelation createRelation();
+	public Relation createRelation();
 }

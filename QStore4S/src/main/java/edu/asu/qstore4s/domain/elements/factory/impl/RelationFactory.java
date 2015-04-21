@@ -2,7 +2,6 @@ package edu.asu.qstore4s.domain.elements.factory.impl;
 
 import org.springframework.stereotype.Service;
 
-import edu.asu.qstore4s.domain.elements.IRelation;
 import edu.asu.qstore4s.domain.elements.factory.IRelationFactory;
 import edu.asu.qstore4s.domain.elements.impl.Relation;
 
@@ -14,9 +13,8 @@ import edu.asu.qstore4s.domain.elements.impl.Relation;
  */
 @Service
 public class RelationFactory implements IRelationFactory {
-	public IRelation createRelation()
+	public Relation createRelation()
 	{
-		IRelation relationObject = new Relation();
-		return relationObject;
+		return new Relation();
 	}
 }

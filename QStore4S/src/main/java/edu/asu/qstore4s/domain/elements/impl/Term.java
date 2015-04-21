@@ -5,107 +5,92 @@ import java.util.Set;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.neo4j.graphdb.Direction;
+import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.GraphProperty;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
 
-import edu.asu.qstore4s.domain.elements.IConcept;
-import edu.asu.qstore4s.domain.elements.ISourceReference;
-import edu.asu.qstore4s.domain.elements.ITerm;
-import edu.asu.qstore4s.domain.elements.ITermParts;
-import edu.asu.qstore4s.domain.elements.IVocabularyEntry;
-
 /**
  * This file contains the definition of Term class.
  *
  */
 @XmlRootElement
-
 @NodeEntity
-public class Term extends Element implements ITerm {
+public class Term extends Element {
 	
 	@GraphId
 	Long graphId;
 
 	@GraphProperty
-	private IConcept interpretation;
+	private Concept interpretation;
 	
 	@GraphProperty
-	private IVocabularyEntry normalized_representation;
+	private VocabularyEntry normalized_representation;
 	
 	@Fetch
-	@RelatedTo(type="hasTermParts", direction=Direction.OUTGOING, elementClass= TermParts.class)
-	private ITermParts printedRepresentation;
+	@RelatedTo(type="hasTermParts", direction=Direction.OUTGOING)
+	private TermParts printedRepresentation;
 	
 	@GraphProperty(propertyType=String.class)
-	private boolean certain;
+	private Boolean certain;
 	
 	
 	@Fetch
 	@RelatedTo(type="referencedTerm", direction=Direction.OUTGOING, elementClass=Term.class)
-	private Set<ITerm> referencedTerms;
+	private Set<Term> referencedTerms;
 	
 	
 	
 	@GraphProperty
-	private ISourceReference source_reference;
+	private SourceReference source_reference;
 	
 	public Term() {
-		referencedTerms = new HashSet<ITerm>();
+		referencedTerms = new HashSet<Term>();
 	}
 
-	@Override
-	public IConcept getInterpretation() {
+	public Concept getInterpretation() {
 		return interpretation;
 	}
 
-	@Override
 	@XmlElement(type=Concept.class)
-	public void setInterpretation(IConcept concept) {
+	public void setInterpretation(Concept concept) {
 		this.interpretation = concept;
 	}
 
-	@Override
 	@XmlElement(type=VocabularyEntry.class)
-	public IVocabularyEntry getNormalizedRepresentation() {
+	public VocabularyEntry getNormalizedRepresentation() {
 		return normalized_representation;
 	}
 		
-	@Override
-	public void setNormalizedRepresentation(IVocabularyEntry entry) {
+	public void setNormalizedRepresentation(VocabularyEntry entry) {
 		this.normalized_representation = entry;
 	}
 
-	@Override
 	@XmlElement(type=TermParts.class)
-	public ITermParts getPrintedRepresentation() {
+	public TermParts getPrintedRepresentation() {
 		return printedRepresentation;
 	}
 
-	@Override
-	public void setPrintedRepresentation(ITermParts parts) {
+	public void setPrintedRepresentation(TermParts parts) {
 		this.printedRepresentation = parts;
 	}
 
-	@Override
-	public boolean isCertain() {
+	public Boolean isCertain() {
 		return certain;
 	}
 	
 	/**
 	 * Getter method for hibernate.
 	 **/
-	public boolean getCertain() {
+	public Boolean getCertain() {
 		return certain;
 	}
 
-	@Override
-	public void setIsCertain(boolean certainty) {
+	public void setIsCertain(Boolean certainty) {
 		this.certain = certainty;
 	}
 	
@@ -116,30 +101,22 @@ public class Term extends Element implements ITerm {
 		this.certain = certainty;
 	}
 
-	@Override
 	@XmlElement(type=Term.class)
-	public Set<ITerm> getReferencedTerms() {
+	public Set<Term> getReferencedTerms() {
 		return referencedTerms;
 	}
 
-	@Override
-	public void setReferencedTerms(Set<ITerm> terms) {
+	public void setReferencedTerms(Set<Term> terms) {
 		this.referencedTerms = terms;
 	}
 	
-	@Override
 	@XmlElement(type=SourceReference.class)
-	public ISourceReference getSourceReference() {
+	public SourceReference getSourceReference() {
 		return source_reference;
 	}
 
-	@Override
-	public void setSourceReference(ISourceReference reference) {
+	public void setSourceReference(SourceReference reference) {
 		this.source_reference = reference;
 	}
 
-	public static class Adapter extends XmlAdapter<Term,ITerm> {
-		public ITerm unmarshal(Term v) { return v; }
-		public Term marshal(ITerm v) { return (Term)v; }
-	}
 }

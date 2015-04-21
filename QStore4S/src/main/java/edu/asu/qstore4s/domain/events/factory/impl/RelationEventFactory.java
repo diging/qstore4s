@@ -2,7 +2,6 @@ package edu.asu.qstore4s.domain.events.factory.impl;
 
 import org.springframework.stereotype.Service;
 
-import edu.asu.qstore4s.domain.events.IRelationEvent;
 import edu.asu.qstore4s.domain.events.factory.IRelationEventFactory;
 import edu.asu.qstore4s.domain.events.impl.RelationEvent;
 
@@ -16,9 +15,8 @@ import edu.asu.qstore4s.domain.events.impl.RelationEvent;
 @Service
 public class RelationEventFactory implements IRelationEventFactory {
 	@Override
-	public IRelationEvent createRelationEvent()
+	public RelationEvent createRelationEvent()
 	{
-		IRelationEvent relationEventObject = new RelationEvent();
-		return relationEventObject;
+		return new RelationEvent();
 	}
 }

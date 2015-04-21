@@ -1,6 +1,7 @@
 package edu.asu.qstore4s.domain.elements.factory;
 
-import edu.asu.qstore4s.domain.elements.IConcept;
+import edu.asu.qstore4s.domain.elements.impl.Concept;
+
 
 /**
  * This is the interface class for ConceptFactory class
@@ -11,8 +12,8 @@ import edu.asu.qstore4s.domain.elements.IConcept;
  */
 public interface IConceptFactory {
 
-	IConcept createConcept();
+	Concept createConcept();
 
-	IConcept createConcept(String sourceUri);
+	Concept createConcept(String sourceUri);
 
 }

@@ -2,7 +2,6 @@ package edu.asu.qstore4s.domain.elements.factory.impl;
 
 import org.springframework.stereotype.Service;
 
-import edu.asu.qstore4s.domain.elements.ITermPart;
 import edu.asu.qstore4s.domain.elements.factory.ITermPartFactory;
 import edu.asu.qstore4s.domain.elements.impl.TermPart;
 
@@ -15,9 +14,8 @@ import edu.asu.qstore4s.domain.elements.impl.TermPart;
 @Service
 public class TermPartFactory implements ITermPartFactory {
 	@Override
-	public ITermPart createTermPart()
+	public TermPart createTermPart()
 	{
-		ITermPart termPartObject = new TermPart();
-		return termPartObject;
+		return new TermPart();
 	}
 }

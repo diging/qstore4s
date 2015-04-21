@@ -16,8 +16,8 @@ import org.mockito.MockitoAnnotations;
 
 import edu.asu.qstore4s.db.neo4j.IDbConnector;
 import edu.asu.qstore4s.db.neo4j.IStoreObjectsToDb;
-import edu.asu.qstore4s.domain.elements.IElement;
-import edu.asu.qstore4s.domain.events.ICreationEvent;
+import edu.asu.qstore4s.domain.elements.impl.Element;
+import edu.asu.qstore4s.domain.events.impl.CreationEvent;
 import edu.asu.qstore4s.exception.InvalidDataException;
 import edu.asu.qstore4s.service.IStoreManager;
 
@@ -44,8 +44,8 @@ public class StoreManagerTest {
 	@Test
 	public void testInsertIntoDb() throws URISyntaxException, InvalidDataException {
 		
-		List<ICreationEvent> creationEventListwithID = new ArrayList<ICreationEvent>();
-		List<List<IElement>> list = new ArrayList<List<IElement>>();
+		List<CreationEvent> creationEventListwithID = new ArrayList<CreationEvent>();
+		List<List<Element>> list = new ArrayList<List<Element>>();
 		
 		when(storeObjectsToDb.writeObjectsToDb(list)).thenReturn(creationEventListwithID);
 		
@@ -58,12 +58,12 @@ public class StoreManagerTest {
 	@Test
 	public void testSearchRelationFromDb() throws URISyntaxException, InvalidDataException {
 		
-		List<ICreationEvent> creationEventListwithID = new ArrayList<ICreationEvent>();
+		List<CreationEvent> creationEventListwithID = new ArrayList<CreationEvent>();
 		
 		
-		List<List<IElement>> list = new ArrayList<List<IElement>>();
+		List<List<Element>> list = new ArrayList<List<Element>>();
 
-		List<IElement> elementList = new ArrayList<IElement>();
+		List<Element> elementList = new ArrayList<Element>();
 		
 		list.add(elementList);
 		when(dbConnector.searchRelationInDb(elementList)).thenReturn(creationEventListwithID);

@@ -2,7 +2,6 @@ package edu.asu.qstore4s.domain.elements.factory.impl;
 
 import org.springframework.stereotype.Service;
 
-import edu.asu.qstore4s.domain.elements.IPlace;
 import edu.asu.qstore4s.domain.elements.factory.IPlaceFactory;
 import edu.asu.qstore4s.domain.elements.impl.Place;
 
@@ -16,14 +15,13 @@ import edu.asu.qstore4s.domain.elements.impl.Place;
 @Service
 public class PlaceFactory implements IPlaceFactory {
 	@Override
-	public IPlace createPlace() {
-		IPlace placeObject = new Place();
-		return placeObject;
+	public Place createPlace() {
+		return new Place();
 	}
 
 	@Override
-	public IPlace createPlace(String sourceUri) {
-		IPlace placeObject = new Place();
+	public Place createPlace(String sourceUri) {
+		Place placeObject = new Place();
 		if (sourceUri == null) {
 			placeObject.setSourceURI("");
 			} else {

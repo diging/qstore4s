@@ -2,7 +2,6 @@ package edu.asu.qstore4s.domain.events.factory.impl;
 
 import org.springframework.stereotype.Service;
 
-import edu.asu.qstore4s.domain.events.IAppellationEvent;
 import edu.asu.qstore4s.domain.events.factory.IAppellationEventFactory;
 import edu.asu.qstore4s.domain.events.impl.AppellationEvent;
 
@@ -16,9 +15,8 @@ import edu.asu.qstore4s.domain.events.impl.AppellationEvent;
 @Service
 public class AppellationEventFactory implements IAppellationEventFactory {
 @Override
-	public IAppellationEvent createAppellationEvent()
+	public AppellationEvent createAppellationEvent()
 	{
-		IAppellationEvent appellationObject = new AppellationEvent();
-		return appellationObject;
+		return new AppellationEvent();
 	}
 }

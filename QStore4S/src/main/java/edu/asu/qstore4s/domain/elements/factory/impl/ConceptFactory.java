@@ -2,7 +2,6 @@ package edu.asu.qstore4s.domain.elements.factory.impl;
 
 import org.springframework.stereotype.Service;
 
-import edu.asu.qstore4s.domain.elements.IConcept;
 import edu.asu.qstore4s.domain.elements.factory.IConceptFactory;
 import edu.asu.qstore4s.domain.elements.impl.Concept;
 
@@ -15,16 +14,15 @@ import edu.asu.qstore4s.domain.elements.impl.Concept;
 @Service
 public class ConceptFactory implements IConceptFactory {
 	@Override
-	public IConcept createConcept()
+	public Concept createConcept()
 	{
-		IConcept conceptObject = new Concept();
-		return conceptObject;
+		return new Concept();
 	}
 	
 	@Override
-	public IConcept createConcept(String sourceUri)
+	public Concept createConcept(String sourceUri)
 	{
-		IConcept conceptObject = new Concept();
+		Concept conceptObject = new Concept();
 		if(sourceUri==null){
 			conceptObject.setSourceURI("");
 			

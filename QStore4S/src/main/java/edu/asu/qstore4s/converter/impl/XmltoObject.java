@@ -24,11 +24,6 @@ import org.springframework.stereotype.Service;
 
 import edu.asu.qstore4s.converter.IXmlElements;
 import edu.asu.qstore4s.converter.IXmltoObject;
-import edu.asu.qstore4s.domain.elements.IElement;
-import edu.asu.qstore4s.domain.elements.IRelation;
-import edu.asu.qstore4s.domain.elements.ITerm;
-import edu.asu.qstore4s.domain.elements.ITermPart;
-import edu.asu.qstore4s.domain.elements.ITermParts;
 import edu.asu.qstore4s.domain.elements.factory.IActorFactory;
 import edu.asu.qstore4s.domain.elements.factory.IConceptFactory;
 import edu.asu.qstore4s.domain.elements.factory.IElementFactory;
@@ -39,11 +34,15 @@ import edu.asu.qstore4s.domain.elements.factory.ITermFactory;
 import edu.asu.qstore4s.domain.elements.factory.ITermPartFactory;
 import edu.asu.qstore4s.domain.elements.factory.ITermPartsFactory;
 import edu.asu.qstore4s.domain.elements.factory.IVocabularyEntryFactory;
-import edu.asu.qstore4s.domain.events.IAppellationEvent;
-import edu.asu.qstore4s.domain.events.IRelationEvent;
+import edu.asu.qstore4s.domain.elements.impl.Relation;
+import edu.asu.qstore4s.domain.elements.impl.Term;
+import edu.asu.qstore4s.domain.elements.impl.TermPart;
+import edu.asu.qstore4s.domain.elements.impl.TermParts;
 import edu.asu.qstore4s.domain.events.factory.IAppellationEventFactory;
 import edu.asu.qstore4s.domain.events.factory.ICreationEventFactory;
 import edu.asu.qstore4s.domain.events.factory.IRelationEventFactory;
+import edu.asu.qstore4s.domain.events.impl.AppellationEvent;
+import edu.asu.qstore4s.domain.events.impl.RelationEvent;
 import edu.asu.qstore4s.exception.InvalidDataException;
 import edu.asu.qstore4s.exception.ParserException;
 
@@ -98,7 +97,7 @@ public class XmltoObject extends AXmlParser implements IXmltoObject  {
 	 * @returns list of creation events present in the input string.
 	 */
 
-	public List<List<IElement>> parseXML(String xml) throws ParserException,
+	public List<List<edu.asu.qstore4s.domain.elements.impl.Element>> parseXML(String xml) throws ParserException,
 			IOException, URISyntaxException, ParseException,
 			InvalidDataException {
 
@@ -118,15 +117,15 @@ public class XmltoObject extends AXmlParser implements IXmltoObject  {
 		Namespace nameSpace = rootElement.getNamespace();
 		List<Element> Children = rootElement.getChildren();
 		Iterator<Element> childrenIterator = Children.iterator();
-		List<List<IElement>> listOfObjects = new ArrayList<List<IElement>>();
+		List<List<edu.asu.qstore4s.domain.elements.impl.Element>> listOfObjects = new ArrayList<List<edu.asu.qstore4s.domain.elements.impl.Element>>();
 
-		List<IElement> creationEventList = new ArrayList<IElement>();
-		List<IElement> referencedObjectList = new ArrayList<IElement>();
+		List<edu.asu.qstore4s.domain.elements.impl.Element> creationEventList = new ArrayList<edu.asu.qstore4s.domain.elements.impl.Element>();
+		List<edu.asu.qstore4s.domain.elements.impl.Element> referencedObjectList = new ArrayList<edu.asu.qstore4s.domain.elements.impl.Element>();
 
 		do {
 			Element childNode = childrenIterator.next();
 			if (childNode.getName().equals(IXmlElements.APPELLATION_EVENT)) {
-				IAppellationEvent rootNode = getAppellationEvent(childNode,
+				AppellationEvent rootNode = getAppellationEvent(childNode,
 						nameSpace, referencedObjectList);
 				creationEventList.add(rootNode);
 
@@ -136,7 +135,7 @@ public class XmltoObject extends AXmlParser implements IXmltoObject  {
 
 			{
 
-				IRelationEvent rootNode = getRelationEvent(childNode,
+				RelationEvent rootNode = getRelationEvent(childNode,
 						nameSpace, referencedObjectList);
 				creationEventList.add(rootNode);
 
@@ -161,14 +160,14 @@ public class XmltoObject extends AXmlParser implements IXmltoObject  {
 	 * @throws InvalidDataException
 	 */
 
-	public IRelationEvent getRelationEvent(Element relationEvent,
-			Namespace nameSpace, List<IElement> referencedObjectList)
+	public RelationEvent getRelationEvent(Element relationEvent,
+			Namespace nameSpace, List<edu.asu.qstore4s.domain.elements.impl.Element> referencedObjectList)
 			throws ParserException, IOException, URISyntaxException,
 			ParseException, InvalidDataException {
 
 		DateFormat formatter = new SimpleDateFormat(IXmlElements.DATE_FORMAT);
 
-		IRelationEvent relationEventObject = relationEventFactory
+		RelationEvent relationEventObject = relationEventFactory
 				.createRelationEvent();
 
 		relationEventObject.setInternal_refId(checkForSpaces(relationEvent
@@ -211,7 +210,7 @@ public class XmltoObject extends AXmlParser implements IXmltoObject  {
 			Element relationChild = relationEvent.getChild(
 					IXmlElements.RELATION, nameSpace);
 
-			IRelation relationObject = relationFactory.createRelation();
+			Relation relationObject = relationFactory.createRelation();
 			relationObject.setInternal_refId(checkForSpaces(relationChild
 					.getChildText(IXmlElements.INTERNAL_REFID, nameSpace)));
 			relationObject.setExternal_refId(checkForSpaces(relationChild
@@ -255,7 +254,7 @@ public class XmltoObject extends AXmlParser implements IXmltoObject  {
 
 						if (appellationRelation.getName().equals(
 								IXmlElements.APPELLATION_EVENT)) {
-							IAppellationEvent appellationSubEventObject = getAppellationEvent(
+							AppellationEvent appellationSubEventObject = getAppellationEvent(
 									appellationRelation, nameSpace,
 									referencedObjectList);
 							relationObject
@@ -263,7 +262,7 @@ public class XmltoObject extends AXmlParser implements IXmltoObject  {
 
 						} else if (appellationRelation.getName().equals(
 								IXmlElements.RELATION_EVENT)) {
-							IRelationEvent childRelationEventObject = relationEventFactory
+							RelationEvent childRelationEventObject = relationEventFactory
 									.createRelationEvent();
 							childRelationEventObject = getRelationEvent(
 									appellationRelation, nameSpace,
@@ -288,7 +287,7 @@ public class XmltoObject extends AXmlParser implements IXmltoObject  {
 					{
 						Element appellationRelation = predicateChild.getChild(
 								IXmlElements.APPELLATION_EVENT, nameSpace);
-						IAppellationEvent appellationPredEventObject = getAppellationEvent(
+						AppellationEvent appellationPredEventObject = getAppellationEvent(
 								appellationRelation, nameSpace,
 								referencedObjectList);
 						relationObject.setPredicate(appellationPredEventObject);
@@ -310,13 +309,13 @@ public class XmltoObject extends AXmlParser implements IXmltoObject  {
 
 					if (checkForSpaces(appellationRelation.getName()).equals(
 							IXmlElements.APPELLATION_EVENT)) {
-						IAppellationEvent appellationObjEventObject = getAppellationEvent(
+						AppellationEvent appellationObjEventObject = getAppellationEvent(
 								appellationRelation, nameSpace,
 								referencedObjectList);
 						relationObject.setObject(appellationObjEventObject);
 					} else if (checkForSpaces(objectChild.getName()).equals(
 							IXmlElements.RELATION)) {
-						IRelationEvent childRelationEventObject = relationEventFactory
+						RelationEvent childRelationEventObject = relationEventFactory
 								.createRelationEvent();
 						childRelationEventObject = getRelationEvent(
 								appellationRelation, nameSpace,
@@ -353,14 +352,14 @@ public class XmltoObject extends AXmlParser implements IXmltoObject  {
 	 * @throws InvalidDataException 
 	 */
 
-	public IAppellationEvent getAppellationEvent(Element appellationEvent,
-			Namespace nameSpace, List<IElement> referencedObjectList)
+	public AppellationEvent getAppellationEvent(Element appellationEvent,
+			Namespace nameSpace, List<edu.asu.qstore4s.domain.elements.impl.Element> referencedObjectList)
 			throws ParserException, IOException, URISyntaxException,
 			ParseException, InvalidDataException {
 
 		DateFormat formatter;
 		formatter = new SimpleDateFormat(IXmlElements.DATE_FORMAT);
-		IAppellationEvent appellationEventObject = appellationEventFactory
+		AppellationEvent appellationEventObject = appellationEventFactory
 				.createAppellationEvent();
 
 		appellationEventObject
@@ -401,7 +400,7 @@ public class XmltoObject extends AXmlParser implements IXmltoObject  {
 					IXmlElements.TERM, nameSpace);
 
 			if (term != null) {
-				ITerm termObject = getTermObject(term, nameSpace,
+				Term termObject = getTermObject(term, nameSpace,
 						referencedObjectList);
 
 				appellationEventObject.setTerm(termObject);
@@ -431,11 +430,11 @@ public class XmltoObject extends AXmlParser implements IXmltoObject  {
 	 * @return Term object.
 	 * @throws InvalidDataException 
 	 */
-	public ITerm getTermObject(Element term, Namespace nameSpace,
-			List<IElement> referencedObjectList) throws ParseException, InvalidDataException {
+	public Term getTermObject(Element term, Namespace nameSpace,
+			List<edu.asu.qstore4s.domain.elements.impl.Element> referencedObjectList) throws ParseException, InvalidDataException {
 		DateFormat formatter;
 		formatter = new SimpleDateFormat(IXmlElements.DATE_FORMAT);
-		ITerm termObject = termFactory.createTerm();
+		Term termObject = termFactory.createTerm();
 
 		termObject.setInternal_refId(checkForSpaces(term.getChildText(
 				IXmlElements.INTERNAL_REFID, nameSpace)));
@@ -481,7 +480,7 @@ public class XmltoObject extends AXmlParser implements IXmltoObject  {
 			
 			if(printedRepresentation!=null){
 			
-			ITermParts termPartsObject = getTermPartsObject(
+			TermParts termPartsObject = getTermPartsObject(
 					printedRepresentation, nameSpace, referencedObjectList);
 			
 			termObject.setPrintedRepresentation(termPartsObject);
@@ -499,11 +498,11 @@ public class XmltoObject extends AXmlParser implements IXmltoObject  {
 				Set<Element> refTermsList = new HashSet<Element>(
 						refTermsArrayList);
 				Iterator<Element> refTermIterator = refTermsList.iterator();
-				Set<ITerm> referencedTerms = new HashSet<ITerm>();
+				Set<Term> referencedTerms = new HashSet<Term>();
 
 				while (refTermIterator.hasNext()) {
 					Element refTerm = refTermIterator.next();
-					ITerm refTermObject = termFactory.createTerm();
+					Term refTermObject = termFactory.createTerm();
 
 					if ((refTerm.getChild(IXmlElements.INTERNAL_REFID,
 							nameSpace)) != null) {
@@ -545,12 +544,12 @@ public class XmltoObject extends AXmlParser implements IXmltoObject  {
 	 *            List containing the referenced Objects
 	 * @return TermParts object.
 	 */
-	public ITermParts getTermPartsObject(Element printedRepresentation,
-			Namespace nameSpace, List<IElement> referencedObjectList)
+	public TermParts getTermPartsObject(Element printedRepresentation,
+			Namespace nameSpace, List<edu.asu.qstore4s.domain.elements.impl.Element> referencedObjectList)
 			throws ParseException {
 		DateFormat formatter;
 		formatter = new SimpleDateFormat(IXmlElements.DATE_FORMAT);
-		ITermParts termPartsObject = termPartsFactory.createTermParts();
+		TermParts termPartsObject = termPartsFactory.createTermParts();
 
 		termPartsObject.setInternal_refId(checkForSpaces(printedRepresentation
 				.getChildText(IXmlElements.INTERNAL_REFID, nameSpace)));
@@ -588,7 +587,7 @@ public class XmltoObject extends AXmlParser implements IXmltoObject  {
 					.getChildren(IXmlElements.TERM_PART, nameSpace);
 			Set<Element> TermPartNodes = new HashSet<Element>(
 					TermPartNodesArrayList);
-			Set<ITermPart> termPartList = getTermPartObject(TermPartNodes,
+			Set<TermPart> termPartList = getTermPartObject(TermPartNodes,
 					nameSpace, referencedObjectList);
 
 			termPartsObject.setTermParts(termPartList);
@@ -613,17 +612,17 @@ public class XmltoObject extends AXmlParser implements IXmltoObject  {
 	 *            List containing the referenced Objects
 	 * @return List of TermPart object.
 	 */
-	public Set<ITermPart> getTermPartObject(Set<Element> TermPartNodes,
-			Namespace nameSpace, List<IElement> referencedObjectList)
+	public Set<TermPart> getTermPartObject(Set<Element> TermPartNodes,
+			Namespace nameSpace, List<edu.asu.qstore4s.domain.elements.impl.Element> referencedObjectList)
 			throws ParseException {
 		DateFormat formatter;
 		formatter = new SimpleDateFormat(IXmlElements.DATE_FORMAT);
 
 		Iterator<Element> TermPartIterator = TermPartNodes.iterator();
-		Set<ITermPart> termPartList = new HashSet<ITermPart>();
+		Set<TermPart> termPartList = new HashSet<TermPart>();
 
 		while (TermPartIterator.hasNext()) {
-			ITermPart termPartObject = termPartFactory.createTermPart();
+			TermPart termPartObject = termPartFactory.createTermPart();
 			Element currentElement = (Element) TermPartIterator.next();
 
 			termPartObject.setInternal_refId(checkForSpaces(currentElement

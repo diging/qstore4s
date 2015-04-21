@@ -2,7 +2,6 @@ package edu.asu.qstore4s.domain.elements.factory.impl;
 
 import org.springframework.stereotype.Service;
 
-import edu.asu.qstore4s.domain.elements.ISourceReference;
 import edu.asu.qstore4s.domain.elements.factory.ISourceReferenceFactory;
 import edu.asu.qstore4s.domain.elements.impl.SourceReference;
 
@@ -15,16 +14,15 @@ import edu.asu.qstore4s.domain.elements.impl.SourceReference;
 @Service
 public class SourceReferenceFactory implements ISourceReferenceFactory{
 	@Override
-	public ISourceReference createSourceReference()
+	public SourceReference createSourceReference()
 	{
-		ISourceReference sourceReferenceObject = new SourceReference();
-		return sourceReferenceObject;
+		return new SourceReference();
 	}
 	
 	@Override
-	public ISourceReference createSourceReference(String sourceUri)
+	public SourceReference createSourceReference(String sourceUri)
 	{
-		ISourceReference sourceReferenceObject = new SourceReference();
+		SourceReference sourceReferenceObject = new SourceReference();
 		if(sourceUri==null){
 			sourceReferenceObject.setSourceURI("");
 		}

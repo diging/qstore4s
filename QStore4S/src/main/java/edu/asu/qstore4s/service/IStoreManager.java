@@ -3,8 +3,8 @@ package edu.asu.qstore4s.service;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import edu.asu.qstore4s.domain.elements.IElement;
-import edu.asu.qstore4s.domain.events.ICreationEvent;
+import edu.asu.qstore4s.domain.elements.impl.Element;
+import edu.asu.qstore4s.domain.events.impl.CreationEvent;
 import edu.asu.qstore4s.exception.InvalidDataException;
 import edu.asu.qstore4s.search.events.ISearchCreationEvent;
 
@@ -23,7 +23,7 @@ public interface IStoreManager {
 	 * @throws InvalidDataException
 	 *             URISyntexException
 	 */
-	public List<ICreationEvent> insertIntoDb(List<List<IElement>> bean)
+	public List<CreationEvent> insertIntoDb(List<List<Element>> bean)
 			throws URISyntaxException, InvalidDataException;
 
 	/**
@@ -34,7 +34,7 @@ public interface IStoreManager {
 	 * @return
 	 * @throws InvalidDataException
 	 */
-	IElement getObjectFromDb(String id) throws InvalidDataException;
+	Element getObjectFromDb(String id) throws InvalidDataException;
 
 	/**
 	 * The method calls database dependent class to search list of the object
@@ -44,7 +44,7 @@ public interface IStoreManager {
 	 * @return
 	 * @throws InvalidDataException
 	 */
-	List<ICreationEvent> searchObjectFromDb(ISearchCreationEvent queryObject)
+	List<CreationEvent> searchObjectFromDb(ISearchCreationEvent queryObject)
 			throws InvalidDataException;
 
 	/**
@@ -56,8 +56,8 @@ public interface IStoreManager {
 	 * @throws URISyntaxException
 	 * @throws InvalidDataException
 	 */
-	List<ICreationEvent> searchRelationFromDb(
-			List<List<IElement>> creationEventList) throws URISyntaxException,
+	List<CreationEvent> searchRelationFromDb(
+			List<List<Element>> creationEventList) throws URISyntaxException,
 			InvalidDataException;
 
 	/**
@@ -66,7 +66,7 @@ public interface IStoreManager {
 	 * 
 	 * @throws InvalidDataException
 	 */
-	public List<ICreationEvent> getObjectFromDb(List<String> idList)
+	public List<CreationEvent> getObjectFromDb(List<String> idList)
 			throws InvalidDataException;
 
 }

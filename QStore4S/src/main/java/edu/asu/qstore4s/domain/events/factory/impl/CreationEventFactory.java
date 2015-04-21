@@ -2,7 +2,6 @@ package edu.asu.qstore4s.domain.events.factory.impl;
 
 import org.springframework.stereotype.Service;
 
-import edu.asu.qstore4s.domain.events.ICreationEvent;
 import edu.asu.qstore4s.domain.events.factory.ICreationEventFactory;
 import edu.asu.qstore4s.domain.events.impl.CreationEvent;
 
@@ -16,7 +15,7 @@ import edu.asu.qstore4s.domain.events.impl.CreationEvent;
 @Service
 public class CreationEventFactory implements ICreationEventFactory {
 @Override
-	public ICreationEvent createCreationEvent()
+	public CreationEvent createCreationEvent()
 	{
 		return new CreationEvent();
 	}

@@ -2,7 +2,6 @@ package edu.asu.qstore4s.domain.elements.factory.impl;
 
 import org.springframework.stereotype.Service;
 
-import edu.asu.qstore4s.domain.elements.IElement;
 import edu.asu.qstore4s.domain.elements.factory.IElementFactory;
 import edu.asu.qstore4s.domain.elements.impl.Element;
 
@@ -16,9 +15,8 @@ import edu.asu.qstore4s.domain.elements.impl.Element;
 @Service
 public class ElementFactory implements IElementFactory {
 @Override
-	public IElement createElement()
+	public Element createElement()
 	{
-		IElement elementObject=new Element();
-		return elementObject;
+		return new Element();
 	}
 }

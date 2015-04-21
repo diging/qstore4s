@@ -3,8 +3,8 @@ package edu.asu.qstore4s.db.neo4j;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import edu.asu.qstore4s.domain.elements.IElement;
-import edu.asu.qstore4s.domain.events.ICreationEvent;
+import edu.asu.qstore4s.domain.elements.impl.Element;
+import edu.asu.qstore4s.domain.events.impl.CreationEvent;
 import edu.asu.qstore4s.exception.InvalidDataException;
 
 /**
@@ -25,5 +25,5 @@ public interface IStoreObjectsToDb {
 	 * @throws URISyntaxException
 	 * @throws InvalidDataException
 	 */
-	List<ICreationEvent> writeObjectsToDb(List<List<IElement>> relation) throws URISyntaxException, InvalidDataException;
+	List<CreationEvent> writeObjectsToDb(List<List<Element>> relation) throws URISyntaxException, InvalidDataException;
 }

@@ -1,6 +1,6 @@
 package edu.asu.qstore4s.domain.events.factory;
 
-import edu.asu.qstore4s.domain.events.IRelationEvent;
+import edu.asu.qstore4s.domain.events.impl.RelationEvent;
 
 /**
  * This is the interface class for RelationEventFactory class
@@ -11,6 +11,6 @@ import edu.asu.qstore4s.domain.events.IRelationEvent;
  */
 public interface IRelationEventFactory {
 
-	IRelationEvent createRelationEvent();
+	RelationEvent createRelationEvent();
 
 }

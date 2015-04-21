@@ -39,7 +39,7 @@ public class QStore {
 
 	@Autowired
 	IRepositoryManager repositorymanager;
-
+	
 	/**
 	 * The method parse given XML from the post request body and add relation and
 	 * appellation event into the database
@@ -56,7 +56,6 @@ public class QStore {
 	 * @throws URISyntaxException
 	 * @throws InvalidDataException
 	 */
-
 	@ResponseBody
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public String processXML(HttpServletRequest request,

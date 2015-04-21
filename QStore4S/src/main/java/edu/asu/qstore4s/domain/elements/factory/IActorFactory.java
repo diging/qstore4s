@@ -1,6 +1,6 @@
 package edu.asu.qstore4s.domain.elements.factory;
 
-import edu.asu.qstore4s.domain.elements.IActor;
+import edu.asu.qstore4s.domain.elements.impl.Actor;
 
 /**
  * This is the interface class for ActoryFactory class
@@ -11,8 +11,8 @@ import edu.asu.qstore4s.domain.elements.IActor;
  */
 public interface IActorFactory {
 
-	IActor createActor();
+	Actor createActor();
 
-	IActor createActor(String sourceUri);
+	Actor createActor(String sourceUri);
 	
 }

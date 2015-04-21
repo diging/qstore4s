@@ -2,13 +2,13 @@ package edu.asu.qstore4s.converters;
 
 import org.springframework.core.convert.converter.Converter;
 
-import edu.asu.qstore4s.domain.elements.IVocabularyEntry;
+import edu.asu.qstore4s.domain.elements.impl.VocabularyEntry;
 /**
  * 
  * @author Bhargav Desai
  *
  */
-public class VocabularyEntryToStringConverter implements Converter<IVocabularyEntry, String> {
+public class VocabularyEntryToStringConverter implements Converter<VocabularyEntry, String> {
 	
 	
 	/**
@@ -17,7 +17,7 @@ public class VocabularyEntryToStringConverter implements Converter<IVocabularyEn
 	 * 
 	 */
 	@Override
-	public String convert(IVocabularyEntry vocabularyEntry)
+	public String convert(VocabularyEntry vocabularyEntry)
 	{
 		return vocabularyEntry.getSourceURI();
 	}

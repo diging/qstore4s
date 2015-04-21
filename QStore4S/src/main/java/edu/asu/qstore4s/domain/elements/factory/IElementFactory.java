@@ -1,6 +1,7 @@
 package edu.asu.qstore4s.domain.elements.factory;
 
-import edu.asu.qstore4s.domain.elements.IElement;
+import edu.asu.qstore4s.domain.elements.impl.Element;
+
 
 /**
  * This is the interface class for ElementFactory class
@@ -11,6 +12,6 @@ import edu.asu.qstore4s.domain.elements.IElement;
  */
 public interface IElementFactory {
 
-	IElement createElement();
+	Element createElement();
 
 }

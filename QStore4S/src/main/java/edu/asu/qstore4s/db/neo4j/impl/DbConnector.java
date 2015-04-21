@@ -22,10 +22,9 @@ import org.springframework.stereotype.Service;
 import edu.asu.qstore4s.controller.QStore;
 import edu.asu.qstore4s.converter.IXmlElements;
 import edu.asu.qstore4s.db.neo4j.IDbConnector;
-import edu.asu.qstore4s.domain.elements.IElement;
-import edu.asu.qstore4s.domain.events.ICreationEvent;
-import edu.asu.qstore4s.domain.events.IRelationEvent;
+import edu.asu.qstore4s.domain.elements.impl.Element;
 import edu.asu.qstore4s.domain.events.impl.AppellationEvent;
+import edu.asu.qstore4s.domain.events.impl.CreationEvent;
 import edu.asu.qstore4s.domain.events.impl.RelationEvent;
 import edu.asu.qstore4s.exception.InvalidDataException;
 import edu.asu.qstore4s.repository.AppellationEventRepository;
@@ -66,7 +65,7 @@ public class DbConnector implements IDbConnector {
 	 */
 	
 	@Override
-	public IElement get(String id) throws InvalidDataException {
+	public Element get(String id) throws InvalidDataException {
 		if (id.length() >= IXmlElements.REL_EVENT_ID_PREFIX.length()
 				&& id.startsWith(IXmlElements.REL_EVENT_ID_PREFIX)) {
 
@@ -107,14 +106,14 @@ public class DbConnector implements IDbConnector {
 	 */
 	
 	@Override
-	public List<ICreationEvent> get(List<String> idList)
+	public List<CreationEvent> get(List<String> idList)
 			throws InvalidDataException {
 
-		List<ICreationEvent> elementList = new ArrayList<ICreationEvent>();
+		List<CreationEvent> elementList = new ArrayList<CreationEvent>();
 		for (String id : idList) {
 
-			IElement event = get(id);
-			elementList.add((ICreationEvent) event);
+			Element event = get(id);
+			elementList.add((CreationEvent) event);
 		}
 
 		return elementList;
@@ -127,14 +126,14 @@ public class DbConnector implements IDbConnector {
 	 */
 	
 	@Override
-	public List<ICreationEvent> searchRelationInDb(
-			List<IElement> creationEventList) throws URISyntaxException,
+	public List<CreationEvent> searchRelationInDb(
+			List<Element> creationEventList) throws URISyntaxException,
 			InvalidDataException {
 
-		List<ICreationEvent> newCreationEventList = new ArrayList<ICreationEvent>();
-		Iterator<IElement> creationEventIterator = creationEventList.iterator();
+		List<CreationEvent> newCreationEventList = new ArrayList<CreationEvent>();
+		Iterator<Element> creationEventIterator = creationEventList.iterator();
 		while (creationEventIterator.hasNext()) {
-			ICreationEvent creationEventObject = (ICreationEvent) (creationEventIterator
+			CreationEvent creationEventObject = (CreationEvent) (creationEventIterator
 					.next());
 
 			if (creationEventObject instanceof AppellationEvent) {
@@ -145,7 +144,7 @@ public class DbConnector implements IDbConnector {
 				List<RelationEvent> relationEventList = appellationEventRepository
 						.getRelationfromId(app);
 
-				for (IRelationEvent relation : relationEventList) {
+				for (RelationEvent relation : relationEventList) {
 					newCreationEventList.add(relation);
 				}
 
@@ -163,10 +162,10 @@ public class DbConnector implements IDbConnector {
 	 */
 	
 	@Override
-	public List<ICreationEvent> searchFromDb(ISearchCreationEvent queryObject)
+	public List<CreationEvent> searchFromDb(ISearchCreationEvent queryObject)
 			throws InvalidDataException {
 
-		List<ICreationEvent> resultList = new ArrayList<ICreationEvent>();
+		List<CreationEvent> resultList = new ArrayList<CreationEvent>();
 		StringBuilder matchClause = new StringBuilder();
 		StringBuilder whereClause = new StringBuilder();
 		StringBuilder match = new StringBuilder();

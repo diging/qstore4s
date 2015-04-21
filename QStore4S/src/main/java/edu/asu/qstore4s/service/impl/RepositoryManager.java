@@ -19,8 +19,8 @@ import edu.asu.qstore4s.converter.IConverter;
 import edu.asu.qstore4s.converter.IGetConverter;
 import edu.asu.qstore4s.converter.ISearchXmlParser;
 import edu.asu.qstore4s.converter.IXmltoObject;
-import edu.asu.qstore4s.domain.elements.IElement;
-import edu.asu.qstore4s.domain.events.ICreationEvent;
+import edu.asu.qstore4s.domain.elements.impl.Element;
+import edu.asu.qstore4s.domain.events.impl.CreationEvent;
 import edu.asu.qstore4s.exception.InvalidDataException;
 import edu.asu.qstore4s.exception.ParserException;
 import edu.asu.qstore4s.search.events.ISearchCreationEvent;
@@ -56,7 +56,8 @@ public class RepositoryManager implements IRepositoryManager {
 
 	@Autowired
 	IGetConverter getConverter;
-
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -65,8 +66,8 @@ public class RepositoryManager implements IRepositoryManager {
 			throws URISyntaxException, ParserException, IOException,
 			ParseException, JSONException, InvalidDataException {
 
-		List<List<IElement>> creationEventList = new ArrayList<List<IElement>>();
-		List<ICreationEvent> creationEventListwithID = new ArrayList<ICreationEvent>();
+		List<List<Element>> creationEventList = new ArrayList<List<Element>>();
+		List<CreationEvent> creationEventListwithID = new ArrayList<CreationEvent>();
 
 		creationEventList = xmlToObject.parseXML(xml);
 
@@ -91,8 +92,8 @@ public class RepositoryManager implements IRepositoryManager {
 
 		logger.info("inside searchXML method of repository manager");
 
-		List<List<IElement>> creationEventList = new ArrayList<List<IElement>>();
-		List<ICreationEvent> creationEventListwithID = new ArrayList<ICreationEvent>();
+		List<List<Element>> creationEventList = new ArrayList<List<Element>>();
+		List<CreationEvent> creationEventListwithID = new ArrayList<CreationEvent>();
 
 		creationEventList = xmlToObject.parseXML(xml);
 
@@ -120,7 +121,7 @@ public class RepositoryManager implements IRepositoryManager {
 
 		ISearchCreationEvent queryObject = searchXmlParser.parseXML(xml);
 
-		List<ICreationEvent> elementList = storeManager
+		List<CreationEvent> elementList = storeManager
 				.searchObjectFromDb(queryObject);
 
 		if (type.equals(JSON)) {
@@ -138,7 +139,7 @@ public class RepositoryManager implements IRepositoryManager {
 	public String getShallow(String id, String type) throws JSONException,
 			InvalidDataException {
 
-		IElement element = storeManager.getObjectFromDb(id);
+		Element element = storeManager.getObjectFromDb(id);
 		if (type.equals(JSON)) {
 			return converter.convertToJsonShallow(element);
 		} else {
@@ -155,9 +156,8 @@ public class RepositoryManager implements IRepositoryManager {
 	public String getFull(String id, String type) throws JSONException,
 			InvalidDataException {
 
-		IElement element = storeManager.getObjectFromDb(id);
-		;
-		// creationEventList.add(creationEvent);
+		Element element = storeManager.getObjectFromDb(id);
+		
 		if (type.equals(JSON)) {
 			return converter.convertToJson(element);
 		} else {
@@ -179,7 +179,7 @@ public class RepositoryManager implements IRepositoryManager {
 
 		List<String> idList = getConverter.parseXML(xml);
 
-		List<ICreationEvent> elementList = storeManager.getObjectFromDb(idList);
+		List<CreationEvent> elementList = storeManager.getObjectFromDb(idList);
 
 		if (accept.equals(JSON)) {
 			return converter.convertToJson(elementList);

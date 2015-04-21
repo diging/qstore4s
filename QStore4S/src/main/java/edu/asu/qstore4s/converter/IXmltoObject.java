@@ -5,7 +5,7 @@ import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.List;
 
-import edu.asu.qstore4s.domain.elements.IElement;
+import edu.asu.qstore4s.domain.elements.impl.Element;
 import edu.asu.qstore4s.exception.InvalidDataException;
 import edu.asu.qstore4s.exception.ParserException;
 
@@ -29,7 +29,7 @@ public interface IXmltoObject {
 	 * @throws ParseException
 	 * @throws InvalidDataException
 	 */
-	List<List<IElement>> parseXML(String xml) throws ParserException, IOException, URISyntaxException, ParseException, InvalidDataException;
+	List<List<Element>> parseXML(String xml) throws ParserException, IOException, URISyntaxException, ParseException, InvalidDataException;
 	
 	
 

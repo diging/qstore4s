@@ -1,6 +1,7 @@
 package edu.asu.qstore4s.domain.elements.factory;
 
-import edu.asu.qstore4s.domain.elements.ITerm;
+import edu.asu.qstore4s.domain.elements.impl.Term;
+
 
 /**
  * This is the interface class for TermFactory class
@@ -11,6 +12,6 @@ import edu.asu.qstore4s.domain.elements.ITerm;
  */
 public interface ITermFactory {
 
-	ITerm createTerm();
+	Term createTerm();
 
 }

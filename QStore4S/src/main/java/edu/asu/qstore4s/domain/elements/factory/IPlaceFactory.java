@@ -1,6 +1,7 @@
 package edu.asu.qstore4s.domain.elements.factory;
 
-import edu.asu.qstore4s.domain.elements.IPlace;
+import edu.asu.qstore4s.domain.elements.impl.Place;
+
 
 /**
  * This is the interface class for PlaceFactory class
@@ -11,7 +12,7 @@ import edu.asu.qstore4s.domain.elements.IPlace;
  */
 public interface IPlaceFactory {
 
-	IPlace createPlace();
-	IPlace createPlace(String sourceUri);
+	Place createPlace();
+	Place createPlace(String sourceUri);
 
 }

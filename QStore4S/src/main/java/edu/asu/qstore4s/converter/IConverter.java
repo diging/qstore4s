@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.json.JSONException;
 
-import edu.asu.qstore4s.domain.elements.IElement;
-import edu.asu.qstore4s.domain.events.ICreationEvent;
+import edu.asu.qstore4s.domain.elements.impl.Element;
+import edu.asu.qstore4s.domain.events.impl.CreationEvent;
 
 /**
  * This file contains the interface class for Converter class which has the
@@ -22,7 +22,7 @@ public interface IConverter {
 	 * @param creationEventList
 	 * @return XML
 	 */
-	String convertToXML(List<ICreationEvent> creationEventList);
+	String convertToXML(List<CreationEvent> creationEventList);
 
 	/**
 	 * This method is used to convert list of creation event into JSON
@@ -31,7 +31,7 @@ public interface IConverter {
 	 * @return JSON
 	 * @throws JSONException
 	 */
-	String convertToJson(List<ICreationEvent> creationEventList)
+	String convertToJson(List<CreationEvent> creationEventList)
 			throws JSONException;
 
 	/**
@@ -42,7 +42,7 @@ public interface IConverter {
 	 * @throws JSONException
 	 */
 
-	String convertToJson(IElement element) throws JSONException;
+	String convertToJson(Element element) throws JSONException;
 
 	/**
 	 * This method is used to convert element into XML.
@@ -50,7 +50,7 @@ public interface IConverter {
 	 * @param element
 	 * @return XML
 	 */
-	String convertToXML(IElement element);
+	String convertToXML(Element element);
 
 	/**
 	 * This is shallow convert method which convert element to XML.
@@ -58,7 +58,7 @@ public interface IConverter {
 	 * @param element
 	 * @return XML
 	 */
-	String convertToXMLShallow(IElement element);
+	String convertToXMLShallow(Element element);
 
 	/**
 	 * This is shallow convert method which convert element to JSON.
@@ -67,6 +67,6 @@ public interface IConverter {
 	 * @return JSON
 	 * @throws JSONException
 	 */
-	String convertToJsonShallow(IElement element) throws JSONException;
+	String convertToJsonShallow(Element element) throws JSONException;
 
 }
