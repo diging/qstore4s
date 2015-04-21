@@ -2,6 +2,7 @@ package edu.asu.qstore4s.db.neo4j.impl;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -98,7 +99,6 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 				AppellationEvent appellation = getAppellationObject(
 						(AppellationEvent) creationEventObject, referencedList);
 
-				//appellationEventRepository.save((AppellationEvent) appellation);
 				appellationsToStore.add(appellation);
 				newCreationEventList.add(appellation);
 
@@ -106,13 +106,10 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 				RelationEvent relation = getRelationEventObject(
 						(RelationEvent) creationEventObject, referencedList);
 
-				//relationEventRepository.save((RelationEvent) relation);
 				relationsToStore.add(relation);
 				newCreationEventList.add(relation);
 
 			}
-			//newCreationEventList.add(creationEventObject);
-
 		}
 		
 		for (AppellationEvent a : appellationsToStore)
@@ -138,9 +135,7 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 			RelationEvent relationEventObject, List<Element> referencedList)
 					throws URISyntaxException, InvalidDataException {
 		
-		if (relationEventObject.getInternal_refId() != null
-				&& !relationEventObject.getInternal_refId().trim().equals("")) {
-
+		if (isInternalIdSet(relationEventObject)) {
 			for (Element element : referencedList) {
 				if (element.getRefId().equals(relationEventObject.getInternal_refId())) {
 					relationEventObject = (RelationEvent) element;
@@ -148,13 +143,11 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 				}
 			}
 			throw new InvalidDataException("The referrenced relation event is not present");
-			
-		} else if (relationEventObject.getExternal_refId() != null
-				&& !relationEventObject.getExternal_refId().trim().equals("")) {
-			
+		}
+		
+		if (isExternalIdSet(relationEventObject)) {
 			String externalRefId = relationEventObject.getExternal_refId();
-			if((externalRefId.length() > IXmlElements.REL_EVENT_ID_PREFIX.length()) && externalRefId.substring(0, 7).equals(IXmlElements.REL_EVENT_ID_PREFIX))
-			{
+			if(externalRefId.startsWith(IXmlElements.REL_EVENT_ID_PREFIX)) {
 				relationEventObject = relationEventRepository
 						.findById(relationEventObject.getExternal_refId());
 				if (relationEventObject != null) {
@@ -165,22 +158,18 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 							+ externalRefId + " not present in database.");
 				}
 			}
-			else
-			{
-				throw new InvalidDataException("The given ID is not corresponding to RELATION_EVENT");
-			}
-
+			else throw new InvalidDataException("The given ID is not corresponding to RELATION_EVENT");
 		}
-		if (relationEventObject.getId() == null
-				|| relationEventObject.getId().trim().equals("")) {
-			relationEventObject.setId(IXmlElements.REL_EVENT_ID_PREFIX
-					+ UUID.randomUUID().getMostSignificantBits());
+		
+		if (!isIdSet(relationEventObject)) {
+			relationEventObject.setId(createId(IXmlElements.REL_EVENT_ID_PREFIX));
 			relationEventObject.setIdAssigned(true);
 		} else {
 			if (!relationEventObject.isIdAssigned())
 				throw new InvalidDataException(
 						"The Id for the relation event is already assigned");
 		}
+		
 		Relation relationObject = relationEventObject.getRelation();
 
 		relationObject = getRelationObjcet(relationObject, referencedList);
@@ -188,6 +177,18 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 		relationEventObject.setRelation(relationObject);
 		return relationEventObject;
 
+	}
+	
+	private boolean isIdSet(Element element) {
+		return element.getId() != null && element.getId().trim().isEmpty();
+	}
+	
+	private boolean isInternalIdSet(Element element) {
+		return element.getInternal_refId() != null && element.getInternal_refId().trim().isEmpty();
+	}
+	
+	private boolean isExternalIdSet(Element element) {
+		return element.getExternal_refId() != null && element.getExternal_refId().trim().isEmpty();
 	}
 
 	/**
@@ -203,30 +204,20 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 			List<Element> referencedList) throws InvalidDataException,
 			URISyntaxException {
 
-		int refFoundFlag = 0;
-		if (relationObject.getInternal_refId() != null
-				&& !relationObject.getInternal_refId().trim().equals("")) {
-
+		if (isInternalIdSet(relationObject)) {
 			for (Element element : referencedList) {
-				if (element.getRefId().equals(
-						relationObject.getInternal_refId())) {
+				if (element.getRefId().equals(relationObject.getInternal_refId())) {
 					String internalRefId= relationObject.getInternal_refId();
 					relationObject = (Relation) element;
-                    refFoundFlag = 1;
                     relationObject.setInternal_refId(internalRefId);
                     return relationObject;
 				}
 			}
-			
-			if(refFoundFlag == 0)
-				throw new InvalidDataException("The referenced relation is not present");
-			
-		} else if (relationObject.getExternal_refId() != null
-				&& !relationObject.getExternal_refId().trim().equals("")) {
-
+			throw new InvalidDataException("The referenced relation is not present");
+		}
+		if (isExternalIdSet(relationObject)) {
 			String externalRefId = relationObject.getExternal_refId();
-			if((externalRefId.length() > IXmlElements.REL_ID_PREFIX.length()) && externalRefId.substring(0,3).equals(IXmlElements.REL_ID_PREFIX))
-			{
+			if (externalRefId.startsWith(IXmlElements.REL_ID_PREFIX)) {
 				relationObject = relationRepository.findById(relationObject
 						.getExternal_refId());
 				if (relationObject != null) {
@@ -238,17 +229,11 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 							+ externalRefId + " not present in database.");
 				}
 			}
-			else
-			{
-				throw new InvalidDataException("The given id is not corresponding to RELATION");
-			}
-
+			else throw new InvalidDataException("The given id is not corresponding to RELATION");
 		}
 
-		if (relationObject.getId() == null
-				|| relationObject.getId().trim().equals("")) {
-			relationObject.setId(IXmlElements.REL_ID_PREFIX
-					+ UUID.randomUUID().getMostSignificantBits());
+		if (!isIdSet(relationObject)) {
+			relationObject.setId(createId(IXmlElements.REL_ID_PREFIX));
 			relationObject.setIdAssigned(true);
 		} else {
 			if (!relationObject.isIdAssigned())
@@ -308,44 +293,29 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 					throws URISyntaxException, InvalidDataException {
 
 		// check if the object refers to an existing appellation event or one in the list
-		if (appellationObject.getInternal_refId() != null
-				&& !appellationObject.getInternal_refId().trim().equals("")) {
+		if (isInternalIdSet(appellationObject)) {
 			for (Element element : referencedList) {
-				if (element.getRefId().equals(appellationObject.getInternal_refId())) {
-					//((AppellationEvent) element).setInternal_refId(appellationObject.getInternal_refId());
-                    return (AppellationEvent) element;
-				}
+				if (element.getRefId().equals(appellationObject.getInternal_refId())) 
+					return (AppellationEvent) element;
 			}
 			throw new InvalidDataException("The referenced appellation event is not present");
-			
-		} else if (appellationObject.getExternal_refId() != null
-				&& !appellationObject.getExternal_refId().trim().equals("")) {
-
+		}
+		if (isExternalIdSet(appellationObject)) {
 			String externalRefId = appellationObject.getExternal_refId();
-			if((externalRefId.length() > IXmlElements.APPELLATION_ID_PREFIX.length()) && externalRefId.substring(0, 7).equals(IXmlElements.APPELLATION_ID_PREFIX))
-			{
+			if(externalRefId.startsWith(IXmlElements.APPELLATION_ID_PREFIX)) {
 				appellationObject = appellationEventRepository
 						.findById(appellationObject.getExternal_refId());
-
-
 				if (appellationObject != null) {
 					appellationObject.setExternal_refId(externalRefId);
 					return appellationObject;
-				} else {
-					throw new InvalidDataException("Appellation Event with "
+				} else throw new InvalidDataException("Appellation Event with "
 							+ externalRefId + " not present in database.");
-				}
-
 			}
-			else
-			{
-				throw new InvalidDataException("The given ID is not corresponding to APPELLATION");
-			}
+			else throw new InvalidDataException("The given ID is not corresponding to APPELLATION");
 		}
 
-		if (appellationObject.getId() == null
-				|| appellationObject.getId().trim().equals("")) {
-			appellationObject.setId(getId(IXmlElements.APPELLATION_ID_PREFIX));
+		if (!isIdSet(appellationObject)) {
+			appellationObject.setId(createId(IXmlElements.APPELLATION_ID_PREFIX));
 			appellationObject.setIdAssigned(true);
 		} else {
 			if (!appellationObject.isIdAssigned())
@@ -360,12 +330,17 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 		return appellationObject;
 	}
 	
-	private String getId(String prefix) {
+	/**
+	 * This method creates an ID that starts with the provided prefix.
+	 * @param prefix
+	 * @return
+	 */
+	private String createId(String prefix) {
 		return prefix + UUID.randomUUID().getMostSignificantBits();
 	}
 
 	/**
-	 * This method stores term object into the database.
+	 * This method stores term objects into the database.
 	 * 
 	 * @param term
 	 *            Object the term object to store in the database.
@@ -375,8 +350,7 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 			throws URISyntaxException, InvalidDataException {
 		
 		int refFoundFlag = 0;
-		if (termObject.getInternal_refId() != null
-				&& !termObject.getInternal_refId().trim().equals("")) {
+		if (isInternalIdSet(termObject)) {
 			for (Element element : referencedList) {
 				if (element.getRefId().equals(termObject.getInternal_refId())
 						&& element instanceof Term) {
@@ -387,30 +361,25 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 			if(refFoundFlag == 0)
 				throw new InvalidDataException("The referenced term is not present");
 			
-		} else if (termObject.getExternal_refId() != null
-				&& !termObject.getExternal_refId().trim().equals("")) {
+		} else if (isExternalIdSet(termObject)) {
 
 			String externalRefId = termObject.getExternal_refId();
-			if((externalRefId.length() > IXmlElements.TERM_ID_PERFIX.length()) && externalRefId.substring(0, 4).equals(IXmlElements.TERM_ID_PERFIX))
+			if(externalRefId.startsWith(IXmlElements.TERM_ID_PERFIX))
 			{
 				termObject = termRepository
 						.findById(termObject.getExternal_refId()); 
 
-				if (termObject != null) {
+				if (termObject != null) 
 					return termObject;
-				} else {
-					throw new InvalidDataException("Term with " + externalRefId
+
+				throw new InvalidDataException("Term with " + externalRefId
 							+ "not present in database.");
-				}
 			}
-			else
-			{
-				throw new InvalidDataException("The given ID is not corresponding to TERM");
-			}
+			throw new InvalidDataException("The given ID is not corresponding to TERM");
 		}
 
-		if (termObject.getId() == null || termObject.getId().trim().equals("")) {
-			termObject.setId(getId(IXmlElements.TERM_ID_PERFIX));
+		if (!isIdSet(termObject)) {
+			termObject.setId(createId(IXmlElements.TERM_ID_PERFIX));
 			termObject.setIdAssigned(true);
 		} else {
 			if (!termObject.isIdAssigned())
@@ -461,8 +430,7 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 			URISyntaxException {
 		
 		int refFoundFlag = 0;
-		if (termPartsObject.getInternal_refId() != null
-				&& !termPartsObject.getInternal_refId().trim().equals("")) {
+		if (isInternalIdSet(termPartsObject)) {
 			for (Element element : referencedList) {
 				if (element.getRefId().equals(
 						termPartsObject.getInternal_refId())) {
@@ -473,32 +441,25 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 			if(refFoundFlag == 0)
 				throw new InvalidDataException("The referenced term parts is not present");
 			
-		} else if (termPartsObject.getExternal_refId() != null
-				&& !termPartsObject.getExternal_refId().trim().equals("")) {
+		} else if (isExternalIdSet(termPartsObject)) {
 
 			String externalRefId = termPartsObject.getExternal_refId();
-			if((externalRefId.length() > IXmlElements.TERMPARTS_ID_PREFIX.length()) && externalRefId.substring(0, 3).equals(IXmlElements.TERMPARTS_ID_PREFIX))
+			if(externalRefId.startsWith(IXmlElements.TERMPARTS_ID_PREFIX))
 			{
-
 				termPartsObject = termPartsRepository.findById(termPartsObject
 						.getExternal_refId());
 
-				if (termPartsObject != null) {
+				if (termPartsObject != null)
 					return termPartsObject;
-				} else {
-					throw new InvalidDataException("Printed Representation with "
+				
+				throw new InvalidDataException("Printed Representation with "
 							+ externalRefId + "not present in database.");
-				}
 			}
-			else
-			{
-				throw new InvalidDataException("The given id is not corresponding to TERMPARTS");
-			}
+			throw new InvalidDataException("The given id is not corresponding to TERMPARTS");
 		}
 
-		if (termPartsObject.getId() == null
-				|| termPartsObject.getId().trim().equals("")) {
-			termPartsObject.setId(getId(IXmlElements.TERMPARTS_ID_PREFIX));
+		if (!isIdSet(termPartsObject)) {
+			termPartsObject.setId(createId(IXmlElements.TERMPARTS_ID_PREFIX));
 			termPartsObject.setIdAssigned(true);
 		} else {
 			if (!termPartsObject.isIdAssigned())
@@ -509,7 +470,7 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 		return termPartsObject;
 
 	}
-
+	
 	/**
 	 * This method stores termPart object into the database.
 	 * 
@@ -523,8 +484,7 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 			InvalidDataException {
 		
 		int refFoundFlag = 0;
-		if (termPartObject.getInternal_refId() != null
-				&& !termPartObject.getInternal_refId().trim().equals("")) {
+		if (isInternalIdSet(termPartObject)) {
 			for (Element element : referencedList) {
 				if (element.getRefId().equals(
 						termPartObject.getInternal_refId())) {
@@ -535,32 +495,27 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 			if(refFoundFlag == 0)
 				throw new InvalidDataException("The referenced term part is not present");
 			
-		} else if (termPartObject.getExternal_refId() != null
-				&& !termPartObject.getExternal_refId().trim().equals("")) {
+		} else if (isExternalIdSet(termPartObject)) {
 			String externalRefId = termPartObject.getExternal_refId();
-			if((externalRefId.length()>IXmlElements.TERMPART_ID_PERFIX.length()) && externalRefId.substring(0, 2).equals(IXmlElements.TERMPART_ID_PERFIX))
+			if(externalRefId.startsWith(IXmlElements.TERMPART_ID_PERFIX))
 			{
 				termPartObject = termPartRepository.findById(termPartObject
 						.getExternal_refId());
-				if (termPartObject != null) {
+				
+				if (termPartObject != null) 
 					return termPartObject;
-				} else {
-					throw new InvalidDataException("TermPart with " + externalRefId
+				
+				throw new InvalidDataException("TermPart with " + externalRefId
 							+ "not present in database.");
-				}
 			}
 			else
-			{
 				throw new InvalidDataException("The given id is not correspoding to TERMPART");
-			}
 		}
-		if (termPartObject.getId() == null
-				|| termPartObject.getId().trim().equals("")) {
-			termPartObject.setId(getId(IXmlElements.TERMPART_ID_PERFIX));
+		if (!isIdSet(termPartObject)) {
+			termPartObject.setId(createId(IXmlElements.TERMPART_ID_PERFIX));
 			termPartObject.setIdAssigned(true);
 		} else {
 			if (!termPartObject.isIdAssigned())
-
 				throw new InvalidDataException(
 						"The Id for the termpart event is already assigned");
 		}
