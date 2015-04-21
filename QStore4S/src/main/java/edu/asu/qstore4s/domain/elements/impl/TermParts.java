@@ -26,7 +26,7 @@ public class TermParts extends Element {
 
 	@GraphId
 	Long graphId;
-
+	
 	@Fetch
 	@RelatedTo(type="containsTerm", direction=Direction.OUTGOING)
 	private Set<TermPart> termParts;

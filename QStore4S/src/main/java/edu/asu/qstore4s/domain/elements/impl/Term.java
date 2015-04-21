@@ -24,7 +24,7 @@ public class Term extends Element {
 	
 	@GraphId
 	Long graphId;
-
+	
 	@GraphProperty
 	private Concept interpretation;
 	

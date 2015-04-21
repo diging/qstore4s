@@ -19,7 +19,7 @@ public class TermPart extends Element {
 
 	@GraphId
 	Long graphId;
-
+	
 	private String formatted_pointer;
 	private String format;
 	private String expression;

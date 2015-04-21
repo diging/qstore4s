@@ -24,7 +24,7 @@ public class Relation extends Element {
 
 	@GraphId
 	Long graphId;
-
+	
 	@Fetch
 	@RelatedTo(type="hasSubject", direction=Direction.OUTGOING)
 	private CreationEvent subject;

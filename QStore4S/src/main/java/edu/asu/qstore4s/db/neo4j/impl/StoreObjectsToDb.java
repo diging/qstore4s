@@ -87,6 +87,9 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 		List<Element> referencedList = creationEventList.get(1);
 		Iterator<Element> creationEventIterator = creationEventObjects
 				.iterator();
+		
+		List<AppellationEvent> appellationsToStore = new ArrayList<AppellationEvent>();
+		List<RelationEvent> relationsToStore = new ArrayList<RelationEvent>();
 		while (creationEventIterator.hasNext()) {
 			CreationEvent creationEventObject = (CreationEvent) (creationEventIterator
 					.next());
@@ -95,20 +98,27 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 				AppellationEvent appellation = getAppellationObject(
 						(AppellationEvent) creationEventObject, referencedList);
 
-				appellationEventRepository.save((AppellationEvent) appellation);
+				//appellationEventRepository.save((AppellationEvent) appellation);
+				appellationsToStore.add(appellation);
 				newCreationEventList.add(appellation);
 
 			} else if (creationEventObject instanceof RelationEvent) {
 				RelationEvent relation = getRelationEventObject(
 						(RelationEvent) creationEventObject, referencedList);
 
-				relationEventRepository.save((RelationEvent) relation);
+				//relationEventRepository.save((RelationEvent) relation);
+				relationsToStore.add(relation);
 				newCreationEventList.add(relation);
 
 			}
 			//newCreationEventList.add(creationEventObject);
 
 		}
+		
+		for (AppellationEvent a : appellationsToStore)
+			appellationEventRepository.save(a);
+		for (RelationEvent r : relationsToStore)
+			relationEventRepository.save(r);
 
 		return newCreationEventList;
 
@@ -141,7 +151,7 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 					relationEventObject = (RelationEvent) element;
 					
 					
-					relationEventObject.setInternal_refId(internalRefId);
+					//relationEventObject.setInternal_refId(internalRefId);
 					refFoundFlag = 1;
 					//break;
 					return relationEventObject;
@@ -308,21 +318,16 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 			AppellationEvent appellationObject, List<Element> referencedList)
 					throws URISyntaxException, InvalidDataException {
 
-		int refFoundFlag = 0;
+		// check if the object refers to an existing appellation event or one in the list
 		if (appellationObject.getInternal_refId() != null
 				&& !appellationObject.getInternal_refId().trim().equals("")) {
 			for (Element element : referencedList) {
-				if (element.getRefId().equals(
-						appellationObject.getInternal_refId())) {
-					String internalRefID = appellationObject.getInternal_refId();
-					appellationObject = (AppellationEvent) element;
-                    refFoundFlag = 1;
-                    appellationObject.setInternal_refId(internalRefID);
-                    return appellationObject;
+				if (element.getRefId().equals(appellationObject.getInternal_refId())) {
+					//((AppellationEvent) element).setInternal_refId(appellationObject.getInternal_refId());
+                    return (AppellationEvent) element;
 				}
 			}
-			if(refFoundFlag == 0)
-				throw new InvalidDataException("The referenced appellation event is not present");
+			throw new InvalidDataException("The referenced appellation event is not present");
 			
 		} else if (appellationObject.getExternal_refId() != null
 				&& !appellationObject.getExternal_refId().trim().equals("")) {
@@ -351,8 +356,7 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 
 		if (appellationObject.getId() == null
 				|| appellationObject.getId().trim().equals("")) {
-			appellationObject.setId(IXmlElements.APPELLATION_ID_PREFIX
-					+ UUID.randomUUID().getMostSignificantBits());
+			appellationObject.setId(getId(IXmlElements.APPELLATION_ID_PREFIX));
 			appellationObject.setIdAssigned(true);
 		} else {
 			if (!appellationObject.isIdAssigned())
@@ -365,6 +369,10 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 		appellationObject.setTerm(termNode);
 
 		return appellationObject;
+	}
+	
+	private String getId(String prefix) {
+		return prefix + UUID.randomUUID().getMostSignificantBits();
 	}
 
 	/**
@@ -413,8 +421,7 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 		}
 
 		if (termObject.getId() == null || termObject.getId().trim().equals("")) {
-			termObject.setId(IXmlElements.TERM_ID_PERFIX
-					+ UUID.randomUUID().getMostSignificantBits());
+			termObject.setId(getId(IXmlElements.TERM_ID_PERFIX));
 			termObject.setIdAssigned(true);
 		} else {
 			if (!termObject.isIdAssigned())
@@ -431,9 +438,7 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 		Set<TermPart> newTermPartSet = new HashSet<TermPart>();
 		while (termPartIterator.hasNext()) {
 			TermPart termPartObject = termPartIterator.next();
-			TermPart termPartNode = getTermPartObject(termPartObject,
-					referencedList);
-			newTermPartSet.add(termPartNode);
+			newTermPartSet.add(getTermPartObject(termPartObject, referencedList));
 		}
 		termParts.setTermParts(newTermPartSet);
 
@@ -474,7 +479,6 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 						termPartsObject.getInternal_refId())) {
 					termPartsObject = (TermParts) element;
 					refFoundFlag = 1;
-
 				}
 			}
 			if(refFoundFlag == 0)
@@ -505,8 +509,7 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 
 		if (termPartsObject.getId() == null
 				|| termPartsObject.getId().trim().equals("")) {
-			termPartsObject.setId(IXmlElements.TERMPARTS_ID_PREFIX
-					+ UUID.randomUUID().getMostSignificantBits());
+			termPartsObject.setId(getId(IXmlElements.TERMPARTS_ID_PREFIX));
 			termPartsObject.setIdAssigned(true);
 		} else {
 			if (!termPartsObject.isIdAssigned())
@@ -564,8 +567,7 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 		}
 		if (termPartObject.getId() == null
 				|| termPartObject.getId().trim().equals("")) {
-			termPartObject.setId(IXmlElements.TERMPART_ID_PERFIX
-					+ UUID.randomUUID().getMostSignificantBits());
+			termPartObject.setId(getId(IXmlElements.TERMPART_ID_PERFIX));
 			termPartObject.setIdAssigned(true);
 		} else {
 			if (!termPartObject.isIdAssigned())
