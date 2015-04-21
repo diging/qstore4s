@@ -138,27 +138,16 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 			RelationEvent relationEventObject, List<Element> referencedList)
 					throws URISyntaxException, InvalidDataException {
 		
-		int refFoundFlag=0;
 		if (relationEventObject.getInternal_refId() != null
 				&& !relationEventObject.getInternal_refId().trim().equals("")) {
 
 			for (Element element : referencedList) {
-				if (element.getRefId().equals(
-						relationEventObject.getInternal_refId())) {
-					
-					String internalRefId= relationEventObject.getInternal_refId();
-					
+				if (element.getRefId().equals(relationEventObject.getInternal_refId())) {
 					relationEventObject = (RelationEvent) element;
-					
-					
-					//relationEventObject.setInternal_refId(internalRefId);
-					refFoundFlag = 1;
-					//break;
 					return relationEventObject;
 				}
 			}
-			if(refFoundFlag == 0)
-				throw new InvalidDataException("The referrenced relation event is not present");
+			throw new InvalidDataException("The referrenced relation event is not present");
 			
 		} else if (relationEventObject.getExternal_refId() != null
 				&& !relationEventObject.getExternal_refId().trim().equals("")) {

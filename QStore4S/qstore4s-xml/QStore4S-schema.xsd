@@ -21,16 +21,22 @@
 		<xs:choice maxOccurs="unbounded">
 			<xs:element name="id" type="xs:string" minOccurs="0"
 				maxOccurs="1" />
-			<xs:element name="creator" type="xs:anyURI" />
-			<xs:element name="creation_date" type="xs:dateTime" />
-			<xs:element name="creation_place" type="xs:anyURI" />
-			<xs:element name="source_reference" type="xs:anyURI" />
-			<xs:element name="interpretation_creator" type="xs:anyURI" />
+			<xs:element name="creator" type="xs:anyURI" minOccurs="0"
+				maxOccurs="1"/>
+			<xs:element name="creation_date" type="xs:dateTime" minOccurs="0"
+				maxOccurs="1"/>
+			<xs:element name="creation_place" type="xs:anyURI" minOccurs="0"
+				maxOccurs="1"/>
+			<xs:element name="source_reference" type="xs:anyURI" minOccurs="0"
+				maxOccurs="1"/>
+			<xs:element name="interpretation_creator" type="xs:anyURI" minOccurs="0"
+				maxOccurs="1"/>
 			<xs:element name="refId" type="xs:string" minOccurs="0"
 				maxOccurs="1" />
 			<xs:element name="internal_refId" type="xs:string"
 				minOccurs="0" maxOccurs="1" />
-			
+			<xs:element name="external_refId" type="xs:string"
+				minOccurs="0" maxOccurs="1" />
 		</xs:choice>
 	</xs:complexType>
 
@@ -38,8 +44,10 @@
 		<xs:complexContent>
 			<xs:extension base="creationEvent">
 				<xs:choice minOccurs="2" maxOccurs="2">
-					<xs:element name="relation_creator" type="xs:anyURI" />
-					<xs:element name="relation" type="RelationType" />
+					<xs:element name="relation_creator" type="xs:anyURI" minOccurs="0"
+				maxOccurs="1"/>
+					<xs:element name="relation" type="RelationType" minOccurs="0"
+				maxOccurs="1"/>
 				</xs:choice>
 			</xs:extension>
 		</xs:complexContent>
@@ -49,9 +57,7 @@
 		<xs:complexContent>
 			<xs:extension base="creationEvent">
 				<xs:choice maxOccurs="2">
-					<xs:element name="term" type="termType" />
-					<xs:element name="external_refId" type="xs:string"
-				minOccurs="0" maxOccurs="1" />
+					<xs:element name="term" type="termType" minOccurs="0" maxOccurs="1" />
 					
 				</xs:choice>
 			</xs:extension>
@@ -70,8 +76,6 @@
 			<xs:element name="subject" type="subjectObjectType" />
 			<xs:element name="predicate" type="predicateType" />
 			<xs:element name="object" type="subjectObjectType" />
-			<xs:element name="external_refId" type="xs:string"
-				minOccurs="0" maxOccurs="1" />
 				<xs:element name="internal_refId" type="xs:string"
 				minOccurs="0" maxOccurs="1" />
 				<xs:element name="refId" type="xs:string" minOccurs="0"
@@ -111,8 +115,6 @@
 			<xs:element name="certain" type="xs:boolean" minOccurs="0"
 				maxOccurs="1" />
 			<xs:element name="internal_refId" type="xs:string"
-				minOccurs="0" maxOccurs="1" />
-			<xs:element name="external_refId" type="xs:string"
 				minOccurs="0" maxOccurs="1" />
 			<xs:element name="referenced_terms" type="referencedTermsType"
 				minOccurs="0" maxOccurs="1" />
