@@ -69,8 +69,6 @@ public class StoreManagerTest {
 		when(dbConnector.searchRelationInDb(elementList)).thenReturn(creationEventListwithID);
 		
 		Assert.assertEquals(storemanager.searchRelationFromDb(list), creationEventListwithID);
-		
-		
 	}
 	
 	
