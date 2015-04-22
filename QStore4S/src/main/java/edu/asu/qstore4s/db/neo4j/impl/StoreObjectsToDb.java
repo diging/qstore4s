@@ -170,15 +170,15 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 	}
 	
 	private boolean isIdSet(Element element) {
-		return element.getId() != null && element.getId().trim().isEmpty();
+		return element.getId() != null && !element.getId().trim().isEmpty();
 	}
 	
 	private boolean isInternalIdSet(Element element) {
-		return element.getInternal_refId() != null && element.getInternal_refId().trim().isEmpty();
+		return element.getInternal_refId() != null && !element.getInternal_refId().trim().isEmpty();
 	}
 	
 	private boolean isExternalIdSet(Element element) {
-		return element.getExternal_refId() != null && element.getExternal_refId().trim().isEmpty();
+		return element.getExternal_refId() != null && !element.getExternal_refId().trim().isEmpty();
 	}
 
 	/**
