@@ -41,42 +41,30 @@ public class GetObjectsFromDbTest {
 	}
 
 	@Test
-	public void testGet() {
+	public void testGet() throws InvalidDataException {
 		
-		//checking for valid  relation event id
-		
+		//checking for relation event ids: REL_EVN123 exists, REL_EVN999 doesn't
 		when(relatEventRepository.findById("REL_EVN123")).thenReturn(relationEvent);
+		when(relatEventRepository.findById("REL_EVN999")).thenReturn(null);
 	
+		Assert.assertNotNull(getObjgetsFromDb.get("REL_EVN123"));
 		try {
-			Assert.assertNotNull(getObjgetsFromDb.get("REL_EVN123"));
-		} catch (InvalidDataException e) {
-			
-		  Assert.fail("not valid id");
+			getObjgetsFromDb.get("REL_EVN999");
+		} catch (InvalidDataException ex) {
+			Assert.assertTrue(true);
 		}
 		
-		//checking for valid appelation event id
 		
+		//checking for appelation event ids: APP_EVN123 exists, APP_EVN999 doesn't
 		when(appellationEventRepository.findById("APP_EVN123")).thenReturn(appellationEvent);
+		when(appellationEventRepository.findById("APP_EVN999")).thenReturn(null);
 		
+		Assert.assertNotNull(getObjgetsFromDb.get("APP_EVN123"));
 		try {
-			Assert.assertNotNull(getObjgetsFromDb.get("APP_EVN123"));
-		} catch (InvalidDataException e) {
-			
-		  Assert.fail("not valid id");
+			getObjgetsFromDb.get("APP_EVN123");
+		} catch (InvalidDataException ex) {
+			// test passing
 		}
-		
-		
-		//checking for invalid id
-		
-		try {
-			Assert.assertNotNull(getObjgetsFromDb.get("Test"));
-		} catch (InvalidDataException e) {
-			
-		  //test passes/
-		}
-		
-		
-		
 		
 	}
 
