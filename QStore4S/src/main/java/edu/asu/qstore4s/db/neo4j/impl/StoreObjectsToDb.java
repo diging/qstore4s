@@ -2,7 +2,6 @@ package edu.asu.qstore4s.db.neo4j.impl;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -12,7 +11,6 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,14 +62,6 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 
 	@Autowired
 	private TermPartsRepository termPartsRepository;
-
-	@Autowired
-	private Neo4jOperations template;
-
-	// @RequestMapping(value="/NEO4J_SERVER_URL");
-
-//	private static final Logger logger = LoggerFactory
-//			.getLogger(StoreObjectsToDb.class);
 
 
 /**
