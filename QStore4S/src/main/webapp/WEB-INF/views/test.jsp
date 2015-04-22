@@ -4,9 +4,10 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Test</title>
+<title>QStore4S is Up</title>
 </head>
 <body>
-Hello World!
+<h1>QStore4S is Up</h1>
+<p>Hey there! You did it. QStore4S is up and running.</p>
 </body>
 </html>
