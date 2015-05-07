@@ -3,13 +3,19 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:neo4j="http://www.springframework.org/schema/data/neo4j"
 	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:amq="http://activemq.apache.org/schema/core"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 		http://www.springframework.org/schema/tx
         http://www.springframework.org/schema/tx/spring-tx.xsd
         http://www.springframework.org/schema/data/neo4j
-		http://www.springframework.org/schema/data/neo4j/spring-neo4j-2.0.xsd">
+		http://www.springframework.org/schema/data/neo4j/spring-neo4j-2.0.xsd
+		http://www.springframework.org/schema/jms 
+        http://www.springframework.org/schema/jms/spring-jms.xsd
+        http://activemq.apache.org/schema/core 
+        http://activemq.apache.org/schema/core/activemq-core.xsd">
 
 	<!-- Root Context: defines shared resources visible to all other web components -->
 
@@ -62,5 +68,60 @@
 		<property name="suffix" value=".jsp" />
 	</bean>
 
+ 	<!--  Embedded ActiveMQ Broker -->
+    <!-- <amq:broker id="broker" useJmx="true" persistent="false">
+        <amq:transportConnectors>
+            <amq:transportConnector uri="tcp://localhost:61616" />
+        </amq:transportConnectors>
+    </amq:broker> -->
+    
+   <!--  <amq:connectionFactory brokerURL="tcp://localhost:61616" 
+  		id="jmsFactory"  /> -->
+    
+    <!--  ActiveMQ Destination  -->
+    <!-- <amq:queue id="destination" physicalName="edu.asu.qstore4s.queue" /> -->
+
+    <!-- JMS ConnectionFactory to use, configuring the embedded broker using XML -->
+    <!-- <amq:connectionFactory id="jmsFactory" brokerURL="vm://localhost" /> -->
+    
+    <!-- JMS Producer Configuration -->
+   <!--  <bean id="jmsProducerConnectionFactory" 
+          class="org.springframework.jms.connection.SingleConnectionFactory"
+          depends-on="broker"
+          p:targetConnectionFactory-ref="jmsFactory" />
+
+    <bean id="jmsProducerTemplate" class="org.springframework.jms.core.JmsTemplate"
+          p:connectionFactory-ref="jmsProducerConnectionFactory"
+          p:defaultDestination-ref="destination" /> -->
+          
+      <!-- =============================================== -->
+	  <!-- JMS Common, Define JMS connectionFactory       -->
+	  <!-- =============================================== -->
+	  <!-- Activemq connection factory -->
+	  <bean id="amqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+	    <!-- brokerURL, You may have different IP or port -->
+	    <constructor-arg index="0" value="tcp://localhost:61616" />
+	  </bean>
+	
+	  <!-- Pooled Spring connection factory -->
+	  <bean id="connectionFactory"
+	    class="org.springframework.jms.connection.CachingConnectionFactory">
+	    <constructor-arg ref="amqConnectionFactory" />
+	  </bean>
+	
+	  <!-- ======================================================= -->
+	  <!-- JMS Send, define default destination and JmsTemplate    -->
+	  <!-- ======================================================= -->
+	  <!-- Default Destination Queue Definition -->
+	  <bean id="defaultDestination" class="org.apache.activemq.command.ActiveMQQueue">
+	    <!-- name of the queue -->
+	    <constructor-arg index="0" value="edu.asu.qstore4s.queue" />
+	  </bean>
+	
+	  <!-- JmsTemplate Definition -->
+	  <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+	    <property name="connectionFactory" ref="connectionFactory" />
+	    <property name="defaultDestination" ref="defaultDestination" />
+	  </bean>
 
 </beans>
