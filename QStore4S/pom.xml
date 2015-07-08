@@ -197,6 +197,7 @@
 				<!-- Neo4j Properties -->
 				<neo4j.user>${neo4j.username}</neo4j.user>
 				<neo4j.pw>${neo4j.password}</neo4j.pw>
+				<deploy.path>qstore4s</deploy.path>
 			</properties>
 		</profile>
 		<profile>
@@ -207,6 +208,7 @@
 				<!-- Neo4j Properties -->
 				<neo4j.user>${neo4j.username}</neo4j.user>
 				<neo4j.pw>${neo4j.password}</neo4j.pw>
+				<deploy.path>qstore-test</deploy.path>
 			</properties>
 		</profile>
 	</profiles>
@@ -259,7 +261,7 @@
 				<configuration>
 					<url>http://localhost:8080/manager/</url>
 					<server>TomcatServer</server>
-					<path>/qstore-test</path>
+					<path>/${deploy.path}</path>
 				</configuration>
 			</plugin>
 			<plugin>
