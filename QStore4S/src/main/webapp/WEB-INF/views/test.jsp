@@ -9,5 +9,6 @@
 <body>
 <h1>QStore4S is Up</h1>
 <p>Hey there! You did it. QStore4S is up and running.</p>
+<p>Build: ${buildNumber}</p>
 </body>
 </html>

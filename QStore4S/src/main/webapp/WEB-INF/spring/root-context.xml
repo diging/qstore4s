@@ -26,8 +26,8 @@
 		class="org.springframework.data.neo4j.rest.SpringCypherRestGraphDatabase">
 		<constructor-arg value="http://localhost:7474/db/data/"
 			index="0" />
-		<constructor-arg value="neo4j" index="1" />
-		<constructor-arg value="password" index="2" />
+		<constructor-arg value="${neo4j.user}" index="1" />
+		<constructor-arg value="${neo4j.pw}" index="2" />
 	</bean>
 
 	<bean id="template" class="org.springframework.data.neo4j.support.Neo4jTemplate">
