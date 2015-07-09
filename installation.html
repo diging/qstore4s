@@ -48,7 +48,7 @@
         
         <ul>
             <li><code>neo4j.username</code>: the username for your Neo4j instance; default is <code>neo4j</code>.</li>
-            <li><code>neo4j.password</code>: the password for your Neo4j instance; default is <code>password</code>. We strongly recommend that you don't use the default password for you Neo4j instance.</li>
+            <li><code>neo4j.password</code>: the password for your Neo4j instance; default is <code>password</code>. We strongly recommend that you don't use the default password for your Neo4j instance.</li>
             <li><code>tomcat.deploy.path</code>: path to your Tomcat manager; default is <code>http://localhost:8080/manager/</code>. If you deploy to Tomcat 7, this should be <code>http://localhost:8080/manager/text</code>.</li>
             <li><code>deploy.path.dev</code>: the name of the deployed QStore4S instance when running profile <code>dev</code>; default is <code>qstore4s</code>.</li>
             <li><code>deploy.path.test</code>: the name of the deployed QStore4S instance when running profile <code>test</code>; default is <code>qstore-test</code>.</li>
@@ -72,7 +72,7 @@
 		
 		<ul>
 			<li> root-context.xml: <br>
-			<p>Find the following piece of XML in the file and change the URL value with the URL of neo4j instance running on the server.
+			<p>Find the following piece of XML in the file and change the URL value with the URL of your Neo4j instance.
 <pre><code>&lt;bean id="graphDatabaseService"
   class="org.springframework.data.neo4j.rest.SpringCypherRestGraphDatabase"&gt;
     &lt;constructor-arg value="http://localhost:7474/db/data/" index="0" /&gt;
