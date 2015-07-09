@@ -274,8 +274,7 @@
 							<filtering>true</filtering>
 							<directory>src/main/webapp</directory>
 							<includes>
-								<include>**/*.xml</include>
-								<include>**/*.jsp</include>
+								<include>**/*</include>
 								<!-- include any other file types you want to filter -->
 							</includes>
 						</resource>
@@ -306,5 +305,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		
+		
 	</build>
 </project>
