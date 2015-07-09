@@ -26,8 +26,8 @@
 <h3>System Requirements</h3>
 		<p>To install QStore4S you need:</p>
 		<ul>
-			<li class="icon icon-paper-clip"> Tomcat 6</li>
-			<li class="icon icon-paper-clip"><a href="http://www.neo4j.org/download"> Neo4j</a> (the latest version of the code works with Neo4j 2.2 </li>
+			<li class="icon icon-paper-clip"> <a href="https://tomcat.apache.org/download-60.cgi">Tomcat 6</a> (you can probably use Tomcat 7 as well, but we have not yet tested it)</li>
+			<li class="icon icon-paper-clip"><a href="http://www.neo4j.org/download"> Neo4j</a> (the latest version of the code works with Neo4j 2.2) </li>
 			
 			</ul>
 		
@@ -35,8 +35,30 @@
 		<p>
 		Download the latest version of QStore4S from Github: <a>http://sourceforge.net/projects/store4s/files/</a>; or clone the repository: <a href="https://github.com/diging/qstore4s">QStore4S GitHub page</a>.
 		</p>
-		
-		<h3>Configuration</h3>
+        
+        <h3>Build with Maven</h3>
+        <p>If you are comfortable using Maven, you can build and deploy QStore4S with Maven. Simply run the following command:</p>
+        <pre><code>mvn -P [dev/test/prod] tomcat:deploy -Dneo4j.password=[neo4j-password]</code></pre> 
+        <p>or if you already deployed QStore4S before:</p>
+        <pre><code>mvn -P [dev/test/prod] tomcat:redeploy -Dneo4j.password=[neo4j-password]</code></pre>
+        
+        <p>Choose a profile (dev, test, or prod -- by default dev and prod deploy QStore4S at <code>/qstore4s</code>, and test deploys it to <code>/qstore4s-test</code>), and specify the password for your Neo4j instance.</p>
+        
+        <p>This is the simplest way to deploy QStore4S. It assumes that your Neo4j user is called "neo4j" and that Tomcat is running on the same computer from which you are calling Maven. Additionally, you can specify the following properties when calling Maven:</p>
+        
+        <ul>
+            <li><code>neo4j.username</code>: the username for your Neo4j instance; default is <code>neo4j</code>.</li>
+            <li><code>neo4j.password</code>: the password for your Neo4j instance; default is <code>password</code>. We strongly recommend that you don't use the default password for you Neo4j instance.</li>
+            <li><code>tomcat.deploy.path</code>: path to your Tomcat manager; default is <code>http://localhost:8080/manager/</code>. If you deploy to Tomcat 7, this should be <code>http://localhost:8080/manager/text</code>.</li>
+            <li><code>deploy.path.dev</code>: the name of the deployed QStore4S instance when running profile <code>dev</code>; default is <code>qstore4s</code>.</li>
+            <li><code>deploy.path.test</code>: the name of the deployed QStore4S instance when running profile <code>test</code>; default is <code>qstore4s-test</code>.</li>
+            <li><code>deploy.path.prod</code>: the name of the deployed QStore4S instance when running profile <code>prod</code>; default is <code>qstore4s</code>.</li>
+        </ul>
+        
+		<h3>Build and Deploy Manually</h3>
+        <p>If you don't want to or can't use Maven to build and deploy QStore4S, you can also do it manually.</p>
+        
+		<h4>WAR-file Configuration</h4>
 		<p>
 		There is one file that need to be configured. The file is:
 		</p>
@@ -62,11 +84,11 @@
 			</li>			
 		</ul>
 		
-		<h3>Building</h3>
+		<h4>Building</h4>
 		<p>Now, build a war file out of your decompressed QStore4S folder (in which you made the changes). 
 		
-		<h3>Deploy</h3>
-		<p>Finally, deploy the newly generated war-file in your Tomcat and restart Tomcat. Please make sure that before deploying on tomcat server, neo4j server is running on the server otherwise Tomcat server will throw exceptions.</p>
+		<h4>Deploy</h4>
+		<p>Finally, deploy the newly generated war-file in your Tomcat and restart Tomcat. Please make sure that before you deploy QStore4S to your Tomcat server that your Neo4j server is running, otherwise Tomcat will throw exceptions.</p>
 
 
       <footer class="site-footer">
