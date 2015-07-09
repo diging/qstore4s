@@ -45,7 +45,7 @@ Released   : 20071108
 </div>
 <!-- end page -->
 <div id="footer">
-	<p class="legal">Build: ${buildNumber}</p>
+	<p class="legal">Version: ${buildNumber}</p>
 	<p class="credit">Designed by <a href="http://templated.co" rel="nofollow">TEMPLATED</a></p>
 </div>
 </body>
