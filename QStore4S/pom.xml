@@ -17,6 +17,7 @@
 		<tomcat.deploy.path>http://localhost:8080/manager/</tomcat.deploy.path>
 		<deploy.path.test>qstore-test</deploy.path.test>
 		<deploy.path.dev>qstore4s</deploy.path.dev>
+		<deploy.path.prod>qstore4s</deploy.path.prod>
 	</properties>
 	<dependencies>
 		<!-- Spring -->
@@ -213,6 +214,17 @@
 				<neo4j.user>${neo4j.username}</neo4j.user>
 				<neo4j.pw>${neo4j.password}</neo4j.pw>
 				<deploy.path>${deploy.path.test}</deploy.path>
+				<tomcat.path>${tomcat.deploy.path}</tomcat.path>
+			</properties>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<!-- Dev Env. Properties -->
+			<properties>
+				<!-- Neo4j Properties -->
+				<neo4j.user>${neo4j.username}</neo4j.user>
+				<neo4j.pw>${neo4j.password}</neo4j.pw>
+				<deploy.path>${deploy.path.prod}</deploy.path>
 				<tomcat.path>${tomcat.deploy.path}</tomcat.path>
 			</properties>
 		</profile>
