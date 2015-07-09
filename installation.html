@@ -42,7 +42,7 @@
         <p>or if you already deployed QStore4S before:</p>
         <pre><code>mvn -P [dev/test/prod] tomcat:redeploy -Dneo4j.password=[neo4j-password]</code></pre>
         
-        <p>Choose a profile (dev, test, or prod -- by default dev and prod deploy QStore4S at <code>/qstore4s</code>, and test deploys it to <code>/qstore4s-test</code>), and specify the password for your Neo4j instance.</p>
+        <p>Choose a profile (dev, test, or prod -- by default dev and prod deploy QStore4S at <code>/qstore4s</code>, and test deploys it to <code>/qstore-test</code>), and specify the password for your Neo4j instance.</p>
         
         <p>This is the simplest way to deploy QStore4S. It assumes that your Neo4j user is called "neo4j" and that Tomcat is running on the same computer from which you are calling Maven. Additionally, you can specify the following properties when calling Maven:</p>
         
@@ -51,7 +51,7 @@
             <li><code>neo4j.password</code>: the password for your Neo4j instance; default is <code>password</code>. We strongly recommend that you don't use the default password for you Neo4j instance.</li>
             <li><code>tomcat.deploy.path</code>: path to your Tomcat manager; default is <code>http://localhost:8080/manager/</code>. If you deploy to Tomcat 7, this should be <code>http://localhost:8080/manager/text</code>.</li>
             <li><code>deploy.path.dev</code>: the name of the deployed QStore4S instance when running profile <code>dev</code>; default is <code>qstore4s</code>.</li>
-            <li><code>deploy.path.test</code>: the name of the deployed QStore4S instance when running profile <code>test</code>; default is <code>qstore4s-test</code>.</li>
+            <li><code>deploy.path.test</code>: the name of the deployed QStore4S instance when running profile <code>test</code>; default is <code>qstore-test</code>.</li>
             <li><code>deploy.path.prod</code>: the name of the deployed QStore4S instance when running profile <code>prod</code>; default is <code>qstore4s</code>.</li>
         </ul>
         
