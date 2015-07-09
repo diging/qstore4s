@@ -14,6 +14,9 @@
 		<org.slf4j-version>1.7.5</org.slf4j-version>
 		<neo4j.username>neo4j</neo4j.username>
 		<neo4j.password>password</neo4j.password>
+		<tomcat.deploy.path>http://localhost:8080/manager/</tomcat.deploy.path>
+		<deploy.path.test>qstore-test</deploy.path.test>
+		<deploy.path.dev>qstore4s</deploy.path.dev>
 	</properties>
 	<dependencies>
 		<!-- Spring -->
@@ -197,7 +200,8 @@
 				<!-- Neo4j Properties -->
 				<neo4j.user>${neo4j.username}</neo4j.user>
 				<neo4j.pw>${neo4j.password}</neo4j.pw>
-				<deploy.path>qstore4s</deploy.path>
+				<deploy.path>${deploy.path.dev}</deploy.path>
+				<tomcat.path>${tomcat.deploy.path}</tomcat.path>
 			</properties>
 		</profile>
 		<profile>
@@ -208,7 +212,8 @@
 				<!-- Neo4j Properties -->
 				<neo4j.user>${neo4j.username}</neo4j.user>
 				<neo4j.pw>${neo4j.password}</neo4j.pw>
-				<deploy.path>qstore-test</deploy.path>
+				<deploy.path>${deploy.path.test}</deploy.path>
+				<tomcat.path>${tomcat.deploy.path}</tomcat.path>
 			</properties>
 		</profile>
 	</profiles>
@@ -259,7 +264,7 @@
 				<artifactId>tomcat-maven-plugin</artifactId>
 				<version>1.1</version>
 				<configuration>
-					<url>http://localhost:8080/manager/</url>
+					<url>${tomcat.path}</url>
 					<server>TomcatServer</server>
 					<path>/${deploy.path}</path>
 				</configuration>
