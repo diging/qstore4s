@@ -32,239 +32,244 @@ import edu.asu.qstore4s.service.IRepositoryManager;
 @Controller
 public class QStore {
 
-	private static final Logger logger = LoggerFactory.getLogger(QStore.class);
-	private static final String RETURN_JSON = "application/json";
+    private static final Logger logger = LoggerFactory.getLogger(QStore.class);
+    private static final String RETURN_JSON = "application/json";
 
-	private static final String XML = "application/xml";
-	private static final String JSON = "application/json";
+    private static final String XML = "application/xml";
+    private static final String JSON = "application/json";
 
-	@Autowired
-	IRepositoryManager repositorymanager;
-	
-	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String testStatus(ModelMap model) {
-		return "test";
-	}
-	
-	/**
-	 * The method parse given XML from the post request body and add relation and
-	 * appellation event into the database
-	 * 
-	 * @param request
-	 * @param response
-	 * @param xml
-	 * @param accept
-	 * @return
-	 * @throws ParseException
-	 * @throws IOException
-	 * @throws ParserException
-	 * @throws JSONException
-	 * @throws URISyntaxException
-	 * @throws InvalidDataException
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public String processXML(HttpServletRequest request,
-			HttpServletResponse response, @RequestBody String xml,
-			@RequestHeader("Accept") String accept) throws ParserException,
-			IOException, URISyntaxException, ParseException, JSONException,
-			InvalidDataException {
+    @Autowired
+    IRepositoryManager repositorymanager;
 
-		if (xml.equals("")) {
-			response.setStatus(500);
-			return "Please provide XML in body of the post request.";
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public String testStatus(ModelMap model) {
+        return "test";
+    }
 
-		} else {
-			String returnString = "";
-			if (accept != null && accept.equals(RETURN_JSON)) {
+    /**
+     * The method parse given XML from the post request body and add relation
+     * and appellation event into the database
+     * 
+     * @param request
+     * @param response
+     * @param xml
+     * @param accept
+     * @return
+     * @throws ParseException
+     * @throws IOException
+     * @throws ParserException
+     * @throws JSONException
+     * @throws URISyntaxException
+     * @throws InvalidDataException
+     */
+    @ResponseBody
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    public String processXML(HttpServletRequest request,
+            HttpServletResponse response, @RequestBody String xml,
+            @RequestHeader("Accept") String accept) throws ParserException,
+            IOException, URISyntaxException, ParseException, JSONException,
+            InvalidDataException {
 
-				returnString = repositorymanager.processXMLandStoretoDb(xml,
-						JSON);
-			} else {
-				returnString = repositorymanager.processXMLandStoretoDb(xml,
-						XML);
+        if (xml.equals("")) {
+            response.setStatus(500);
+            return "Please provide XML in body of the post request.";
 
-			}
-			logger.info("successful parsing of XML");
-			response.setStatus(200);
-			response.setContentType(accept);
-			return returnString;
-		}
-	}
+        } else {
+            String returnString = "";
+            if (accept != null && accept.equals(RETURN_JSON)) {
 
-	/**
-	 * The method is called for get request by user to get information of single relation or appellation event.
-	 * @param request
-	 * @param response
-	 * @param xml
-	 * @param accept
-	 * @param shallow
-	 * @param idString
-	 * @return String
-	 * @throws JSONException
-	 * @throws InvalidDataException
-	 */
+                returnString = repositorymanager.processXMLandStoretoDb(xml,
+                        JSON);
+            } else {
+                returnString = repositorymanager.processXMLandStoretoDb(xml,
+                        XML);
 
-	@ResponseBody
-	@RequestMapping(value = "/get", method = RequestMethod.GET)
-	public String getData(HttpServletRequest request,
-			HttpServletResponse response,
-			@RequestHeader("Accept") String accept,
-			@RequestParam(value = "shallow", defaultValue = "") String shallow,
-			@RequestParam(value = "id", defaultValue = "") String idString)
-			throws JSONException, InvalidDataException {
+            }
+            logger.info("successful parsing of XML");
+            response.setStatus(200);
+            response.setContentType(accept);
+            return returnString;
+        }
+    }
 
-		if (idString.equals("")) {
-			throw new InvalidDataException("Please provide id.");
-		}
+    /**
+     * The method is called for get request by user to get information of single
+     * relation or appellation event.
+     * 
+     * @param request
+     * @param response
+     * @param xml
+     * @param accept
+     * @param shallow
+     * @param idString
+     * @return String
+     * @throws JSONException
+     * @throws InvalidDataException
+     */
 
-		logger.info("acceptheader value--->" + accept);
-		String trimid = idString.trim();
-		String returnString = "";
+    @ResponseBody
+    @RequestMapping(value = "/get", method = RequestMethod.GET)
+    public String getData(HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestHeader("Accept") String accept,
+            @RequestParam(value = "shallow", defaultValue = "") String shallow,
+            @RequestParam(value = "id", defaultValue = "") String idString)
+            throws JSONException, InvalidDataException {
 
-		if (shallow != null && shallow.equals("true")) {
-			returnString = repositorymanager.getShallow(trimid, accept);
-		} else {
-			returnString = repositorymanager.getFull(trimid, accept);
+        if (idString.equals("")) {
+            throw new InvalidDataException("Please provide id.");
+        }
 
-		}
+        logger.info("acceptheader value--->" + accept);
+        String trimid = idString.trim();
+        String returnString = "";
 
-		response.setContentType(accept);
-		return returnString;
+        if (shallow != null && shallow.equals("true")) {
+            returnString = repositorymanager.getShallow(trimid, accept);
+        } else {
+            returnString = repositorymanager.getFull(trimid, accept);
 
-	}
+        }
 
-	
-	/**
-	 * The method is called for get request by user to get information of multiple relation or appellation events.
-	 * @param request
-	 * @param response
-	 * @param accept
-	 * @param xml
-	 * @return
-	 * @throws JSONException
-	 * @throws InvalidDataException
-	 * @throws ParserException
-	 * @throws IOException
-	 * @throws URISyntaxException
-	 * @throws ParseException
-	 */
-	@ResponseBody
-	@RequestMapping(value = "/get", method = RequestMethod.POST)
-	public String getData(HttpServletRequest request,
-			HttpServletResponse response,
-			@RequestHeader("Accept") String accept, @RequestBody String xml)
-			throws JSONException, InvalidDataException, ParserException, IOException, URISyntaxException, ParseException {
+        response.setContentType(accept);
+        return returnString;
 
-		if (xml.equals("")) {
-			throw new InvalidDataException(
-					"Please provide content in given XML.");
-		}
+    }
 
-		logger.info("acceptheader value--->" + accept);
-		String returnString = "";
+    /**
+     * The method is called for get request by user to get information of
+     * multiple relation or appellation events.
+     * 
+     * @param request
+     * @param response
+     * @param accept
+     * @param xml
+     * @return
+     * @throws JSONException
+     * @throws InvalidDataException
+     * @throws ParserException
+     * @throws IOException
+     * @throws URISyntaxException
+     * @throws ParseException
+     */
+    @ResponseBody
+    @RequestMapping(value = "/get", method = RequestMethod.POST)
+    public String getData(HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestHeader("Accept") String accept, @RequestBody String xml)
+            throws JSONException, InvalidDataException, ParserException,
+            IOException, URISyntaxException, ParseException {
 
-		returnString = repositorymanager.getList(xml, accept);
+        if (xml.equals("")) {
+            throw new InvalidDataException(
+                    "Please provide content in given XML.");
+        }
 
-		response.setContentType(accept);
-		return returnString;
+        logger.info("acceptheader value--->" + accept);
+        String returnString = "";
 
-	}
-	
-	
-/**
- * The method is being called upon search parent relation by appellation request from REST and it will call repository to get required result
- *  and return it to user.
- * @param request
- * @param response
- * @param xml
- * @param accept
- * @return
- * @throws ParserException
- * @throws IOException
- * @throws URISyntaxException
- * @throws ParseException
- * @throws JSONException
- * @throws InvalidDataException
- */
+        returnString = repositorymanager.getList(xml, accept);
 
-	@ResponseBody
-	@RequestMapping(value = "/searchByAppellationId", method = RequestMethod.POST)
-	public String searchByAppellationId(HttpServletRequest request,
-			HttpServletResponse response, @RequestBody String xml,
-			@RequestHeader("Accept") String accept) throws ParserException,
-			IOException, URISyntaxException, ParseException, JSONException,
-			InvalidDataException {
+        response.setContentType(accept);
+        return returnString;
 
-		logger.info("acceptheader value--->" + accept);
-		String trimmedXML = xml.trim();
-		if (trimmedXML.isEmpty()) {
-			response.setStatus(500);
-			return "Please provide XML in body of the post request.";
+    }
 
-		} else {
-			String returnString = "";
-			if (accept != null && accept.equals(RETURN_JSON)) {
+    /**
+     * The method is being called upon search parent relation by appellation
+     * request from REST and it will call repository to get required result and
+     * return it to user.
+     * 
+     * @param request
+     * @param response
+     * @param xml
+     * @param accept
+     * @return
+     * @throws ParserException
+     * @throws IOException
+     * @throws URISyntaxException
+     * @throws ParseException
+     * @throws JSONException
+     * @throws InvalidDataException
+     */
 
-				returnString = repositorymanager.searchByAppellationId(xml,
-						JSON);
-			} else {
-				returnString = repositorymanager
-						.searchByAppellationId(xml, XML);
+    @ResponseBody
+    @RequestMapping(value = "/searchByAppellationId", method = RequestMethod.POST)
+    public String searchByAppellationId(HttpServletRequest request,
+            HttpServletResponse response, @RequestBody String xml,
+            @RequestHeader("Accept") String accept) throws ParserException,
+            IOException, URISyntaxException, ParseException, JSONException,
+            InvalidDataException {
 
-			}
-			logger.info("successful parsing of XML");
-			response.setStatus(200);
-			response.setContentType(accept);
-			return returnString;
-		}
-	}
-	
-	
-/**
- *  The method is being called upon search request from REST and it will call repository to get required result
- *  and return it to user.
- * @param request
- * @param response
- * @param xml
- * @param accept
- * @return
- * @throws ParserException
- * @throws IOException
- * @throws URISyntaxException
- * @throws ParseException
- * @throws JSONException
- * @throws InvalidDataException
- */
+        logger.info("acceptheader value--->" + accept);
+        String trimmedXML = xml.trim();
+        if (trimmedXML.isEmpty()) {
+            response.setStatus(500);
+            return "Please provide XML in body of the post request.";
 
-	@ResponseBody
-	@RequestMapping(value = "/search", method = RequestMethod.POST)
-	public String search(HttpServletRequest request,
-			HttpServletResponse response, @RequestBody String xml,
-			@RequestHeader("Accept") String accept) throws ParserException,
-			IOException, URISyntaxException, ParseException, JSONException,
-			InvalidDataException {
+        } else {
+            String returnString = "";
+            if (accept != null && accept.equals(RETURN_JSON)) {
 
-		logger.info("acceptheader value--->" + accept);
-		String trimmedXML = xml.trim();
-		if (trimmedXML.isEmpty()) {
-			response.setStatus(500);
-			return "Please provide XML in body of the post request.";
+                returnString = repositorymanager.searchByAppellationId(xml,
+                        JSON);
+            } else {
+                returnString = repositorymanager
+                        .searchByAppellationId(xml, XML);
 
-		} else {
-			String returnString = "";
-			if (accept != null && accept.equals(RETURN_JSON)) {
+            }
+            logger.info("successful parsing of XML");
+            response.setStatus(200);
+            response.setContentType(accept);
+            return returnString;
+        }
+    }
 
-				returnString = repositorymanager.search(xml, JSON);
-			} else {
-				returnString = repositorymanager.search(xml, XML);
+    /**
+     * The method is being called upon search request from REST and it will call
+     * repository to get required result and return it to user.
+     * 
+     * @param request
+     * @param response
+     * @param xml
+     * @param accept
+     * @return
+     * @throws ParserException
+     * @throws IOException
+     * @throws URISyntaxException
+     * @throws ParseException
+     * @throws JSONException
+     * @throws InvalidDataException
+     */
 
-			}
-			logger.info("successful parsing of XML");
-			response.setStatus(200);
-			response.setContentType(accept);
-			return returnString;
-		}
-	}
+    @ResponseBody
+    @RequestMapping(value = "/search", method = RequestMethod.POST)
+    public String search(HttpServletRequest request,
+            HttpServletResponse response, @RequestBody String xml,
+            @RequestHeader("Accept") String accept) throws ParserException,
+            IOException, URISyntaxException, ParseException, JSONException,
+            InvalidDataException {
+
+        logger.info("acceptheader value--->" + accept);
+        String trimmedXML = xml.trim();
+        if (trimmedXML.isEmpty()) {
+            response.setStatus(500);
+            return "Please provide XML in body of the post request.";
+
+        } else {
+            String returnString = "";
+            if (accept != null && accept.equals(RETURN_JSON)) {
+
+                returnString = repositorymanager.search(xml, JSON);
+            } else {
+                returnString = repositorymanager.search(xml, XML);
+
+            }
+            logger.info("successful parsing of XML");
+            response.setStatus(200);
+            response.setContentType(accept);
+            return returnString;
+        }
+    }
 
 }
