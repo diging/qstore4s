@@ -12,7 +12,7 @@ import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
+//import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -69,14 +69,13 @@ public class QStore {
 	 */
 	
 	@RequestMapping(value = "auth/welcome", method = RequestMethod.GET)
-	public String validUserHandle(ModelMap model, Principal principal,
-			Authentication authentication) {
+	public String validUserHandle(ModelMap model, Principal principal) {
 
 		// Get the LDAP-authenticated userid
 		String sUserId = principal.getName();		
 		model.addAttribute("username", sUserId);
 		
-		return "auth/home";
+		return "home";
 
 	}
     
