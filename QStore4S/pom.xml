@@ -220,8 +220,8 @@
 			<!-- Dev Env. Properties -->
 			<properties>
 				<!-- Neo4j Properties -->
-				<neo4j.user>neo4j</neo4j.user>
-				<neo4j.pw>password</neo4j.pw>
+				<neo4j.user>${neo4j.username}</neo4j.user>
+				<neo4j.pw>${neo4j.password}</neo4j.pw>
 				<deploy.path>${deploy.path.dev}</deploy.path>
 				<tomcat.path>${tomcat.deploy.path}</tomcat.path>
 			</properties>
