@@ -92,6 +92,20 @@ public class QStore {
 
 	}
       
+	/**
+	 * Authentication failed. User credentials mismatch causes this request.
+	 * 
+	 * @return		Redirected to login page
+	 */
+	
+	@RequestMapping(value = "/loginfailed", method = RequestMethod.GET)
+	public String loginerror(ModelMap model) {
+
+		model.addAttribute("error", "true");
+		return "login";
+
+	}
+
     /**
      * The method parse given XML from the post request body and add relation
      * and appellation event into the database

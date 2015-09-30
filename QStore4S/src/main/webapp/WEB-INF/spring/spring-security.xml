@@ -23,7 +23,7 @@
 		<intercept-url pattern="/login*" access="permitAll" />
 		<intercept-url pattern="/logout*" access="permitAll" />
 		
-		<intercept-url pattern="/auth/welcome" access="hasAnyRole('ROLE_ADMIN')"/>
+		<intercept-url pattern="/auth/welcome" access="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')"/>
 
 		<intercept-url pattern="/auth/**" access="isAuthenticated()" />
 		
