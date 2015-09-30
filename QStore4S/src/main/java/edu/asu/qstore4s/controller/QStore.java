@@ -2,6 +2,7 @@ package edu.asu.qstore4s.controller;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.security.Principal;
 import java.text.ParseException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +12,7 @@ import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import edu.asu.qstore4s.exception.InvalidDataException;
 import edu.asu.qstore4s.exception.ParserException;
 import edu.asu.qstore4s.service.IRepositoryManager;
+
 
 /**
  * Controller class to handle user requests.
@@ -43,8 +46,65 @@ public class QStore {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String testStatus(ModelMap model) {
-        return "test";
+        return "login";
     }
+  
+    /**
+	 * User requests a login page
+	 * 
+	 * @return		Redirected to the login page
+	 */   
+    
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	public String login(ModelMap model) {
+
+		return "login";
+
+	}    
+    
+	/**
+	 * A valid authenticated user is redirected to the home page.
+	 * 
+	 * @return 		Returned to the home page of Qstore.
+	 */
+	
+	@RequestMapping(value = "auth/welcome", method = RequestMethod.GET)
+	public String validUserHandle(ModelMap model, Principal principal) {
+
+		// Get the LDAP-authenticated userid
+		String sUserId = principal.getName();		
+		model.addAttribute("username", sUserId);
+		
+		return "home";
+
+	}
+    
+	/**
+	 * A authenticated user is logged out of the system.
+	 * 
+	 * @return		Redirect to login page
+	 */
+	
+	@RequestMapping(value = "/logout", method = RequestMethod.GET)
+	public String logout(ModelMap model) {
+
+		return "login";
+
+	}
+      
+	/**
+	 * Authentication failed. User credentials mismatch causes this request.
+	 * 
+	 * @return		Redirected to login page
+	 */
+	
+	@RequestMapping(value = "/loginfailed", method = RequestMethod.GET)
+	public String loginerror(ModelMap model) {
+
+		model.addAttribute("error", "true");
+		return "login";
+
+	}
 
     /**
      * The method parse given XML from the post request body and add relation
