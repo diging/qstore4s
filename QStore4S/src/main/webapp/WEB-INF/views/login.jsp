@@ -67,7 +67,7 @@ $(document).ready(function() {
 		</div>
 	</c:if>
 	
-	<div class="container">
+<div class="container">
   <form class="form-inline" role="form" name='f' action="<c:url value='/j_spring_security_check'/>" method='POST'>
     <div class="form-group">
      <h2>Login</h2>
