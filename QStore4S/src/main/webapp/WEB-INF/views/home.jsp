@@ -37,7 +37,7 @@
         -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="/qstore4s/logout"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+        <li><a href="<c:url value="/j_spring_security_logout" />"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
       </ul>
     </div>
   </div>
@@ -46,8 +46,8 @@
 <div class="container"> 
     	<div>
     	<ul>
-    		<li>Appellation events : X</li>
-    		<li>Relational Events : Y</li>
+    		<li>Appellation events: X</li>
+    		<li>Relational Events: Y</li>
     		<li>Nodes : Z</li>
     	</ul>
     	</div>
