@@ -16,14 +16,7 @@
 </head>
 <body>
 
-<script>
-$(document).ready(function() {
-	$("input[type=submit]").button().click(function(event) {
-
-	});
-});
-</script>
-
+<!-- Navigation bar start-->
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
@@ -36,6 +29,7 @@ $(document).ready(function() {
     </div>
   </div>
 </nav>
+<!-- Navigation bar end-->
 
 <!-- start page -->
 <div id="page">
@@ -80,49 +74,6 @@ $(document).ready(function() {
     <br></br>
     </div>
   </form>
-</div>
-
-	<!-- <div class="container">
-
-      <form class="form-signin">
-        <h2 class="form-signin-heading">Please sign in</h2>
-        <label for="inputEmail" class="sr-only">Email address</label>
-        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-        <label for="inputPassword" class="sr-only">Password</label>
-        <input type='password' name='j_password' class="form-control" placeholder="Password" required autofocus/>
-        <div class="checkbox">
-          <label>
-            <input type="checkbox" value="remember-me"> Remember me
-          </label>
-        </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-      </form>
-
-    </div>
-    -->
-	<!--  
-	<div class = "container">
-    	<form name='f' action="<c:url value='/j_spring_security_check' />" method='POST' class="form-signin">
-		<table>
-		  <h2 class="form-signin-heading">Login </h2>
-			<tr>
-				<td><spring:message code="label.user" />:</td>
-				<td><input type='text' class="form-control" placeholder="Username" name='j_username' value='' required autofocus >
-				</td>
-			</tr>
-			<tr>
-				<td><spring:message code="label.password" />:</td>
-				<td><input type='password' name='j_password' class="form-control" placeholder="Password" required autofocus/>
-				</td>
-			</tr>
-			<tr>
-				<td colspan='2'><input name="submit" type="submit" value="Login" class="btn btn-primary"/>
-				</td>
-			</tr>
-		</table>
-	</form>
-  </div>
-  -->
 </div> <!-- /container -->
 </span>
 </body>
