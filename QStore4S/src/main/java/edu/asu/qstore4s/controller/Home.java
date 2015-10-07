@@ -33,10 +33,12 @@ public class Home {
 	@RequestMapping(value = "auth/welcome", method = RequestMethod.GET)
 	public String validUserHandle(ModelMap model, Principal principal) {
 		try {
+			
 			HashMap <String, Integer> getStatistics = statistics.getStatistics();
 			model.addAttribute("nodes", getStatistics.get("nodes"));
 			model.addAttribute("relational", getStatistics.get("relational"));
 			model.addAttribute("appellation", getStatistics.get("appellation"));
+			
 		} catch (InvalidDataException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
