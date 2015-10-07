@@ -60,24 +60,7 @@ public class QStore {
 		return "login";
 
 	}    
-    
-	/**
-	 * A valid authenticated user is redirected to the home page.
-	 * 
-	 * @return 		Returned to the home page of Qstore.
-	 */
-	
-	@RequestMapping(value = "auth/welcome", method = RequestMethod.GET)
-	public String validUserHandle(ModelMap model, Principal principal) {
-
-		// Get the LDAP-authenticated userid
-		String sUserId = principal.getName();		
-		model.addAttribute("username", sUserId);
-		
-		return "home";
-
-	}
-    
+        
 	/**
 	 * A authenticated user is logged out of the system.
 	 * 
