@@ -28,4 +28,10 @@ public interface AppellationEventRepository extends GraphRepository<AppellationE
 						"return relationEvent limit 10")
 	List<RelationEvent> getRelationfromId(AppellationEvent appellationEvent);
 	
+	@Query("match (node:AppellationEvent) return count(node)")
+	int getAppellationEvenCount();
+	
+	
+	
+	
 }
