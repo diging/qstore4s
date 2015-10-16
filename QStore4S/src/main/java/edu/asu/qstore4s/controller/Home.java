@@ -17,32 +17,26 @@ import edu.asu.qstore4s.service.IStatistics;
  * 
  * @author Nikhil Aourpally.
  */
-
 @Controller
 public class Home {
 	
 	@Autowired
-	IStatistics statistics;
+	private IStatistics statistics;
 	
 	/**
-	 * A valid authenticated user is redirected to the home page.
+	 * An authenticated user is directed to the home page
 	 * 
 	 * @return 		Returned to the home page of Qstore.
 	 */
 	
 	@RequestMapping(value = "auth/welcome", method = RequestMethod.GET)
-	public String validUserHandle(ModelMap model, Principal principal) {
-		try {
-			
+	public String handleAuthUser(ModelMap model, Principal principal) throws InvalidDataException {
 			HashMap <String, Integer> getStatistics = statistics.getStatistics();
-			model.addAttribute("nodes", getStatistics.get("nodes"));
-			model.addAttribute("relational", getStatistics.get("relational"));
-			model.addAttribute("appellation", getStatistics.get("appellation"));
-			
-		} catch (InvalidDataException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			model.addAttribute("nodes", getStatistics.get(IStatistics.nodes));
+			model.addAttribute("relational", getStatistics.get(IStatistics.relationas));
+			model.addAttribute("appellation", getStatistics.get(IStatistics.appellations));
+			return "home";
 		} 	
-		return "home";
+		
 	}	
-}
+

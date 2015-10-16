@@ -56,7 +56,6 @@ public class QStore {
     
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login(ModelMap model) {
-
 		return "login";
 
 	}    

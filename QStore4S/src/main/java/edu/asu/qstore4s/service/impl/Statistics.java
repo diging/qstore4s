@@ -19,17 +19,10 @@ import edu.asu.qstore4s.service.IStatistics;
  * @author Nikhil Aourpally
  * A Service to get the statistics from QStore
  */
-
 @Service
 public class Statistics implements  IStatistics{
 
-	/**
-	 * The method returns the statistics fetched from the database in a HashMap
-	 *
-	 * @return
-	 * @throws InvalidDataException 
-	 */
-
+	
 	@Autowired
 	AppellationEventRepository app;
 	
@@ -39,6 +32,13 @@ public class Statistics implements  IStatistics{
 	@Autowired
 	Element ele;
 	
+	/**
+	 * The method returns the statistics fetched from the database in a HashMap
+	 *
+	 * @return
+	 * @throws InvalidDataException 
+	 */
+
 	@Override
 	public HashMap<String, Integer> getStatistics() throws InvalidDataException {
 		
@@ -49,7 +49,6 @@ public class Statistics implements  IStatistics{
 		statisticsMap.put("nodes", ele.getElementCount());
 		statisticsMap.put("relational",rel.getRelationEvenCount());
 		statisticsMap.put("appellation", app.getAppellationEvenCount());
-		
 		return statisticsMap;
 	}
 
