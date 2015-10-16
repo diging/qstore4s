@@ -46,9 +46,9 @@
 <div class="container"> 
     	<div>
     	<ul>
-    		<li>Appellation events: X</li>
-    		<li>Relational Events: Y</li>
-    		<li>Nodes : Z</li>
+    		<li>Appellation events: ${appellation}</li>
+    		<li>Relational Events: ${relational}</li>
+    		<li>Nodes: ${nodes}</li>
     	</ul>
     	</div>
     	
