@@ -8,9 +8,9 @@ import edu.asu.qstore4s.exception.InvalidDataException;
  * @author Nikhil Aourpally.
  */
 public interface IStatistics {
-	public final String nodes = "nodes";
-	public final String relationas = "relations";
-	public final String appellations = "appellations";
+	public final String NODES = "nodes";
+	public final String RELATIONS = "relations";
+	public final String APPELLATIONS = "appellations";
 	
 	HashMap<String, Integer> getStatistics () throws InvalidDataException;
 	

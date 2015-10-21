@@ -6,18 +6,17 @@ import org.springframework.transaction.annotation.Transactional;
 import edu.asu.qstore4s.domain.events.impl.RelationEvent;
 import org.springframework.data.neo4j.annotation.Query;
 
-public interface RelationEventRepository extends GraphRepository<RelationEvent>{
-	RelationEvent findById(String id);
-	
-	
-	/**
-	 * {@inheritDoc}}
-	 */
-	
-	@Override
-	@Transactional
-	public <U extends RelationEvent> Iterable<U> save(Iterable<U> arg0);
-	
+public interface RelationEventRepository extends GraphRepository<RelationEvent> {
+    RelationEvent findById(String id);
+
+    /**
+     * {@inheritDoc}
+     */
+
+    @Override
+    @Transactional
+    public <U extends RelationEvent> Iterable<U> save(Iterable<U> arg0);
+
     @Query("match (node:RelationEvent) return count(node)")
-	int getRelationEvenCount();
+    public int getRelationEvenCount();
 }

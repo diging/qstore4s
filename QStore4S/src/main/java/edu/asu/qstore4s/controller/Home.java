@@ -32,9 +32,9 @@ public class Home {
 	@RequestMapping(value = "auth/welcome", method = RequestMethod.GET)
 	public String handleAuthUser(ModelMap model, Principal principal) throws InvalidDataException {
 			HashMap <String, Integer> getStatistics = statistics.getStatistics();
-			model.addAttribute("nodes", getStatistics.get(IStatistics.nodes));
-			model.addAttribute("relational", getStatistics.get(IStatistics.relationas));
-			model.addAttribute("appellation", getStatistics.get(IStatistics.appellations));
+			model.addAttribute("nodes", getStatistics.get(IStatistics.NODES));
+			model.addAttribute("relational", getStatistics.get(IStatistics.RELATIONS));
+			model.addAttribute("appellation", getStatistics.get(IStatistics.APPELLATIONS));
 			return "home";
 		} 	
 		
