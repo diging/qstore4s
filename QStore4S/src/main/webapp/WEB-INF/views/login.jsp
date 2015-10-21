@@ -51,7 +51,7 @@
 <div class="container" align = "center">
    <c:if test="${not empty successmsg }">
         <div class="ui-state-success-text">
-            ${ successmsg }
+            ${successmsg }
         </div>
     </c:if>
 	<c:if test="${not empty error}">

@@ -1,0 +1,5 @@
+[
+  {"title":"Nodes","subtitle":"Node count","ranges":[150,225,300],"measures":[220,270],"markers":[250]},
+  {"title":"Appellations","subtitle":"Appellation event count","ranges":[20,25,30],"measures":[21,23],"markers":[26]},
+  {"title":"Relations","subtitle":"Relation event count","ranges":[350,500,600],"measures":[100,320],"markers":[550]}
+]
