@@ -26,7 +26,7 @@ public class Statistics implements  IStatistics{
 	public HashMap<String, Integer> getStatistics() throws InvalidDataException {
 		HashMap<String, Integer> statisticsMap = new HashMap<String, Integer>();
 		statisticsMap.put(nodes, 10);
-		statisticsMap.put(relationas,20);
+		statisticsMap.put(relations,20);
 		statisticsMap.put(appellations, 100);
 		return statisticsMap;
 	}
