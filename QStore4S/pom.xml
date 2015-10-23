@@ -13,7 +13,7 @@
 		<org.aspectj-version>1.7.3</org.aspectj-version>
 		<org.slf4j-version>1.7.5</org.slf4j-version>
 		<neo4j.username>neo4j</neo4j.username>
-		<neo4j.password>myneo4j</neo4j.password>
+		<neo4j.password>password</neo4j.password>
 		<tomcat.deploy.path>http://localhost:8080/manager/</tomcat.deploy.path>
 		<deploy.path.test>qstore-test</deploy.path.test>
 		<deploy.path.dev>qstore4s</deploy.path.dev>
