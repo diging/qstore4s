@@ -12,7 +12,7 @@ import edu.asu.qstore4s.domain.events.impl.RelationEvent;
 public interface AppellationEventRepository extends
         GraphRepository<AppellationEvent> {
 
-    AppellationEvent findById(String id);
+    public AppellationEvent findById(String id);
 
     @Override
     @Transactional
@@ -32,6 +32,6 @@ public interface AppellationEventRepository extends
             AppellationEvent appellationEvent);
 
     @Query("match (node:AppellationEvent) return count(node)")
-    public int getAppellationEvenCount();
+    public int getAppellationEventCount();
 
 }

@@ -5,13 +5,13 @@ import edu.asu.qstore4s.exception.InvalidDataException;
 
 /**
  * 
- * @author Nikhil Aourpally.
+ * @author Nikhil Aourpally. Interface to get statistics from QStore.
  */
 public interface IStatistics {
-	public final String NODES = "nodes";
-	public final String RELATIONS = "relations";
-	public final String APPELLATIONS = "appellations";
-	
-	HashMap<String, Integer> getStatistics () throws InvalidDataException;
-	
+    public final String NODES = "nodes";
+    public final String RELATIONS = "relations";
+    public final String APPELLATIONS = "appellations";
+
+    HashMap<String, Integer> getStatistics() throws InvalidDataException;
+
 }

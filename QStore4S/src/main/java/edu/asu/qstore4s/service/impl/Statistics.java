@@ -11,25 +11,25 @@ import edu.asu.qstore4s.domain.events.impl.CreationEvent;
 import edu.asu.qstore4s.exception.InvalidDataException;
 import edu.asu.qstore4s.repository.AppellationEventRepository;
 import edu.asu.qstore4s.repository.ElementNeo4jConnector;
-import edu.asu.qstore4s.repository.IElement;
+import edu.asu.qstore4s.repository.IElementNeo4jConnector;
 import edu.asu.qstore4s.repository.RelationEventRepository;
 import edu.asu.qstore4s.service.IStatistics;
 
 /**
  * 
- * @author Nikhil Aourpally A Service to get the statistics from QStore
+ * @author Nikhil Aourpally, Rachita Satyasi.A Service to get the statistics from QStore
  */
 @Service
 public class Statistics implements IStatistics {
 
     @Autowired
-    private AppellationEventRepository app;
+    private AppellationEventRepository appeventrep;
 
     @Autowired
-    private RelationEventRepository rel;
+    private RelationEventRepository releventrep;
 
     @Autowired
-    private IElement connector;
+    private IElementNeo4jConnector connector;
 
     /**
      * The method returns the statistics fetched from the database in a HashMap
@@ -45,9 +45,10 @@ public class Statistics implements IStatistics {
 
         HashMap<String, Integer> statisticsMap = new HashMap<String, Integer>();
         statisticsMap.put(IStatistics.NODES, connector.getElementCount());
-        statisticsMap.put(IStatistics.RELATIONS, rel.getRelationEvenCount());
+        statisticsMap.put(IStatistics.RELATIONS,
+                releventrep.getRelationEventCount());
         statisticsMap.put(IStatistics.APPELLATIONS,
-                app.getAppellationEvenCount());
+                appeventrep.getAppellationEventCount());
         return statisticsMap;
     }
 
