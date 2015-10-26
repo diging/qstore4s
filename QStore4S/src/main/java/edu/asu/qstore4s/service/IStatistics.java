@@ -4,8 +4,9 @@ import java.util.HashMap;
 import edu.asu.qstore4s.exception.InvalidDataException;
 
 /**
+ * Interface to get statistics from QStore.
  * 
- * @author Nikhil Aourpally. Interface to get statistics from QStore.
+ * @author Nikhil Aourpally.
  */
 public interface IStatistics {
     public final String NODES = "nodes";

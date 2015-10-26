@@ -9,11 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
+ * Class acts as a connector to Neo4j to get information about Elements in Neo4j
  * 
  * @author Rachita Satyasi
- * Connector to QStore to get the total number of nodes
  */
-
 @Service
 public class ElementNeo4jConnector implements IElementNeo4jConnector {
 

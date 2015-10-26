@@ -24,7 +24,6 @@ public interface AppellationEventRepository extends
      * @param appellationEvent
      * @return
      */
-
     @Query("start result = node({0}) "
             + "match (result)<-[hasSubject]-(relation)<-[hasRelation]-(relationEvent) "
             + "return relationEvent limit 10")

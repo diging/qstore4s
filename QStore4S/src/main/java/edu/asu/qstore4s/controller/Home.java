@@ -28,7 +28,6 @@ public class Home {
      * 
      * @return Returned to the home page of Qstore.
      */
-
     @RequestMapping(value = "auth/welcome", method = RequestMethod.GET)
     public String handleAuthUser(ModelMap model, Principal principal)
             throws InvalidDataException {

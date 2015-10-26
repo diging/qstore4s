@@ -16,8 +16,9 @@ import edu.asu.qstore4s.repository.RelationEventRepository;
 import edu.asu.qstore4s.service.IStatistics;
 
 /**
+ * A Service to get the statistics from QStore
  * 
- * @author Nikhil Aourpally, Rachita Satyasi.A Service to get the statistics from QStore
+ * @author Nikhil Aourpally, Rachita Satyasi.
  */
 @Service
 public class Statistics implements IStatistics {
@@ -34,10 +35,9 @@ public class Statistics implements IStatistics {
     /**
      * The method returns the statistics fetched from the database in a HashMap
      *
-     * @return
+     * @return a HashMap containing the statistics
      * @throws InvalidDataException
      */
-
     @Override
     public HashMap<String, Integer> getStatistics() throws InvalidDataException {
 
