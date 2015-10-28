@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 
 import edu.asu.qstore4s.exception.InvalidDataException;
@@ -20,13 +22,16 @@ public class Search implements ISearch{
 	 */
 	
 	@Override
-	public List<HashMap<String,String>> getSearchResults(String searchTerm) throws InvalidDataException{
-		List<HashMap<String,String>> result = new ArrayList<HashMap<String,String>>();
-		HashMap<String, String> eventA = new HashMap<String, String>();
-		eventA.put(id,"1");
-		eventA.put(URI,"www.dummy.com");
-		eventA.put(description,"This is a dummy decription");
-		result.add(eventA);
+	public JSONObject getSearchResults(String searchTerm) throws InvalidDataException{
+		//Retrieve all the Appellations from the Data store related to the concept(searchTerm) and return them as a List of HashMaps
+		JSONObject jo = new JSONObject();
+		jo.put(id,"1");
+		jo.put(URI,"www.dummy.com");
+		jo.put(description,"This is a dummy decription");
+		JSONArray ja = new JSONArray();
+		ja.add(jo);
+		JSONObject result = new JSONObject();
+		result.put("nodes", ja);
 		return result;
 	}
 }

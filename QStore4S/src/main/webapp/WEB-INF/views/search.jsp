@@ -36,15 +36,10 @@
 </nav>
 <span onload='document.f.j_username.focus();'>	
 <div class="container"> 
-    	<div>
-    	<ul>
-    		<li>Appellation events: ${appellation}</li>
-    		<li>Relational Events: ${relational}</li>
-    		<li>Nodes: ${nodes}</li>
-    	</ul>
-    	</div>
-    	
-    </div> <!-- /container -->
+
+
+
+</div> <!-- /container -->
 </span>
 </body>
 </html>

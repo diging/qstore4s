@@ -3,6 +3,8 @@ package edu.asu.qstore4s.service;
 import java.util.HashMap;
 import java.util.List;
 
+import org.json.simple.JSONObject;
+
 import edu.asu.qstore4s.exception.InvalidDataException;
 
 /**
@@ -14,5 +16,5 @@ public interface ISearch {
 	public final String URI = "URI";
 	public final String description = "Description";
 
-	public List<HashMap<String,String>> getSearchResults(String searchTerm) throws InvalidDataException;
+	public JSONObject getSearchResults(String searchTerm) throws InvalidDataException;
 }
