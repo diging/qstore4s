@@ -51,9 +51,9 @@
         <li class="active"><a href="/qstore4s/auth/welcome">Home</a></li>
       </ul>
       <div class="col-sm-3 col-md-3 text-center">
-            <form class="navbar-form" role="search" action="<c:url value='search'/>" method='POST'>
+            <form class="navbar-form" role="search" action="<c:url value='searchsubmit'/>" method='POST'>
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search" name="q">
+                    <input type="text" class="form-control" placeholder="Search" name="concept">
                     <div class="input-group-btn">
                         <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
                     </div>
