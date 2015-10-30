@@ -23,15 +23,31 @@ public class Search implements ISearch{
 	
 	@Override
 	public JSONObject getSearchResults(String searchTerm) throws InvalidDataException{
-		//Retrieve all the Appellations from the Data store related to the concept(searchTerm) and return them as a List of HashMaps
-		JSONObject jo = new JSONObject();
-		jo.put(id,"1");
-		jo.put(URI,"www.dummy.com");
-		jo.put(description,"This is a dummy decription");
-		JSONArray ja = new JSONArray();
-		ja.add(jo);
+		//Retrieve all the Appellation from the Data store related to the concept(searchTerm) and return them as a List of HashMaps
+		JSONObject jo1 = new JSONObject();
+		JSONArray ja1 = new JSONArray();
+		jo1.put(id,"1");
+		jo1.put(URI,"www.dummySource.com");
+		jo1.put(description,"This is a dummy source");
+		ja1.add(jo1);
+		
+		JSONObject jo2 = new JSONObject();
+		jo2.put(id,"2");
+		jo2.put(URI,"www.dummyDestination.com");
+		jo2.put(description,"This is a dummy destination");
+		ja1.add(jo2);
+
 		JSONObject result = new JSONObject();
-		result.put("nodes", ja);
+		result.put("nodes", ja1);
+		
+		JSONArray ja2 = new JSONArray();
+		JSONObject jo3 = new JSONObject();
+		jo3.put("source","1");
+		jo3.put("target","2");
+		jo3.put("value","2");
+		ja2.add(jo3);
+		
+		result.put("links", ja2);
 		return result;
 	}
 }

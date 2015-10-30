@@ -71,6 +71,7 @@ public class Home {
 	@RequestMapping(value = "auth/searchsubmit", method = RequestMethod.POST)
 	public String conceptSearch(@RequestParam(value = "concept", required = false)String concept, ModelMap model, Principal principal) throws InvalidDataException, IOException{
 			JSONObject searchResults = search.getSearchResults(concept);
+			model.addAttribute("searchResult", searchResults);
 			return "search";
 	}
 
