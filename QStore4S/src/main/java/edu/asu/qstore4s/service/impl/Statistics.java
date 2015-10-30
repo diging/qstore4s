@@ -34,6 +34,7 @@ public class Statistics implements IStatistics {
 
     /**
      * The method returns the statistics fetched from the database in a HashMap
+     * that contains the node type as the key and count as the value
      *
      * @return a HashMap containing the statistics
      * @throws InvalidDataException

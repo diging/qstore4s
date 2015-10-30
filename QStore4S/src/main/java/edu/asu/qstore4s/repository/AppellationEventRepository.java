@@ -9,6 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 import edu.asu.qstore4s.domain.events.impl.AppellationEvent;
 import edu.asu.qstore4s.domain.events.impl.RelationEvent;
 
+/**
+ * Contains methods to return Relation Events that reference a Appellation Event
+ * and also the count of Appellation Events
+ * 
+ * @author Rachita Satyasif
+ *
+ */
+
 public interface AppellationEventRepository extends
         GraphRepository<AppellationEvent> {
 
@@ -19,7 +27,8 @@ public interface AppellationEventRepository extends
     public <U extends AppellationEvent> U save(U arg0);
 
     /**
-     * The method find parent relation event from appellation event
+     * The method returns all Relation Events that reference the given
+     * Appellation Event
      * 
      * @param appellationEvent
      * @return
@@ -30,6 +39,10 @@ public interface AppellationEventRepository extends
     public List<RelationEvent> getRelationfromId(
             AppellationEvent appellationEvent);
 
+    /**
+     * The method returns the count of Appellation Events
+     * 
+     */
     @Query("match (node:AppellationEvent) return count(node)")
     public int getAppellationEventCount();
 
