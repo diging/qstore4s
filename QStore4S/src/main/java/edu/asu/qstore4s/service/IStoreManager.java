@@ -27,7 +27,7 @@ public interface IStoreManager {
 			throws URISyntaxException, InvalidDataException;
 
 	/**
-	 * The method calls database dependent class to getthe object from the
+	 * The method calls database dependent class to get the object from the
 	 * database.
 	 * 
 	 * @param id
