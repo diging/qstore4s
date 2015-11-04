@@ -22,6 +22,7 @@
 		<intercept-url pattern="/logout*" access="permitAll" />
 		<intercept-url pattern="/auth/welcome" access="isAuthenticated()"/>
 		<intercept-url pattern="/auth/**" access="isAuthenticated()" />
+		<intercept-url pattern="/*" access="permitAll" />
 		
 		<form-login login-page="/login" default-target-url="/auth/welcome"
 			authentication-failure-url="/loginfailed" />
