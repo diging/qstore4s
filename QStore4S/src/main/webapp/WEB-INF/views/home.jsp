@@ -55,4 +55,12 @@
     </div> <!-- /container -->
 </span>
 </body>
+<div id="footer">
+
+	<p class="legal">
+		<c:set var="PR" value="${pullrequest}" />
+		Version: ${buildNumber}
+		<c:if test="${not empty PR}">, Pull Request: ${pullrequest}</c:if>
+	</p>
+</div>
 </html>
