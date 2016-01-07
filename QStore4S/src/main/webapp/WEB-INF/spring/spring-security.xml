@@ -34,9 +34,9 @@
 		erase-credentials="false">
 		<authentication-provider>
 			<user-service>
-				<user name="admin" password="admin"
+				<user name="${qstore.admin.username}" password="${qstore.admin.password}"
 					authorities="ROLE_ADMIN" />
-				<user name="user" password="user"
+				<user name="${qstore.user.username}" password="${qstore.user.password}"
 					authorities="ROLE_USER" />	
 			</user-service>
 		</authentication-provider>
