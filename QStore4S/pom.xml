@@ -19,6 +19,10 @@
 		<deploy.path.dev>qstore4s</deploy.path.dev>
 		<deploy.path.prod>qstore4s</deploy.path.prod>
 		<checkstyle.google.path>develop/google_checks.xml</checkstyle.google.path>
+		<qstore.admin.username>admin</qstore.admin.username>
+		<qstore.admin.password>admin</qstore.admin.password>
+		<qstore.user.username>user</qstore.user.username>
+		<qstore.user.password>user</qstore.user.password>		
 	</properties>
 	<dependencies>
 		<!-- Spring -->
