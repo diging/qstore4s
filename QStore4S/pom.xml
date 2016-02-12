@@ -23,6 +23,7 @@
 		<qstore.admin.password>admin</qstore.admin.password>
 		<qstore.user.username>user</qstore.user.username>
 		<qstore.user.password>user</qstore.user.password>		
+		<pullrequest></pullrequest>
 	</properties>
 	<dependencies>
 		<!-- Spring -->
@@ -354,7 +355,35 @@
 					<configLocation>${checkstyle.google.path}</configLocation>
 				</configuration>
 			</plugin>
+			
+			
+			<!-- Displaying build number -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>initialize</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<doCheck>false</doCheck>
+					<doUpdate>false</doUpdate>
+					<revisionOnScmFailure></revisionOnScmFailure>
+					<items>
+						<item>buildNumber\d*</item>
+						<item>timestamp</item>
+					</items>
+					<format>#{0} ({1,date,yyyy-MM-dd HH:mm:ss})</format>
+				</configuration>
+			</plugin>
+			
+			
 		</plugins>
+		
 	</build>
 
 	<reporting>
