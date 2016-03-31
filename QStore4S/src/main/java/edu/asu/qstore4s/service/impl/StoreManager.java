@@ -70,10 +70,7 @@ public class StoreManager implements IStoreManager {
 	 */
 	@Override
 	public Element getObjectFromDb(String id) throws InvalidDataException {
-		Element element = dbConnector.get(id);
-
-		return element;
-
+		return dbConnector.get(id);
 	}
 
 	/**

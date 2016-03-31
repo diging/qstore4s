@@ -127,18 +127,13 @@ public class SearchXmlParser  implements ISearchXmlParser {
 
 		}
 
-		else if (childNode.getName().equals(IXmlElements.RELATION_EVENT))
-
-		{
-
-			ISearchRelationEvent rootNode = getRelationEvent(childNode,
+		if (childNode.getName().equals(IXmlElements.RELATION_EVENT)) {
+		    ISearchRelationEvent rootNode = getRelationEvent(childNode,
 					nameSpace);
 			return rootNode;
-
-		} else {
-			throw new InvalidDataException();
-		}
-
+		} 
+		
+		throw new InvalidDataException();
 	}
 
 	/**
@@ -444,8 +439,7 @@ public class SearchXmlParser  implements ISearchXmlParser {
 			throws ParserException, IOException, URISyntaxException,
 			ParseException {
 
-		DateFormat formatter;
-		formatter = new SimpleDateFormat(IXmlElements.DATE_FORMAT);
+		DateFormat formatter = new SimpleDateFormat(IXmlElements.DATE_FORMAT);
 		ISearchAppellationEvent appellationEventObject = appellationEventFactory
 				.createAppellationEvent();
 

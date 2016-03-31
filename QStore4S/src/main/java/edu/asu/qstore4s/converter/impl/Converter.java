@@ -41,8 +41,9 @@ import edu.asu.qstore4s.domain.events.impl.RelationEvent;
 @Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class Converter implements IConverter {
 
-	List<String> idList;
+	private List<String> idList;
 	
+	// TODO: delete dependency to neo4j template
 	@Autowired
 	private Neo4jTemplate template;
 
@@ -547,7 +548,7 @@ public class Converter implements IConverter {
 					objectnode.addContent(appellationEvent);
 				} else if (object instanceof RelationEvent) {
 					if (((RelationEvent) object).getRelation() == null)
-						template.fetch(object);
+					    template.fetch(object);
 					Element relationsubEvent = addRelationEventNode(
 							(RelationEvent) object, namespace, false);
 					objectnode.addContent(relationsubEvent);

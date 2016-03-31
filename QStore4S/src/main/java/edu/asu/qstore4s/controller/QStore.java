@@ -144,7 +144,7 @@ public class QStore {
                         XML);
 
             }
-            logger.info("successful parsing of XML");
+            logger.debug("Successfully parsed XML.");
             response.setStatus(200);
             response.setContentType(accept);
             return returnString;
@@ -165,7 +165,6 @@ public class QStore {
      * @throws JSONException
      * @throws InvalidDataException
      */
-
     @ResponseBody
     @RequestMapping(value = "/get", method = RequestMethod.GET)
     public String getData(HttpServletRequest request,
@@ -179,7 +178,7 @@ public class QStore {
             throw new InvalidDataException("Please provide id.");
         }
 
-        logger.info("acceptheader value--->" + accept);
+        logger.info("Requested format: " + accept);
         String trimid = idString.trim();
         String returnString = "";
 
@@ -224,10 +223,8 @@ public class QStore {
                     "Please provide content in given XML.");
         }
 
-        logger.info("acceptheader value--->" + accept);
-        String returnString = "";
-
-        returnString = repositorymanager.getList(xml, accept);
+        logger.info("Requested format: " + accept);
+        String returnString = repositorymanager.getList(xml, accept);
 
         response.setContentType(accept);
         return returnString;
@@ -260,7 +257,7 @@ public class QStore {
             IOException, URISyntaxException, ParseException, JSONException,
             InvalidDataException {
 
-        logger.info("acceptheader value--->" + accept);
+        logger.debug("Requested format: " +  accept);
         String trimmedXML = xml.trim();
         if (trimmedXML.isEmpty()) {
             response.setStatus(500);
@@ -277,7 +274,7 @@ public class QStore {
                         .searchByAppellationId(xml, XML);
 
             }
-            logger.info("successful parsing of XML");
+            //logger.info("successful parsing of XML");
             response.setStatus(200);
             response.setContentType(accept);
             return returnString;
@@ -309,7 +306,7 @@ public class QStore {
             IOException, URISyntaxException, ParseException, JSONException,
             InvalidDataException {
 
-        logger.info("acceptheader value--->" + accept);
+        logger.debug("Requested format: " +  accept);
         String trimmedXML = xml.trim();
         if (trimmedXML.isEmpty()) {
             response.setStatus(500);
@@ -324,7 +321,7 @@ public class QStore {
                 returnString = repositorymanager.search(xml, XML);
 
             }
-            logger.info("successful parsing of XML");
+            logger.debug("Successfully parsed XML.");
             response.setStatus(200);
             response.setContentType(accept);
             return returnString;

@@ -12,6 +12,7 @@
 		<org.springframework-version>4.1.6.RELEASE</org.springframework-version>
 		<org.aspectj-version>1.7.3</org.aspectj-version>
 		<org.slf4j-version>1.7.5</org.slf4j-version>
+		<org.springframework.data.neo4j-version>4.0.0</org.springframework.data.neo4j-version>
 		<neo4j.username>neo4j</neo4j.username>
 		<neo4j.password>myneo4j</neo4j.password>
 		<tomcat.deploy.path>http://localhost:8080/manager/</tomcat.deploy.path>
@@ -175,12 +176,12 @@
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-neo4j</artifactId>
-			<version>3.3.0.RELEASE</version>
+			<version>3.4.4.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-neo4j-rest</artifactId>
-			<version>3.3.0.RELEASE</version>
+			<version>3.4.4.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
