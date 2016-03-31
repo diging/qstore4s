@@ -466,12 +466,14 @@ public class XmltoObject extends AXmlParser implements IXmltoObject  {
 			// set term with interpretation and datatype
 			Element interpretationElement = term.getChild(IXmlElements.INTERPRETATION, 
                     nameSpace);
-			String interpretationValue = interpretationElement.getText();
-			String datatype = interpretationElement.getAttributeValue(IXmlElements.INTERPRETATION_DATATYPE);
-			Concept concept =  conceptFactory.createConcept(checkForSpaces(interpretationValue));
-			termObject.setInterpretation(concept);
-			if (datatype != null) {
-			    termObject.setDatatype(datatype);
+			if (interpretationElement != null) {
+			    String interpretationValue = interpretationElement.getText();
+			    String datatype = interpretationElement.getAttributeValue(IXmlElements.INTERPRETATION_DATATYPE);
+			    Concept concept =  conceptFactory.createConcept(checkForSpaces(interpretationValue));
+			    termObject.setInterpretation(concept);
+    			if (datatype != null) {
+    			    termObject.setDatatype(datatype);
+    			}
 			}
 			
 			// set source reference
