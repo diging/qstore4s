@@ -30,8 +30,7 @@ public interface ISearchTerm extends ISearchElement{
 
 	public void setSourceReference(ISearchSourceReference reference);
 
-	
-
-	
+	String getDatatype();
+	void setDatatype(String datatype);	
 	
 }

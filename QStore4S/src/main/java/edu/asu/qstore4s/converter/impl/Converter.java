@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
@@ -626,10 +627,17 @@ public class Converter implements IConverter {
 				termnode.addContent(source_reference);
 			}
 
+			// add interpretation
 			if (term.getInterpretation() != null) {
 				Element interpretation = new Element(
 						IXmlElements.INTERPRETATION, namespace);
 				interpretation.setText(term.getInterpretation().getSourceURI());
+				
+				// add datatype
+				if (term.getDatatype() != null && !term.getDatatype().isEmpty()) {
+				    interpretation.setAttribute(IXmlElements.INTERPRETATION_DATATYPE, term.getDatatype());
+				}
+				
 				termnode.addContent(interpretation);
 			}
 

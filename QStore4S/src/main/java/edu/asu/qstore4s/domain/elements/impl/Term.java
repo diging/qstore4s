@@ -7,7 +7,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.neo4j.graphdb.Direction;
-import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.GraphProperty;
@@ -28,6 +27,8 @@ public class Term extends Element {
 	@GraphProperty
 	private Concept interpretation;
 	
+	
+	
 	@GraphProperty
 	private VocabularyEntry normalized_representation;
 	
@@ -38,8 +39,18 @@ public class Term extends Element {
 	@GraphProperty(propertyType=String.class)
 	private Boolean certain;
 	
+	@GraphProperty(propertyType=String.class)
+	private String datatype;
 	
-	@Fetch
+	public String getDatatype() {
+        return datatype;
+    }
+
+    public void setDatatype(String datatype) {
+        this.datatype = datatype;
+    }
+
+    @Fetch
 	@RelatedTo(type="referencedTerm", direction=Direction.OUTGOING, elementClass=Term.class)
 	private Set<Term> referencedTerms;
 	
