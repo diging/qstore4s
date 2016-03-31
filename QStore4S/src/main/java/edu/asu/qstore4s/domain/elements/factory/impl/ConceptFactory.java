@@ -23,12 +23,7 @@ public class ConceptFactory implements IConceptFactory {
 	public Concept createConcept(String sourceUri)
 	{
 		Concept conceptObject = new Concept();
-		if(sourceUri==null){
-			conceptObject.setSourceURI("");
-			
-		}
-		else{
-		conceptObject.setSourceURI(sourceUri);}
+		conceptObject.setSourceURI(sourceUri == null ? "" : sourceUri);
 		return conceptObject;
 	}
 

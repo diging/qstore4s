@@ -20,12 +20,7 @@ public class SearchConceptFactory implements ISearchConceptFactory {
 	public ISearchConcept createSearchConcept(String sourceUri)
 	{
 		ISearchConcept conceptObject = new SearchConcept();
-		if(sourceUri==null){
-			conceptObject.setSourceURI("");
-			
-		}
-		else{
-		conceptObject.setSourceURI(sourceUri);}
+		conceptObject.setSourceURI(sourceUri == null ? "" : sourceUri);
 		return conceptObject;
 	}
 }

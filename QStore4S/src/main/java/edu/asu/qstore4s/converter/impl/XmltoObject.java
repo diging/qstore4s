@@ -34,6 +34,7 @@ import edu.asu.qstore4s.domain.elements.factory.ITermFactory;
 import edu.asu.qstore4s.domain.elements.factory.ITermPartFactory;
 import edu.asu.qstore4s.domain.elements.factory.ITermPartsFactory;
 import edu.asu.qstore4s.domain.elements.factory.IVocabularyEntryFactory;
+import edu.asu.qstore4s.domain.elements.impl.Concept;
 import edu.asu.qstore4s.domain.elements.impl.Relation;
 import edu.asu.qstore4s.domain.elements.impl.Term;
 import edu.asu.qstore4s.domain.elements.impl.TermPart;
@@ -110,7 +111,7 @@ public class XmltoObject extends AXmlParser implements IXmltoObject  {
 					formattedXML)));
 
 		} catch (JDOMException e) {
-			throw new ParserException(e.toString());
+			throw new ParserException(e.toString(), e);
 		}
 
 		Element rootElement = XMLDocument.getRootElement();
@@ -461,9 +462,21 @@ public class XmltoObject extends AXmlParser implements IXmltoObject  {
 						.parse(checkForSpaces(term.getChildText(
 								IXmlElements.CREATION_DATE, nameSpace))));
 			}
-			termObject.setInterpretation(conceptFactory
-					.createConcept(checkForSpaces(term.getChildText(
-							IXmlElements.INTERPRETATION, nameSpace))));
+			
+			// set term with interpretation and datatype
+			Element interpretationElement = term.getChild(IXmlElements.INTERPRETATION, 
+                    nameSpace);
+			if (interpretationElement != null) {
+			    String interpretationValue = interpretationElement.getText();
+			    String datatype = interpretationElement.getAttributeValue(IXmlElements.INTERPRETATION_DATATYPE);
+			    Concept concept =  conceptFactory.createConcept(checkForSpaces(interpretationValue));
+			    termObject.setInterpretation(concept);
+    			if (datatype != null) {
+    			    termObject.setDatatype(datatype);
+    			}
+			}
+			
+			// set source reference
 			termObject.setSourceReference(sourceReferenceFactory
 					.createSourceReference(checkForSpaces(term.getChildText(
 							IXmlElements.SOURCE_REFERENCE, nameSpace))));

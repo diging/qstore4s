@@ -20,8 +20,6 @@ public class SearchConcept extends SearchElement implements ISearchConcept{
 	@Override
 	public void setSourceURI(String sourceURI) {
 		this.sourceURI = sourceURI;
-	}
-
-	
+	}	
 	
 }

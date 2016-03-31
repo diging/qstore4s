@@ -26,6 +26,7 @@ public class IXmlElements {
 	public static String APPELLATION_EVENT = "appellation_event";
 	public static String TERM = "term";
 	public static String INTERPRETATION = "interpretation";
+	public static String INTERPRETATION_DATATYPE = "datatype";
 	public static String NORMALIZED_REPRESENTATION = "normalized_representation";
 	public static String PRINTED_REPRESENTATION = "printed_representation";
 	public static String TERM_PART = "term_part";

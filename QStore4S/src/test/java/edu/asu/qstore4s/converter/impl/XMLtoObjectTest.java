@@ -22,8 +22,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import edu.asu.qstore4s.converter.IXmlElements;
+import edu.asu.qstore4s.domain.elements.factory.IConceptFactory;
 import edu.asu.qstore4s.domain.elements.factory.impl.ActorFactory;
-import edu.asu.qstore4s.domain.elements.factory.impl.ConceptFactory;
 import edu.asu.qstore4s.domain.elements.factory.impl.PlaceFactory;
 import edu.asu.qstore4s.domain.elements.factory.impl.RelationFactory;
 import edu.asu.qstore4s.domain.elements.factory.impl.SourceReferenceFactory;
@@ -57,7 +57,7 @@ public class XMLtoObjectTest {
 	@Mock
 	ActorFactory actorFactory;
 	@Mock
-	ConceptFactory conceptFactory;
+	IConceptFactory conceptFactory;
 	@Mock
 	PlaceFactory placeFactory;
 	@Mock
