@@ -652,10 +652,12 @@ public class Converter implements IConverter {
 
 		TermParts printedrepresentation = term.getPrintedRepresentation();
 		
-		Element printed_representation = addTermPartsNode(
-				printedrepresentation, namespace);
-
-		termnode.addContent(printed_representation);
+		if (printedrepresentation != null) {
+    		Element printed_representation = addTermPartsNode(
+    				printedrepresentation, namespace);
+    
+    		termnode.addContent(printed_representation);
+		}
 
 		Element certain = new Element(IXmlElements.CERTAIN, namespace);
 		if (term.isCertain()) {
