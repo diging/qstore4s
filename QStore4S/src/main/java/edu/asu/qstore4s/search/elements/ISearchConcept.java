@@ -8,9 +8,7 @@ package edu.asu.qstore4s.search.elements;
 
 public interface ISearchConcept extends ISearchElement  {
 
-
-
-	String getSourceURI();
+    String getSourceURI();
 
 	void setSourceURI(String sourceURI);
 

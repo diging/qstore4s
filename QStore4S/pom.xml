@@ -12,13 +12,19 @@
 		<org.springframework-version>4.1.6.RELEASE</org.springframework-version>
 		<org.aspectj-version>1.7.3</org.aspectj-version>
 		<org.slf4j-version>1.7.5</org.slf4j-version>
+		<org.springframework.data.neo4j-version>4.0.0</org.springframework.data.neo4j-version>
 		<neo4j.username>neo4j</neo4j.username>
-		<neo4j.password>password</neo4j.password>
+		<neo4j.password>myneo4j</neo4j.password>
 		<tomcat.deploy.path>http://localhost:8080/manager/</tomcat.deploy.path>
 		<deploy.path.test>qstore-test</deploy.path.test>
 		<deploy.path.dev>qstore4s</deploy.path.dev>
 		<deploy.path.prod>qstore4s</deploy.path.prod>
 		<checkstyle.google.path>develop/google_checks.xml</checkstyle.google.path>
+		<qstore.admin.username>admin</qstore.admin.username>
+		<qstore.admin.password>admin</qstore.admin.password>
+		<qstore.user.username>user</qstore.user.username>
+		<qstore.user.password>user</qstore.user.password>		
+		<pullrequest></pullrequest>
 	</properties>
 	<dependencies>
 		<!-- Spring -->
@@ -175,12 +181,12 @@
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-neo4j</artifactId>
-			<version>3.3.0.RELEASE</version>
+			<version>3.4.4.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-neo4j-rest</artifactId>
-			<version>3.3.0.RELEASE</version>
+			<version>3.4.4.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
@@ -191,6 +197,26 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
 			<version>4.0.0.GA</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>3.2.0.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<version>3.2.0.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>3.2.0.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-taglibs</artifactId>
+			<version>3.2.0.RELEASE</version>
 		</dependency>
 	</dependencies>
 
@@ -330,7 +356,35 @@
 					<configLocation>${checkstyle.google.path}</configLocation>
 				</configuration>
 			</plugin>
+			
+			
+			<!-- Displaying build number -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>initialize</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<doCheck>false</doCheck>
+					<doUpdate>false</doUpdate>
+					<revisionOnScmFailure></revisionOnScmFailure>
+					<items>
+						<item>buildNumber\d*</item>
+						<item>timestamp</item>
+					</items>
+					<format>#{0} ({1,date,yyyy-MM-dd HH:mm:ss})</format>
+				</configuration>
+			</plugin>
+			
+			
 		</plugins>
+		
 	</build>
 
 	<reporting>

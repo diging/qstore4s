@@ -378,20 +378,23 @@ public class StoreObjectsToDb implements IStoreObjectsToDb {
 		}
 
 		TermParts termPartsObject = termObject.getPrintedRepresentation();
-		TermParts termParts = getTermPartsObject(termPartsObject,
-				referencedList);
+		if (termPartsObject != null) {
+    		TermParts termParts = getTermPartsObject(termPartsObject,
+    				referencedList);
+    
+    		Set<TermPart> termPartSet = termPartsObject.getTermParts();
+    		Iterator<TermPart> termPartIterator = termPartSet.iterator();
+    		Set<TermPart> newTermPartSet = new HashSet<TermPart>();
+    		while (termPartIterator.hasNext()) {
+    			TermPart termPartObject = termPartIterator.next();
+    			newTermPartSet.add(getTermPartObject(termPartObject, referencedList));
+    		}
+    		termParts.setTermParts(newTermPartSet);
+    		termObject.setPrintedRepresentation(termParts);
 
-		Set<TermPart> termPartSet = termPartsObject.getTermParts();
-		Iterator<TermPart> termPartIterator = termPartSet.iterator();
-		Set<TermPart> newTermPartSet = new HashSet<TermPart>();
-		while (termPartIterator.hasNext()) {
-			TermPart termPartObject = termPartIterator.next();
-			newTermPartSet.add(getTermPartObject(termPartObject, referencedList));
 		}
-		termParts.setTermParts(newTermPartSet);
 
-		termObject.setPrintedRepresentation(termParts);
-
+		
 		Set<Term> referencedTermsList = termObject.getReferencedTerms();
 		Iterator<Term> referencedTermsIterator = referencedTermsList
 				.iterator();

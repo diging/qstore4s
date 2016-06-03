@@ -2,6 +2,7 @@ package edu.asu.qstore4s.controller;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.security.Principal;
 import java.text.ParseException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +25,7 @@ import edu.asu.qstore4s.exception.InvalidDataException;
 import edu.asu.qstore4s.exception.ParserException;
 import edu.asu.qstore4s.service.IRepositoryManager;
 
+
 /**
  * Controller class to handle user requests.
  * 
@@ -43,8 +45,65 @@ public class QStore {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String testStatus(ModelMap model) {
-        return "test";
+        return "login";
     }
+  
+    /**
+	 * User requests a login page
+	 * 
+	 * @return		Redirected to the login page
+	 */   
+    
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	public String login(ModelMap model) {
+
+		return "login";
+
+	}    
+    
+	/**
+	 * A valid authenticated user is redirected to the home page.
+	 * 
+	 * @return 		Returned to the home page of Qstore.
+	 */
+	
+	@RequestMapping(value = "auth/welcome", method = RequestMethod.GET)
+	public String validUserHandle(ModelMap model, Principal principal) {
+
+		// Get the LDAP-authenticated userid
+		String sUserId = principal.getName();		
+		model.addAttribute("username", sUserId);
+		
+		return "home";
+
+	}
+    
+	/**
+	 * A authenticated user is logged out of the system.
+	 * 
+	 * @return		Redirect to login page
+	 */
+	
+	@RequestMapping(value = "/logout", method = RequestMethod.GET)
+	public String logout(ModelMap model) {
+
+		return "login";
+
+	}
+      
+	/**
+	 * Authentication failed. User credentials mismatch causes this request.
+	 * 
+	 * @return		Redirected to login page
+	 */
+	
+	@RequestMapping(value = "/loginfailed", method = RequestMethod.GET)
+	public String loginerror(ModelMap model) {
+
+		model.addAttribute("error", "true");
+		return "login";
+		
+	}
 
     /**
      * The method parse given XML from the post request body and add relation
@@ -85,7 +144,7 @@ public class QStore {
                         XML);
 
             }
-            logger.info("successful parsing of XML");
+            logger.debug("Successfully parsed XML.");
             response.setStatus(200);
             response.setContentType(accept);
             return returnString;
@@ -106,7 +165,6 @@ public class QStore {
      * @throws JSONException
      * @throws InvalidDataException
      */
-
     @ResponseBody
     @RequestMapping(value = "/get", method = RequestMethod.GET)
     public String getData(HttpServletRequest request,
@@ -120,7 +178,7 @@ public class QStore {
             throw new InvalidDataException("Please provide id.");
         }
 
-        logger.info("acceptheader value--->" + accept);
+        logger.info("Requested format: " + accept);
         String trimid = idString.trim();
         String returnString = "";
 
@@ -165,10 +223,8 @@ public class QStore {
                     "Please provide content in given XML.");
         }
 
-        logger.info("acceptheader value--->" + accept);
-        String returnString = "";
-
-        returnString = repositorymanager.getList(xml, accept);
+        logger.info("Requested format: " + accept);
+        String returnString = repositorymanager.getList(xml, accept);
 
         response.setContentType(accept);
         return returnString;
@@ -201,7 +257,7 @@ public class QStore {
             IOException, URISyntaxException, ParseException, JSONException,
             InvalidDataException {
 
-        logger.info("acceptheader value--->" + accept);
+        logger.debug("Requested format: " +  accept);
         String trimmedXML = xml.trim();
         if (trimmedXML.isEmpty()) {
             response.setStatus(500);
@@ -218,7 +274,7 @@ public class QStore {
                         .searchByAppellationId(xml, XML);
 
             }
-            logger.info("successful parsing of XML");
+            //logger.info("successful parsing of XML");
             response.setStatus(200);
             response.setContentType(accept);
             return returnString;
@@ -250,7 +306,7 @@ public class QStore {
             IOException, URISyntaxException, ParseException, JSONException,
             InvalidDataException {
 
-        logger.info("acceptheader value--->" + accept);
+        logger.debug("Requested format: " +  accept);
         String trimmedXML = xml.trim();
         if (trimmedXML.isEmpty()) {
             response.setStatus(500);
@@ -265,7 +321,7 @@ public class QStore {
                 returnString = repositorymanager.search(xml, XML);
 
             }
-            logger.info("successful parsing of XML");
+            logger.debug("Successfully parsed XML.");
             response.setStatus(200);
             response.setContentType(accept);
             return returnString;

@@ -127,18 +127,13 @@ public class SearchXmlParser  implements ISearchXmlParser {
 
 		}
 
-		else if (childNode.getName().equals(IXmlElements.RELATION_EVENT))
-
-		{
-
-			ISearchRelationEvent rootNode = getRelationEvent(childNode,
+		if (childNode.getName().equals(IXmlElements.RELATION_EVENT)) {
+		    ISearchRelationEvent rootNode = getRelationEvent(childNode,
 					nameSpace);
 			return rootNode;
-
-		} else {
-			throw new InvalidDataException();
-		}
-
+		} 
+		
+		throw new InvalidDataException();
 	}
 
 	/**
@@ -444,8 +439,7 @@ public class SearchXmlParser  implements ISearchXmlParser {
 			throws ParserException, IOException, URISyntaxException,
 			ParseException {
 
-		DateFormat formatter;
-		formatter = new SimpleDateFormat(IXmlElements.DATE_FORMAT);
+		DateFormat formatter = new SimpleDateFormat(IXmlElements.DATE_FORMAT);
 		ISearchAppellationEvent appellationEventObject = appellationEventFactory
 				.createAppellationEvent();
 
@@ -627,17 +621,22 @@ public class SearchXmlParser  implements ISearchXmlParser {
 							IXmlElements.CREATION_DATE, nameSpace))));
 		}
 		{
-			Element child = term.getChild(IXmlElements.INTERPRETATION,
+		    // extract interpretation
+			Element termInterpretation = term.getChild(IXmlElements.INTERPRETATION,
 					nameSpace);
 
-			if (child != null) {
-
+			if (termInterpretation != null) {
+			    
+			    String interpretation = termInterpretation.getText();
+			    String datatype = termInterpretation.getAttributeValue(IXmlElements.INTERPRETATION_DATATYPE);
+			    if (datatype != null) {
+			        termObject.setDatatype(datatype);
+			    }
 				termObject.setInterpretation(conceptFactory
-						.createSearchConcept(checkForSpaces(term.getChildText(
-								IXmlElements.INTERPRETATION, nameSpace))));
+						.createSearchConcept(checkForSpaces(interpretation)));
 
 				termObject.getInterpretation().setSearchType(
-						child.getAttributeValue(IXmlElements.SEARCH_TYPE));
+						termInterpretation.getAttributeValue(IXmlElements.SEARCH_TYPE));
 			}
 
 		}

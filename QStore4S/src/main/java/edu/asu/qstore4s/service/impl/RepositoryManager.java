@@ -117,8 +117,6 @@ public class RepositoryManager implements IRepositoryManager {
 			ParserException, IOException, ParseException, JSONException,
 			InvalidDataException {
 
-		logger.info("inside search method of repository manager");
-
 		ISearchCreationEvent queryObject = searchXmlParser.parseXML(xml);
 
 		List<CreationEvent> elementList = storeManager
@@ -174,8 +172,6 @@ public class RepositoryManager implements IRepositoryManager {
 	public String getList(String xml, String accept) throws ParserException,
 			IOException, URISyntaxException, ParseException,
 			InvalidDataException, JSONException {
-
-		logger.info("inside get method of repository manager");
 
 		List<String> idList = getConverter.parseXML(xml);
 

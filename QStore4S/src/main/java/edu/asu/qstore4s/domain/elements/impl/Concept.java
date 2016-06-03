@@ -2,8 +2,6 @@ package edu.asu.qstore4s.domain.elements.impl;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.springframework.data.annotation.TypeAlias;
-
 /**
  * This file contains the definition of Concept class.
  *
@@ -12,7 +10,7 @@ import org.springframework.data.annotation.TypeAlias;
 public class Concept extends Element {
 
 	private String sourceURI;
-
+	
 	public String getSourceURI() {
 		return sourceURI;
 	}

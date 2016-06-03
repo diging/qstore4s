@@ -799,7 +799,7 @@ public class DbConnector implements IDbConnector {
                 matchClauseTerm.append("- [r"
                         + UUID.randomUUID().toString().replaceAll("-", "")
                         + ":" + IXmlElements.RELATED_TO_TERMPARTS
-                        + "termParts - [r"
+                        + "] -> termParts - [r"
                         + UUID.randomUUID().toString().replaceAll("-", "")
                         + ":" + IXmlElements.RELATED_TO_TERMPART
                         + " ] -> termPart");
