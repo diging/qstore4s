@@ -316,8 +316,8 @@ public class XmltoObject extends AXmlParser implements IXmltoObject {
                                 appellationRelation, nameSpace,
                                 referencedObjectList);
                         relationObject.setObject(appellationObjEventObject);
-                    } else if (checkForSpaces(objectChild.getName()).equals(
-                            IXmlElements.RELATION)) {
+                    } else if (checkForSpaces(appellationRelation.getName()).equals(
+                            IXmlElements.RELATION_EVENT)) {
                         RelationEvent childRelationEventObject = relationEventFactory
                                 .createRelationEvent();
                         childRelationEventObject = getRelationEvent(
