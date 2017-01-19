@@ -16,42 +16,6 @@
 	<context:annotation-config></context:annotation-config>
 	<context:component-scan base-package="edu.asu.qstore4s" />
 
-	<!-- <neo4j:repositories base-package="edu.asu.qstore4s.repository"></neo4j:repositories>
-	<neo4j:config graphDatabaseService="graphDatabaseService"
-		base-package="edu.asu.qstore4s.domain" /> -->
-
-	<!-- <bean id="graphDatabaseService"
-		class="org.springframework.data.neo4j.rest.SpringCypherRestGraphDatabase">
-		<constructor-arg value="http://localhost:7474/db/data/"
-			index="0" />
-		<constructor-arg value="${neo4j.user}" index="1" />
-		<constructor-arg value="${neo4j.pw}" index="2" />
-	</bean> 
-
-	<bean id="template" class="org.springframework.data.neo4j.support.Neo4jTemplate">
-		<constructor-arg ref="graphDatabaseService">
-		</constructor-arg>
-	</bean>-->
-
-	<bean id="conversionService"
-		class="org.springframework.context.support.ConversionServiceFactoryBean">
-		<property name="converters">
-			<list>
-				<bean class="edu.asu.qstore4s.converters.ActorToStringConverter" />
-				<bean class="edu.asu.qstore4s.converters.StringToActorConverter" />
-				<bean class="edu.asu.qstore4s.converters.PlaceToStringConverter" />
-				<bean class="edu.asu.qstore4s.converters.StringToPlaceConverter" />
-				<bean class="edu.asu.qstore4s.converters.SourceReferenceToStringConverter" />
-				<bean class="edu.asu.qstore4s.converters.StringToSourceReferenceConverter" />
-				<bean class="edu.asu.qstore4s.converters.ConceptToStringConverter" />
-				<bean class="edu.asu.qstore4s.converters.StringToConceptConverter" />
-				<bean class="edu.asu.qstore4s.converters.VocabularyEntryToStringConverter" />
-				<bean class="edu.asu.qstore4s.converters.StringToVocabularyEntryConverter" />
-
-			</list>
-		</property>
-	</bean>
-
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
 		<property name="viewClass"
