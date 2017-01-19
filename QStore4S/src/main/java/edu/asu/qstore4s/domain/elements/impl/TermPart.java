@@ -3,10 +3,13 @@ package edu.asu.qstore4s.domain.elements.impl;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.springframework.data.annotation.TypeAlias;
-import org.springframework.data.neo4j.annotation.GraphId;
-import org.springframework.data.neo4j.annotation.GraphProperty;
-import org.springframework.data.neo4j.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.GraphId;
+import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Property;
+import org.neo4j.ogm.annotation.typeconversion.Convert;
+
+import edu.asu.qstore4s.db.neo4j.converters.SourceReferenceConverter;
+import edu.asu.qstore4s.db.neo4j.converters.VocabularyEntryConverter;
 
 /**
  * This file contains the definition of TermPart class.
@@ -26,11 +29,13 @@ public class TermPart extends Element {
 
 	private Integer position;
 	
-	@GraphProperty
+	@Property(name = "normalization")
+	@Convert(VocabularyEntryConverter.class)
 	private VocabularyEntry normalization;
 
 	
-	@GraphProperty
+	@Property(name = "source_reference")
+	@Convert(SourceReferenceConverter.class)
 	private SourceReference source_reference;
 	
 	public Integer getPosition() {

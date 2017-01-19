@@ -2,16 +2,18 @@ package edu.asu.qstore4s.db.neo4j.impl;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.neo4j.ogm.model.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.neo4j.conversion.Result;
-import org.springframework.data.neo4j.support.Neo4jTemplate;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.stereotype.Service;
 
 import edu.asu.qstore4s.controller.QStore;
@@ -50,7 +52,8 @@ public class DbConnector implements IDbConnector {
     private AppellationEventRepository appellationEventRepository;
 
     @Autowired
-    private Neo4jTemplate template;
+    @Qualifier("neo4jOperations")
+    private Neo4jOperations template;
 
     /**
      * {@inheritDoc}
@@ -181,10 +184,10 @@ public class DbConnector implements IDbConnector {
 
             LOG.info(query);
 
-            Result<RelationEvent> result = relationEventRepository.query(query,
-                    null);
+            Iterable<RelationEvent> results = template.queryForObjects(RelationEvent.class, query,
+                    new HashMap<String, String>());
 
-            Iterator<RelationEvent> iterator = result.iterator();
+            Iterator<RelationEvent> iterator = results.iterator();
 
             while (iterator.hasNext()) {
                 resultList.add(iterator.next());
@@ -218,8 +221,7 @@ public class DbConnector implements IDbConnector {
 
             LOG.info(query);
 
-            Result<AppellationEvent> result = appellationEventRepository.query(
-                    query, null);
+            Iterable<AppellationEvent> result = template.queryForObjects(AppellationEvent.class, query, new HashMap<String, String>());
 
             Iterator<AppellationEvent> iterator = result.iterator();
 

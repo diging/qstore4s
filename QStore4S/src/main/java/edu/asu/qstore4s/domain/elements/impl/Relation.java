@@ -3,14 +3,13 @@ package edu.asu.qstore4s.domain.elements.impl;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.neo4j.graphdb.Direction;
-import org.springframework.data.annotation.TypeAlias;
-import org.springframework.data.neo4j.annotation.Fetch;
-import org.springframework.data.neo4j.annotation.GraphId;
-import org.springframework.data.neo4j.annotation.GraphProperty;
-import org.springframework.data.neo4j.annotation.NodeEntity;
-import org.springframework.data.neo4j.annotation.RelatedTo;
+import org.neo4j.ogm.annotation.GraphId;
+import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Property;
+import org.neo4j.ogm.annotation.Relationship;
+import org.neo4j.ogm.annotation.typeconversion.Convert;
 
+import edu.asu.qstore4s.db.neo4j.converters.SourceReferenceConverter;
 import edu.asu.qstore4s.domain.events.impl.AppellationEvent;
 import edu.asu.qstore4s.domain.events.impl.CreationEvent;
 
@@ -25,21 +24,17 @@ public class Relation extends Element {
 	@GraphId
 	Long graphId;
 	
-	@Fetch
-	@RelatedTo(type="hasSubject", direction=Direction.OUTGOING)
+	@Relationship(type="hasSubject", direction=Relationship.OUTGOING)
 	private CreationEvent subject;
 	
-	@Fetch
-	@RelatedTo(type="hasObject", direction=Direction.OUTGOING)
+	@Relationship(type="hasObject", direction=Relationship.OUTGOING)
 	private CreationEvent object;
 	
-	@Fetch
-	@RelatedTo(type="hasPredicate", direction=Direction.OUTGOING)
+	@Relationship(type="hasPredicate", direction=Relationship.OUTGOING)
 	private AppellationEvent predicate;
 	
-	
-	
-	@GraphProperty
+	@Property(name = "source_reference")
+	@Convert(SourceReferenceConverter.class)
 	private SourceReference source_reference;
 	
 	@XmlElement(type=CreationEvent.class)
@@ -77,5 +72,13 @@ public class Relation extends Element {
 	public void setSourceReference(SourceReference reference) {
 		this.source_reference = reference;
 	}
+
+	public Long getGraphId() {
+        return graphId;
+    }
+
+    public void setGraphId(Long graphId) {
+        this.graphId = graphId;
+    }
 
 }

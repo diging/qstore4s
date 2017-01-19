@@ -8,13 +8,10 @@ import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.neo4j.graphdb.Direction;
-import org.springframework.data.annotation.TypeAlias;
-import org.springframework.data.neo4j.annotation.Fetch;
-import org.springframework.data.neo4j.annotation.GraphId;
-import org.springframework.data.neo4j.annotation.GraphProperty;
-import org.springframework.data.neo4j.annotation.NodeEntity;
-import org.springframework.data.neo4j.annotation.RelatedTo;
+import org.neo4j.ogm.annotation.GraphId;
+import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Property;
+import org.neo4j.ogm.annotation.Relationship;
 
 /**
  * This file contains the definition of TermParts class.
@@ -27,11 +24,10 @@ public class TermParts extends Element {
 	@GraphId
 	Long graphId;
 	
-	@Fetch
-	@RelatedTo(type="containsTerm", direction=Direction.OUTGOING)
+	@Relationship(type="containsTerm", direction=Relationship.OUTGOING)
 	private Set<TermPart> termParts;
 	
-	@GraphProperty
+	@Property(name = "source_reference")
 	private SourceReference source_reference;
 	
 	public TermParts() {

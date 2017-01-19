@@ -3,12 +3,11 @@ package edu.asu.qstore4s.domain.events.impl;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.neo4j.graphdb.Direction;
-import org.springframework.data.annotation.TypeAlias;
-import org.springframework.data.neo4j.annotation.Fetch;
-import org.springframework.data.neo4j.annotation.GraphProperty;
-import org.springframework.data.neo4j.annotation.RelatedTo;
+import org.neo4j.ogm.annotation.Property;
+import org.neo4j.ogm.annotation.Relationship;
+import org.neo4j.ogm.annotation.typeconversion.Convert;
 
+import edu.asu.qstore4s.db.neo4j.converters.ActorConverter;
 import edu.asu.qstore4s.domain.elements.impl.Actor;
 import edu.asu.qstore4s.domain.elements.impl.Relation;
 
@@ -19,11 +18,11 @@ import edu.asu.qstore4s.domain.elements.impl.Relation;
 @XmlRootElement
 public class RelationEvent extends CreationEvent {
 
-	@Fetch
-	@RelatedTo(type="hasRelation", direction=Direction.OUTGOING, elementClass=Relation.class)
+	@Relationship(type="hasRelation", direction=Relationship.OUTGOING)
 	private Relation relation;
 	
-	@GraphProperty
+	@Property(name = "relation_creator")
+	@Convert(ActorConverter.class)
 	private Actor relation_creator;
 
 	@XmlElement(type=Relation.class)

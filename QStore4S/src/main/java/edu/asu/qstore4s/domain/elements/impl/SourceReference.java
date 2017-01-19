@@ -2,8 +2,6 @@ package edu.asu.qstore4s.domain.elements.impl;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.springframework.data.annotation.TypeAlias;
-
 /**
  * This file contains the definition of SourceReference class.
  *
@@ -11,19 +9,18 @@ import org.springframework.data.annotation.TypeAlias;
 @XmlRootElement
 public class SourceReference extends Element {
 
-	private String sourceURI;
-	
-	public SourceReference() {
+    private String sourceURI;
 
-	sourceURI="";
-	}
-	
-	public String getSourceURI() {
-		return sourceURI;
-	}
+    public SourceReference() {
+        sourceURI = "";
+    }
 
-	public void setSourceURI(String uri) {
-		this.sourceURI = uri;
-	}
+    public String getSourceURI() {
+        return sourceURI;
+    }
+
+    public void setSourceURI(String uri) {
+        this.sourceURI = uri;
+    }
 
 }

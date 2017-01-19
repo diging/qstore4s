@@ -6,12 +6,15 @@ import java.util.Set;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.neo4j.graphdb.Direction;
-import org.springframework.data.neo4j.annotation.Fetch;
-import org.springframework.data.neo4j.annotation.GraphId;
-import org.springframework.data.neo4j.annotation.GraphProperty;
-import org.springframework.data.neo4j.annotation.NodeEntity;
-import org.springframework.data.neo4j.annotation.RelatedTo;
+import org.neo4j.ogm.annotation.GraphId;
+import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Property;
+import org.neo4j.ogm.annotation.Relationship;
+import org.neo4j.ogm.annotation.typeconversion.Convert;
+
+import edu.asu.qstore4s.db.neo4j.converters.ConceptConverter;
+import edu.asu.qstore4s.db.neo4j.converters.SourceReferenceConverter;
+import edu.asu.qstore4s.db.neo4j.converters.VocabularyEntryConverter;
 
 /**
  * This file contains the definition of Term class.
@@ -24,39 +27,28 @@ public class Term extends Element {
 	@GraphId
 	Long graphId;
 	
-	@GraphProperty
+	@Property(name = "interpretation")
+	@Convert(ConceptConverter.class)
 	private Concept interpretation;
 	
-	
-	
-	@GraphProperty
+	@Property(name = "normalized_representation")
+	@Convert(VocabularyEntryConverter.class)
 	private VocabularyEntry normalized_representation;
 	
-	@Fetch
-	@RelatedTo(type="hasTermParts", direction=Direction.OUTGOING)
+	@Relationship(type="hasTermParts", direction=Relationship.OUTGOING)
 	private TermParts printedRepresentation;
 	
-	@GraphProperty(propertyType=String.class)
+	@Property(name = "certain")
 	private Boolean certain;
 	
-	@GraphProperty(propertyType=String.class)
+	@Property(name = "datatype")
 	private String datatype;
-	
-	public String getDatatype() {
-        return datatype;
-    }
 
-    public void setDatatype(String datatype) {
-        this.datatype = datatype;
-    }
-
-    @Fetch
-	@RelatedTo(type="referencedTerm", direction=Direction.OUTGOING, elementClass=Term.class)
+    @Relationship(type="referencedTerm", direction=Relationship.OUTGOING)
 	private Set<Term> referencedTerms;
 	
-	
-	
-	@GraphProperty
+	@Property
+	@Convert(SourceReferenceConverter.class)
 	private SourceReference source_reference;
 	
 	public Term() {
@@ -66,7 +58,7 @@ public class Term extends Element {
 	public Concept getInterpretation() {
 		return interpretation;
 	}
-
+	
 	@XmlElement(type=Concept.class)
 	public void setInterpretation(Concept concept) {
 		this.interpretation = concept;
@@ -129,5 +121,14 @@ public class Term extends Element {
 	public void setSourceReference(SourceReference reference) {
 		this.source_reference = reference;
 	}
+	
+	public String getDatatype() {
+        return datatype;
+    }
+
+    public void setDatatype(String datatype) {
+        this.datatype = datatype;
+    }
+
 
 }

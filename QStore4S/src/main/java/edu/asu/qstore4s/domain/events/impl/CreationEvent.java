@@ -7,11 +7,13 @@ import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.springframework.data.annotation.TypeAlias;
-import org.springframework.data.neo4j.annotation.GraphId;
-import org.springframework.data.neo4j.annotation.GraphProperty;
-import org.springframework.data.neo4j.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.GraphId;
+import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Property;
+import org.neo4j.ogm.annotation.typeconversion.Convert;
 
+import edu.asu.qstore4s.db.neo4j.converters.ActorConverter;
+import edu.asu.qstore4s.db.neo4j.converters.SourceReferenceConverter;
 import edu.asu.qstore4s.domain.elements.impl.Actor;
 import edu.asu.qstore4s.domain.elements.impl.Element;
 import edu.asu.qstore4s.domain.elements.impl.SourceReference;
@@ -28,13 +30,14 @@ public class CreationEvent extends Element {
 	Long graphId;
 	
 
-	@GraphProperty
+	@Property(name = "source_reference")
+	@Convert(SourceReferenceConverter.class)
 	private SourceReference source_reference;
-	
 	
 	private Set<CreationEvent> predecessors;
 	
-	@GraphProperty
+	@Property(name = "interpretation_creator")
+	@Convert(ActorConverter.class)
 	private Actor interpretation_creator;
 	
 	public CreationEvent() {

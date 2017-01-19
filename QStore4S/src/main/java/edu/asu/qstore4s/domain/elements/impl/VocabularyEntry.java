@@ -2,8 +2,6 @@ package edu.asu.qstore4s.domain.elements.impl;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.springframework.data.annotation.TypeAlias;
-
 /**
  * This file contains the definition of VocabularyEntry class.
  *
