@@ -21,8 +21,9 @@ public interface IRepositoryManager {
 
 	/**
 	 * The method call parser to parse xml; call storagemanager to store
-	 * relation and appellation event into the database and call converter to convert 
-	 * list of the objects into the database.
+	 * relation and appellation event into the database and call converter to
+	 * convert list of the objects into the database.
+	 * 
 	 * @param xml
 	 * @param type
 	 * @return
@@ -31,11 +32,10 @@ public interface IRepositoryManager {
 	 * @throws IOException
 	 * @throws ParseException
 	 * @throws JSONException
-	 * @throws InvalidDataException 
+	 * @throws InvalidDataException
 	 */
-	public String processXMLandStoretoDb(String xml, String type)
-			throws URISyntaxException, ParserException, IOException,
-			ParseException, JSONException, InvalidDataException;
+	public String processXMLandStoretoDb(String xml, String type) throws URISyntaxException, ParserException,
+			IOException, ParseException, JSONException, InvalidDataException;
 
 	/**
 	 * The method return abstract data for particular id from the databse
@@ -44,7 +44,7 @@ public interface IRepositoryManager {
 	 * @param type
 	 * @return
 	 * @throws JSONException
-	 * @throws InvalidDataException 
+	 * @throws InvalidDataException
 	 */
 
 	String getShallow(String id, String type) throws JSONException, InvalidDataException;
@@ -56,7 +56,7 @@ public interface IRepositoryManager {
 	 * @param type
 	 * @return
 	 * @throws JSONException
-	 * @throws InvalidDataException 
+	 * @throws InvalidDataException
 	 */
 	String getFull(String id, String type) throws JSONException, InvalidDataException;
 
@@ -73,13 +73,13 @@ public interface IRepositoryManager {
 	 * @throws InvalidDataException
 	 */
 
-	String searchByAppellationId(String xml, String type)
-			throws URISyntaxException, ParserException, IOException,
+	String searchByAppellationId(String xml, String type) throws URISyntaxException, ParserException, IOException,
 			ParseException, JSONException, InvalidDataException;
-	
-	
+
 	/**
-	 * The method get search results from storemanager; convert in to xml using converter and return to controller.
+	 * The method get search results from storemanager; convert in to xml using
+	 * converter and return to controller.
+	 * 
 	 * @param xml
 	 * @param type
 	 * @return
@@ -91,13 +91,13 @@ public interface IRepositoryManager {
 	 * @throws InvalidDataException
 	 */
 
-	String search(String xml, String type) throws URISyntaxException,
-			ParserException, IOException, ParseException, JSONException,
-			InvalidDataException;
-	
-	
+	String search(String xml, String type) throws URISyntaxException, ParserException, IOException, ParseException,
+			JSONException, InvalidDataException;
+
 	/**
-	 * The method get list of relation and appellation node, covert into XML or json using converter class and return to controller. 
+	 * The method get list of relation and appellation node, covert into XML or
+	 * json using converter class and return to controller.
+	 * 
 	 * @param xml
 	 * @param accept
 	 * @return
@@ -109,6 +109,17 @@ public interface IRepositoryManager {
 	 * @throws JSONException
 	 */
 
-	public String getList(String xml, String accept) throws ParserException, IOException, URISyntaxException, ParseException, InvalidDataException, JSONException;
+	public String getList(String xml, String accept) throws ParserException, IOException, URISyntaxException,
+			ParseException, InvalidDataException, JSONException;
 
-	}
+	/**
+	 * This method executes the query that is passed and returns the result
+	 * 
+	 * @param query
+	 * @param clas
+	 * @param accept
+	 * @return
+	 * @throws JSONException 
+	 */
+	String executeQuery(String query, String clas, String accept) throws JSONException;
+}

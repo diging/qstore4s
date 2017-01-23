@@ -62,4 +62,12 @@ public interface IDbConnector {
 	List<CreationEvent> searchFromDb(ISearchCreationEvent queryObject)
 			throws InvalidDataException;
 
+	/**
+	 * This method executes the Query and returns the result
+	 * @param query
+	 * @param clas
+	 * @return
+	 */
+	List<CreationEvent> executeQuery(String query, String clas);
+
 }

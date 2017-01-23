@@ -23,8 +23,7 @@ public interface IStoreManager {
 	 * @throws InvalidDataException
 	 *             URISyntexException
 	 */
-	public List<CreationEvent> insertIntoDb(List<List<Element>> bean)
-			throws URISyntaxException, InvalidDataException;
+	public List<CreationEvent> insertIntoDb(List<List<Element>> bean) throws URISyntaxException, InvalidDataException;
 
 	/**
 	 * The method calls database dependent class to getthe object from the
@@ -44,8 +43,7 @@ public interface IStoreManager {
 	 * @return
 	 * @throws InvalidDataException
 	 */
-	List<CreationEvent> searchObjectFromDb(ISearchCreationEvent queryObject)
-			throws InvalidDataException;
+	List<CreationEvent> searchObjectFromDb(ISearchCreationEvent queryObject) throws InvalidDataException;
 
 	/**
 	 * The method calls database dependent class to search list of the relation
@@ -56,9 +54,8 @@ public interface IStoreManager {
 	 * @throws URISyntaxException
 	 * @throws InvalidDataException
 	 */
-	List<CreationEvent> searchRelationFromDb(
-			List<List<Element>> creationEventList) throws URISyntaxException,
-			InvalidDataException;
+	List<CreationEvent> searchRelationFromDb(List<List<Element>> creationEventList)
+			throws URISyntaxException, InvalidDataException;
 
 	/**
 	 * The method calls database dependent class to insert list of the object
@@ -66,7 +63,15 @@ public interface IStoreManager {
 	 * 
 	 * @throws InvalidDataException
 	 */
-	public List<CreationEvent> getObjectFromDb(List<String> idList)
-			throws InvalidDataException;
+	public List<CreationEvent> getObjectFromDb(List<String> idList) throws InvalidDataException;
+
+	/**
+	 * This method executes the given query and returns the result
+	 * 
+	 * @param query
+	 * @param clas
+	 * @return
+	 */
+    public List<CreationEvent> executeQuery(String query, String clas);
 
 }
