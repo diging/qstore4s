@@ -68,6 +68,6 @@ public interface IDbConnector {
 	 * @param clas
 	 * @return
 	 */
-	List<CreationEvent> executeQuery(String query, String clas);
+	List<CreationEvent> executeQuery(String query, Class<?> clas);
 
 }

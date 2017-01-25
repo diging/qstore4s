@@ -4,16 +4,13 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.Principal;
 import java.text.ParseException;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +20,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import edu.asu.qstore4s.converter.impl.Converter;
+import edu.asu.qstore4s.domain.events.impl.AppellationEvent;
+import edu.asu.qstore4s.domain.events.impl.RelationEvent;
+import edu.asu.qstore4s.error.Error;
 import edu.asu.qstore4s.exception.InvalidDataException;
 import edu.asu.qstore4s.exception.ParserException;
 import edu.asu.qstore4s.service.IRepositoryManager;
@@ -36,21 +35,20 @@ import edu.asu.qstore4s.service.IRepositoryManager;
 @Controller
 public class QStore {
 
-    private static final Logger logger = LoggerFactory.getLogger(QStore.class);
     private static final String RETURN_JSON = "application/json";
 
     private static final String XML = "application/xml";
     private static final String JSON = "application/json";
 
+    private static final HashMap<String, Class<?>> classMap = new HashMap<String, Class<?>>() {
+        {
+            put("relationevent", RelationEvent.class);
+            put("appellationevent", AppellationEvent.class);
+        }
+    };
+
     @Autowired
     IRepositoryManager repositorymanager;
-
-    @Autowired
-    @Qualifier("neo4jOperations")
-    private Neo4jOperations template;
-
-    @Autowired
-    Converter converter;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String testStatus(ModelMap model) {
@@ -136,24 +134,26 @@ public class QStore {
             @RequestHeader("Accept") String accept) throws ParserException, IOException, URISyntaxException,
                     ParseException, JSONException, InvalidDataException {
 
+        edu.asu.qstore4s.error.Error error = null;
+
         if (xml.equals("")) {
-            response.setStatus(500);
-            return "Please provide XML in body of the post request.";
-
-        } else {
-            String returnString = "";
-            if (accept != null && accept.equals(RETURN_JSON)) {
-
-                returnString = repositorymanager.processXMLandStoretoDb(xml, JSON);
-            } else {
-                returnString = repositorymanager.processXMLandStoretoDb(xml, XML);
-
-            }
-            logger.debug("Successfully parsed XML.");
-            response.setStatus(200);
-            response.setContentType(accept);
-            return returnString;
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            error = new Error("Please provide XML in body of the post request.");
+            return error.toString(accept);
         }
+
+        String returnString = "";
+
+        if (accept != null && accept.equals(RETURN_JSON)) {
+            returnString = repositorymanager.processXMLandStoretoDb(xml, JSON);
+        } else {
+            returnString = repositorymanager.processXMLandStoretoDb(xml, XML);
+        }
+
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType(accept);
+        return returnString;
+
     }
 
     /**
@@ -180,7 +180,6 @@ public class QStore {
             throw new InvalidDataException("Please provide id.");
         }
 
-        logger.info("Requested format: " + accept);
         String trimid = idString.trim();
         String returnString = "";
 
@@ -191,38 +190,41 @@ public class QStore {
 
         }
 
+        response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(accept);
         return returnString;
 
     }
 
     @ResponseBody
-    @RequestMapping(value = "/getResultForQuery", method = RequestMethod.POST)
-    public String getAllNetworks(HttpServletRequest request, HttpServletResponse response,
+    @RequestMapping(value = "/query", method = RequestMethod.POST)
+    public String query(HttpServletRequest request, HttpServletResponse response,
             @RequestHeader("Accept") String accept, @RequestBody String query, @RequestParam("class") String clas)
                     throws JSONException {
 
+        edu.asu.qstore4s.error.Error error = null;
         if (query.isEmpty()) {
-            response.setStatus(400);
-            return "Please provide the query to execute the request";
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            error = new Error("Please provide the query to execute the request");
+            return error.toString(accept);
         }
 
-        if (clas.isEmpty()) {
-            response.setStatus(400);
-            return "Please provide the Class to execute the request";
+        Class<?> classs = classMap.get(clas);
+        if (classs == null) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            error = new Error("Please provide a valid Class to execute the request");
+            return error.toString(accept);
         }
-
-        logger.info("Requested format: " + accept);
 
         String returnString = "";
 
         if (accept != null && accept.equals(RETURN_JSON)) {
-            returnString = repositorymanager.executeQuery(query, clas, JSON);
+            returnString = repositorymanager.executeQuery(query, classs, JSON);
         } else {
-            returnString = repositorymanager.executeQuery(query, clas, XML);
+            returnString = repositorymanager.executeQuery(query, classs, XML);
         }
 
-        response.setStatus(200);
+        response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(accept);
         return returnString;
 
@@ -254,7 +256,6 @@ public class QStore {
             throw new InvalidDataException("Please provide content in given XML.");
         }
 
-        logger.info("Requested format: " + accept);
         String returnString = repositorymanager.getList(xml, accept);
 
         response.setContentType(accept);
@@ -286,11 +287,13 @@ public class QStore {
             @RequestBody String xml, @RequestHeader("Accept") String accept) throws ParserException, IOException,
                     URISyntaxException, ParseException, JSONException, InvalidDataException {
 
-        logger.debug("Requested format: " + accept);
         String trimmedXML = xml.trim();
+
+        edu.asu.qstore4s.error.Error error = null;
         if (trimmedXML.isEmpty()) {
-            response.setStatus(500);
-            return "Please provide XML in body of the post request.";
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            error = new Error("Please provide XML in body of the post request.");
+            return error.toString(accept);
 
         } else {
             String returnString = "";
@@ -301,8 +304,7 @@ public class QStore {
                 returnString = repositorymanager.searchByAppellationId(xml, XML);
 
             }
-            // logger.info("successful parsing of XML");
-            response.setStatus(200);
+            response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType(accept);
             return returnString;
         }
@@ -331,12 +333,13 @@ public class QStore {
             @RequestHeader("Accept") String accept) throws ParserException, IOException, URISyntaxException,
                     ParseException, JSONException, InvalidDataException {
 
-        logger.debug("Requested format: " + accept);
         String trimmedXML = xml.trim();
-        if (trimmedXML.isEmpty()) {
-            response.setStatus(500);
-            return "Please provide XML in body of the post request.";
 
+        edu.asu.qstore4s.error.Error error = null;
+        if (trimmedXML.isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            error = new Error("Please provide XML in body of the post request.");
+            return error.toString(accept);
         } else {
             String returnString = "";
             if (accept != null && accept.equals(RETURN_JSON)) {
@@ -346,8 +349,7 @@ public class QStore {
                 returnString = repositorymanager.search(xml, XML);
 
             }
-            logger.debug("Successfully parsed XML.");
-            response.setStatus(200);
+            response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType(accept);
             return returnString;
         }
