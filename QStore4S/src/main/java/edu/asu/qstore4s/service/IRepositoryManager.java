@@ -116,10 +116,10 @@ public interface IRepositoryManager {
      * This method executes the query that is passed and returns the result
      * 
      * @param query
-     * @param clas
+     * @param clazz
      * @param accept
      * @return
      * @throws JSONException
      */
-    String executeQuery(String query, Class<?> clas, String accept) throws JSONException;
+    String executeQuery(String query, Class<?> clazz, String accept) throws JSONException;
 }

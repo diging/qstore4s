@@ -91,8 +91,8 @@ public class StoreManager implements IStoreManager {
      * {@inheritDoc}
      */
     @Override
-    public List<CreationEvent> executeQuery(String query, Class<?> clas) {
-        return dbConnector.executeQuery(query, clas);
+    public List<CreationEvent> executeQuery(String query, Class<?> clazz) {
+        return dbConnector.executeQuery(query, clazz);
     }
 
 }

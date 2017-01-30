@@ -677,9 +677,9 @@ public class DbConnector implements IDbConnector {
      * {@inheritDoc}
      */
     @Override
-    public List<CreationEvent> executeQuery(String query, Class<?> clas) {
+    public List<CreationEvent> executeQuery(String query, Class<?> clazz) {
 
-        Iterable<?> results = template.queryForObjects(clas, query, new HashMap<String, String>());
+        Iterable<?> results = template.queryForObjects(clazz, query, new HashMap<String, String>());
 
         Iterator<?> iterator = results.iterator();
 

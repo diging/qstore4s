@@ -26,50 +26,50 @@ import edu.asu.qstore4s.domain.elements.impl.SourceReference;
 @NodeEntity
 public class CreationEvent extends Element {
 
-	@GraphId
-	Long graphId;
-	
+    @GraphId
+    Long graphId;
+
     @Property(name = "source_reference")
-	@Convert(SourceReferenceConverter.class)
-	private SourceReference source_reference;
-	
-	private Set<CreationEvent> predecessors;
-	
-	@Property(name = "interpretation_creator")
-	@Convert(ActorConverter.class)
-	private Actor interpretation_creator;
-	
-	public CreationEvent() {
-		predecessors = new HashSet<CreationEvent>();
-	}
-	
-	@XmlElement(type=SourceReference.class)
-	public SourceReference getSourceReference() {
-		return source_reference;
-	}
+    @Convert(SourceReferenceConverter.class)
+    private SourceReference source_reference;
 
-	public void setSourceReference(SourceReference reference) {
-		this.source_reference = reference;
-	}
+    private Set<CreationEvent> predecessors;
 
-	@XmlAnyElement
-	public Set<CreationEvent> getPredecessors() {
-		return predecessors;
-	}
+    @Property(name = "interpretation_creator")
+    @Convert(ActorConverter.class)
+    private Actor interpretation_creator;
 
-	public void setPredecessors(Set<CreationEvent> predecessors) {
-		this.predecessors = predecessors;
-	}
+    public CreationEvent() {
+        predecessors = new HashSet<CreationEvent>();
+    }
 
-	public Actor getInterpretationCreator() {
-		return interpretation_creator;
-	}
+    @XmlElement(type = SourceReference.class)
+    public SourceReference getSourceReference() {
+        return source_reference;
+    }
 
-	public void setInterpretationCreator(Actor interpretationCreator) {
-		this.interpretation_creator = interpretationCreator;
-	}
-	
-	public Long getGraphId() {
+    public void setSourceReference(SourceReference reference) {
+        this.source_reference = reference;
+    }
+
+    @XmlAnyElement
+    public Set<CreationEvent> getPredecessors() {
+        return predecessors;
+    }
+
+    public void setPredecessors(Set<CreationEvent> predecessors) {
+        this.predecessors = predecessors;
+    }
+
+    public Actor getInterpretationCreator() {
+        return interpretation_creator;
+    }
+
+    public void setInterpretationCreator(Actor interpretationCreator) {
+        this.interpretation_creator = interpretationCreator;
+    }
+
+    public Long getGraphId() {
         return graphId;
     }
 

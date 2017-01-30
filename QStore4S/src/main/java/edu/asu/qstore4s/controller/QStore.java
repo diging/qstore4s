@@ -208,8 +208,8 @@ public class QStore {
             return new Error("Please provide the query to execute the request").toString(accept);
         }
 
-        Class<?> classs = classMap.get(clas);
-        if (classs == null) {
+        Class<?> clazz = classMap.get(clas);
+        if (clazz == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return new Error("Please provide a valid Class to execute the request").toString(accept);
         }
@@ -217,9 +217,9 @@ public class QStore {
         String returnString = "";
 
         if (accept != null && accept.equals(RETURN_JSON)) {
-            returnString = repositorymanager.executeQuery(query, classs, JSON);
+            returnString = repositorymanager.executeQuery(query, clazz, JSON);
         } else {
-            returnString = repositorymanager.executeQuery(query, classs, XML);
+            returnString = repositorymanager.executeQuery(query, clazz, XML);
         }
 
         response.setStatus(HttpServletResponse.SC_OK);

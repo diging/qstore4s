@@ -69,9 +69,9 @@ public interface IStoreManager {
      * This method executes the given query and returns the result
      * 
      * @param query
-     * @param clas
+     * @param clazz
      * @return
      */
-    public List<CreationEvent> executeQuery(String query, Class<?> clas);
+    public List<CreationEvent> executeQuery(String query, Class<?> clazz);
 
 }

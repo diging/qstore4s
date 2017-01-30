@@ -181,9 +181,9 @@ public class RepositoryManager implements IRepositoryManager {
      * @throws JSONException
      */
     @Override
-    public String executeQuery(String query, Class<?> clas, String accept) throws JSONException {
+    public String executeQuery(String query, Class<?> clazz, String accept) throws JSONException {
 
-        List<CreationEvent> elementList = storeManager.executeQuery(query, clas);
+        List<CreationEvent> elementList = storeManager.executeQuery(query, clazz);
 
         if (accept.equals(JSON)) {
             return converter.convertToJson(elementList);
