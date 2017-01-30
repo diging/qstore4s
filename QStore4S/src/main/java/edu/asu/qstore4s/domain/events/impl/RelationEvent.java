@@ -18,29 +18,29 @@ import edu.asu.qstore4s.domain.elements.impl.Relation;
 @XmlRootElement
 public class RelationEvent extends CreationEvent {
 
-	@Relationship(type="hasRelation", direction=Relationship.OUTGOING)
-	private Relation relation;
-	
-	@Property(name = "relation_creator")
-	@Convert(ActorConverter.class)
-	private Actor relation_creator;
+    @Relationship(type = "hasRelation", direction = Relationship.OUTGOING)
+    private Relation relation;
 
-	@XmlElement(type=Relation.class)
-	public Relation getRelation() {
-		return relation;
-	}
+    @Property(name = "relation_creator")
+    @Convert(ActorConverter.class)
+    private Actor relation_creator;
 
-	public void setRelation(Relation relation) {
-		this.relation = relation;
-	}
+    @XmlElement(type = Relation.class)
+    public Relation getRelation() {
+        return relation;
+    }
 
-	@XmlElement(type=Actor.class)
-	public Actor getRelationCreator() {
-		return relation_creator;
-	}
+    public void setRelation(Relation relation) {
+        this.relation = relation;
+    }
 
-	public void setRelationCreator(Actor actor) {
-		this.relation_creator = actor;
-	}
+    @XmlElement(type = Actor.class)
+    public Actor getRelationCreator() {
+        return relation_creator;
+    }
+
+    public void setRelationCreator(Actor actor) {
+        this.relation_creator = actor;
+    }
 
 }

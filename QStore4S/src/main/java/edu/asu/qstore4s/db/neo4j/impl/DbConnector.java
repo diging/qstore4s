@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.neo4j.ogm.model.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,19 +65,16 @@ public class DbConnector implements IDbConnector {
             RelationEvent relationEvent = relationEventRepository.findById(id);
 
             if (relationEvent == null) {
-                throw new InvalidDataException("No relationEvent exists for "
-                        + id);
+                throw new InvalidDataException("No relationEvent exists for " + id);
             } else {
                 return relationEvent;
             }
         } else if (id.length() >= IXmlElements.APPELLATION_ID_PREFIX.length()
                 && id.startsWith(IXmlElements.APPELLATION_ID_PREFIX)) {
-            AppellationEvent appellationEvent = appellationEventRepository
-                    .findById(id);
+            AppellationEvent appellationEvent = appellationEventRepository.findById(id);
 
             if (appellationEvent == null) {
-                throw new InvalidDataException(
-                        "No appellationEvent exists for " + id);
+                throw new InvalidDataException("No appellationEvent exists for " + id);
             } else {
                 return appellationEvent;
             }
@@ -86,8 +82,7 @@ public class DbConnector implements IDbConnector {
         }
 
         else {
-            throw new InvalidDataException(
-                    "No relationEvent or AppelationEvent exists for" + id);
+            throw new InvalidDataException("No relationEvent or AppelationEvent exists for" + id);
 
         }
     }
@@ -97,8 +92,7 @@ public class DbConnector implements IDbConnector {
      */
 
     @Override
-    public List<CreationEvent> get(List<String> idList)
-            throws InvalidDataException {
+    public List<CreationEvent> get(List<String> idList) throws InvalidDataException {
 
         List<CreationEvent> elementList = new ArrayList<CreationEvent>();
         for (String id : idList) {
@@ -115,23 +109,19 @@ public class DbConnector implements IDbConnector {
      */
 
     @Override
-    public List<CreationEvent> searchRelationInDb(
-            List<Element> creationEventList) throws URISyntaxException,
-            InvalidDataException {
+    public List<CreationEvent> searchRelationInDb(List<Element> creationEventList)
+            throws URISyntaxException, InvalidDataException {
 
         List<CreationEvent> newCreationEventList = new ArrayList<CreationEvent>();
         Iterator<Element> creationEventIterator = creationEventList.iterator();
         while (creationEventIterator.hasNext()) {
-            CreationEvent creationEventObject = (CreationEvent) (creationEventIterator
-                    .next());
+            CreationEvent creationEventObject = (CreationEvent) (creationEventIterator.next());
 
             if (creationEventObject instanceof AppellationEvent) {
 
-                AppellationEvent app = appellationEventRepository
-                        .findById(creationEventObject.getId());
+                AppellationEvent app = appellationEventRepository.findById(creationEventObject.getId());
 
-                List<RelationEvent> relationEventList = appellationEventRepository
-                        .getRelationfromId(app);
+                List<RelationEvent> relationEventList = appellationEventRepository.getRelationfromId(app);
 
                 for (RelationEvent relation : relationEventList) {
                     newCreationEventList.add(relation);
@@ -149,8 +139,7 @@ public class DbConnector implements IDbConnector {
      */
 
     @Override
-    public List<CreationEvent> searchFromDb(ISearchCreationEvent queryObject)
-            throws InvalidDataException {
+    public List<CreationEvent> searchFromDb(ISearchCreationEvent queryObject) throws InvalidDataException {
 
         List<CreationEvent> resultList = new ArrayList<CreationEvent>();
         StringBuilder matchClause = new StringBuilder();
@@ -158,18 +147,12 @@ public class DbConnector implements IDbConnector {
         StringBuilder match = new StringBuilder();
 
         if (queryObject instanceof ISearchRelationEvent) {
-            match = getRelationEventsClause((ISearchRelationEvent) queryObject,
-                    whereClause, matchClause);
+            match = getRelationEventsClause((ISearchRelationEvent) queryObject, whereClause, matchClause);
 
             LOG.info("match---> " + match.toString());
 
-            String query = "start "
-                    + queryObject.getName()
-                    + " = node(*)  match "
-                    + match.toString()
-                    + " where "
-                    + whereClause.toString().trim()
-                            .replaceFirst("\\s+\\w+$", "") + "return distinct "
+            String query = "start " + queryObject.getName() + " = node(*)  match " + match.toString() + " where "
+                    + whereClause.toString().trim().replaceFirst("\\s+\\w+$", "") + "return distinct "
                     + queryObject.getName();
             query = query.replaceAll(",,", ",");
 
@@ -194,18 +177,12 @@ public class DbConnector implements IDbConnector {
             }
 
         } else if (queryObject instanceof ISearchAppellationEvent) {
-            match = getAppellationClause((ISearchAppellationEvent) queryObject,
-                    whereClause, matchClause);
+            match = getAppellationClause((ISearchAppellationEvent) queryObject, whereClause, matchClause);
 
             LOG.info("match---> " + matchClause.toString());
 
-            String query = "start "
-                    + queryObject.getName()
-                    + " = node(*)  match "
-                    + match.toString()
-                    + " where "
-                    + whereClause.toString().trim()
-                            .replaceFirst("\\s+\\w+$", "") + "return distinct "
+            String query = "start " + queryObject.getName() + " = node(*)  match " + match.toString() + " where "
+                    + whereClause.toString().trim().replaceFirst("\\s+\\w+$", "") + "return distinct "
                     + queryObject.getName();
 
             query = query.replaceAll("  ", " ");
@@ -221,7 +198,8 @@ public class DbConnector implements IDbConnector {
 
             LOG.info(query);
 
-            Iterable<AppellationEvent> result = template.queryForObjects(AppellationEvent.class, query, new HashMap<String, String>());
+            Iterable<AppellationEvent> result = template.queryForObjects(AppellationEvent.class, query,
+                    new HashMap<String, String>());
 
             Iterator<AppellationEvent> iterator = result.iterator();
 
@@ -243,15 +221,12 @@ public class DbConnector implements IDbConnector {
      * @param matchClause
      * @return
      */
-    private StringBuilder getRelationEventsClause(
-            ISearchRelationEvent queryObject, StringBuilder whereClause,
+    private StringBuilder getRelationEventsClause(ISearchRelationEvent queryObject, StringBuilder whereClause,
             StringBuilder matchClause) {
 
         ISearchRelation relationObject = queryObject.getRelation();
-        matchClause.append(queryObject.getName() + "- [r"
-                + UUID.randomUUID().toString().replaceAll("-", "") + ":"
-                + IXmlElements.RELATED_TO_RELATION + "] ->"
-                + relationObject.getName());
+        matchClause.append(queryObject.getName() + "- [r" + UUID.randomUUID().toString().replaceAll("-", "") + ":"
+                + IXmlElements.RELATED_TO_RELATION + "] ->" + relationObject.getName());
         StringBuilder matchClauseSubject = new StringBuilder();
         StringBuilder matchClausePredicate = new StringBuilder();
         StringBuilder matchClauseObject = new StringBuilder();
@@ -270,130 +245,98 @@ public class DbConnector implements IDbConnector {
 
         }
 
-        whereClause
-                .append((queryObject.getCreationDate() != null) ? (buildWhereCluse(
-                        queryObject.getName(), IXmlElements.CREATION_DATE,
-                        queryObject.getCreationDate().getTime() + "")) : "");
+        whereClause.append((queryObject.getCreationDate() != null) ? (buildWhereCluse(queryObject.getName(),
+                IXmlElements.CREATION_DATE, queryObject.getCreationDate().getTime() + "")) : "");
 
         if (queryObject.getCreationDate() != null)
-            whereClause.append(queryObject.getConnector() != null ? " "
-                    + queryObject.getConnector() + " " : " " + IXmlElements.AND
-                    + " ");
+            whereClause.append(queryObject.getConnector() != null ? " " + queryObject.getConnector() + " "
+                    : " " + IXmlElements.AND + " ");
 
-        whereClause
-                .append((queryObject.getCreationPlace() != null) ? (buildWhereClause(
+        whereClause.append((queryObject.getCreationPlace() != null) ? (buildWhereClause(
 
-                queryObject.getName(), IXmlElements.CREATION_PLACE, queryObject
-                        .getCreationPlace().getSourceURI(), queryObject
-                        .getCreationPlace().getSearchType())) : "");
+                queryObject.getName(), IXmlElements.CREATION_PLACE, queryObject.getCreationPlace().getSourceURI(),
+                queryObject.getCreationPlace().getSearchType())) : "");
 
         if (queryObject.getCreationPlace() != null)
-            whereClause.append(queryObject.getConnector() != null ? " "
-                    + queryObject.getConnector() + " " : " " + IXmlElements.AND
-                    + " ");
+            whereClause.append(queryObject.getConnector() != null ? " " + queryObject.getConnector() + " "
+                    : " " + IXmlElements.AND + " ");
 
         whereClause
-                .append((queryObject.getCreator() != null) ? (buildWhereClause(
-                        queryObject.getName(), IXmlElements.CREATOR,
-                        queryObject.getCreator().getSourceURI(), queryObject
-                                .getCreator().getSearchType())) : "");
-
-        if (queryObject.getCreator() != null)
-            whereClause.append(queryObject.getConnector() != null ? " "
-                    + queryObject.getConnector() + " " : " " + IXmlElements.AND
-                    + " ");
-
-        whereClause
-                .append((queryObject.getInterpretationCreator() != null) ? (buildWhereClause(
-                        queryObject.getName(),
-                        IXmlElements.INTERPRETATION_CREATOR, queryObject
-                                .getInterpretationCreator().getSourceURI(),
-                        queryObject.getInterpretationCreator().getSearchType()))
+                .append((queryObject.getCreator() != null)
+                        ? (buildWhereClause(queryObject.getName(), IXmlElements.CREATOR,
+                                queryObject.getCreator().getSourceURI(), queryObject.getCreator().getSearchType()))
                         : "");
 
-        if (queryObject.getInterpretationCreator() != null)
-            whereClause.append(queryObject.getConnector() != null ? " "
-                    + queryObject.getConnector() + " " : " " + IXmlElements.AND
-                    + " ");
+        if (queryObject.getCreator() != null)
+            whereClause.append(queryObject.getConnector() != null ? " " + queryObject.getConnector() + " "
+                    : " " + IXmlElements.AND + " ");
 
-        whereClause
-                .append((queryObject.getRelationCreator() != null) ? (buildWhereClause(
-                        queryObject.getName(), IXmlElements.RELATION_CREATOR,
-                        queryObject.getRelationCreator().getSourceURI(),
-                        queryObject.getRelationCreator().getSearchType())) : "");
+        whereClause.append((queryObject.getInterpretationCreator() != null) ? (buildWhereClause(queryObject.getName(),
+                IXmlElements.INTERPRETATION_CREATOR, queryObject.getInterpretationCreator().getSourceURI(),
+                queryObject.getInterpretationCreator().getSearchType())) : "");
+
+        if (queryObject.getInterpretationCreator() != null)
+            whereClause.append(queryObject.getConnector() != null ? " " + queryObject.getConnector() + " "
+                    : " " + IXmlElements.AND + " ");
+
+        whereClause.append((queryObject.getRelationCreator() != null) ? (buildWhereClause(queryObject.getName(),
+                IXmlElements.RELATION_CREATOR, queryObject.getRelationCreator().getSourceURI(),
+                queryObject.getRelationCreator().getSearchType())) : "");
 
         if (queryObject.getRelationCreator() != null)
-            whereClause.append(queryObject.getConnector() != null ? " "
-                    + queryObject.getConnector() + " " : " " + IXmlElements.AND
-                    + " ");
+            whereClause.append(queryObject.getConnector() != null ? " " + queryObject.getConnector() + " "
+                    : " " + IXmlElements.AND + " ");
 
-        whereClause
-                .append((queryObject.getSourceReference() != null) ? (buildWhereClause(
-                        queryObject.getName(), IXmlElements.SOURCE_REFERENCE,
-                        queryObject.getSourceReference().getSourceURI(),
-                        queryObject.getSourceReference().getSearchType())) : "");
+        whereClause.append((queryObject.getSourceReference() != null) ? (buildWhereClause(queryObject.getName(),
+                IXmlElements.SOURCE_REFERENCE, queryObject.getSourceReference().getSourceURI(),
+                queryObject.getSourceReference().getSearchType())) : "");
 
         if (queryObject.getSourceReference() != null)
             whereClause.append(" " + IXmlElements.AND + " ");
 
-        whereClause
-                .append((relationObject.getCreationDate() != null) ? (buildWhereCluse(
-                        relationObject.getName(), IXmlElements.CREATION_DATE,
-                        relationObject.getCreationDate().getTime() + "")) : "");
+        whereClause.append((relationObject.getCreationDate() != null) ? (buildWhereCluse(relationObject.getName(),
+                IXmlElements.CREATION_DATE, relationObject.getCreationDate().getTime() + "")) : "");
 
         if (relationObject.getCreationDate() != null)
-            whereClause.append(relationObject.getConnector() != null ? " "
-                    + relationObject.getConnector() + " " : " "
-                    + IXmlElements.AND + " ");
+            whereClause.append(relationObject.getConnector() != null ? " " + relationObject.getConnector() + " "
+                    : " " + IXmlElements.AND + " ");
 
-        whereClause
-                .append((relationObject.getCreationPlace() != null) ? (buildWhereClause(
-                        relationObject.getName(), IXmlElements.CREATION_PLACE,
-                        relationObject.getCreationPlace().getSourceURI(),
-                        relationObject.getCreationPlace().getSearchType()))
-                        : "");
+        whereClause.append((relationObject.getCreationPlace() != null) ? (buildWhereClause(relationObject.getName(),
+                IXmlElements.CREATION_PLACE, relationObject.getCreationPlace().getSourceURI(),
+                relationObject.getCreationPlace().getSearchType())) : "");
 
         if (relationObject.getCreationPlace() != null)
-            whereClause.append(relationObject.getConnector() != null ? " "
-                    + relationObject.getConnector() + " " : " "
-                    + IXmlElements.AND + " ");
+            whereClause.append(relationObject.getConnector() != null ? " " + relationObject.getConnector() + " "
+                    : " " + IXmlElements.AND + " ");
 
-        whereClause
-                .append((relationObject.getCreator() != null) ? (buildWhereClause(
-                        relationObject.getName(), IXmlElements.CREATOR,
-                        relationObject.getCreator().getSourceURI(),
-                        relationObject.getCreator().getSearchType())) : "");
+        whereClause.append((relationObject.getCreator() != null)
+                ? (buildWhereClause(relationObject.getName(), IXmlElements.CREATOR,
+                        relationObject.getCreator().getSourceURI(), relationObject.getCreator().getSearchType()))
+                : "");
 
         if (relationObject.getCreator() != null)
-            whereClause.append(relationObject.getConnector() != null ? " "
-                    + relationObject.getConnector() + " " : " "
-                    + IXmlElements.AND + " ");
+            whereClause.append(relationObject.getConnector() != null ? " " + relationObject.getConnector() + " "
+                    : " " + IXmlElements.AND + " ");
 
-        whereClause
-                .append((relationObject.getCreationDate() != null) ? (buildWhereCluse(
-                        relationObject.getName(), IXmlElements.CREATION_DATE,
-                        relationObject.getCreationDate().getTime() + "")) : "");
+        whereClause.append((relationObject.getCreationDate() != null) ? (buildWhereCluse(relationObject.getName(),
+                IXmlElements.CREATION_DATE, relationObject.getCreationDate().getTime() + "")) : "");
 
         if (relationObject.getCreationDate() != null)
-            whereClause.append(relationObject.getConnector() != null ? " "
-                    + relationObject.getConnector() + " " : " "
-                    + IXmlElements.AND + " ");
+            whereClause.append(relationObject.getConnector() != null ? " " + relationObject.getConnector() + " "
+                    : " " + IXmlElements.AND + " ");
 
         ISearchCreationEvent subjectObject = relationObject.getSubject();
 
         if (subjectObject != null) {
-            matchClauseSubject.append("- [r"
-                    + UUID.randomUUID().toString().replaceAll("-", "") + ":"
+            matchClauseSubject.append("- [r" + UUID.randomUUID().toString().replaceAll("-", "") + ":"
                     + IXmlElements.RELATED_TO_SUBJECT + "] ->");
 
             if (subjectObject instanceof ISearchAppellationEvent) {
-                matchClauseSubject = getAppellationClause(
-                        (ISearchAppellationEvent) subjectObject, whereClause,
+                matchClauseSubject = getAppellationClause((ISearchAppellationEvent) subjectObject, whereClause,
                         matchClauseSubject);
 
             } else if (subjectObject instanceof ISearchRelationEvent) {
-                matchClauseSubject = getRelationEventsClause(
-                        (ISearchRelationEvent) subjectObject, whereClause,
+                matchClauseSubject = getRelationEventsClause((ISearchRelationEvent) subjectObject, whereClause,
                         matchClauseSubject);
 
             }
@@ -403,18 +346,15 @@ public class DbConnector implements IDbConnector {
 
         ISearchCreationEvent predicateObject = relationObject.getPredicate();
         if (predicateObject != null) {
-            matchClausePredicate.append("- [r"
-                    + UUID.randomUUID().toString().replaceAll("-", "") + ":"
+            matchClausePredicate.append("- [r" + UUID.randomUUID().toString().replaceAll("-", "") + ":"
                     + IXmlElements.RELATED_TO_PREDICATE + "] ->");
 
             if (predicateObject instanceof ISearchAppellationEvent) {
-                matchClausePredicate = getAppellationClause(
-                        (ISearchAppellationEvent) predicateObject, whereClause,
+                matchClausePredicate = getAppellationClause((ISearchAppellationEvent) predicateObject, whereClause,
                         matchClausePredicate);
 
             } else if (predicateObject instanceof ISearchRelationEvent) {
-                matchClausePredicate = getRelationEventsClause(
-                        (ISearchRelationEvent) subjectObject, whereClause,
+                matchClausePredicate = getRelationEventsClause((ISearchRelationEvent) subjectObject, whereClause,
                         matchClausePredicate);
             }
             matchClause.append(matchClausePredicate);
@@ -422,16 +362,13 @@ public class DbConnector implements IDbConnector {
 
         ISearchCreationEvent object = relationObject.getObject();
         if (object != null) {
-            matchClauseObject.append("-[r"
-                    + UUID.randomUUID().toString().replaceAll("-", "") + ":"
+            matchClauseObject.append("-[r" + UUID.randomUUID().toString().replaceAll("-", "") + ":"
                     + IXmlElements.RELATED_TO_OBJECT + "]->");
             if (object instanceof ISearchAppellationEvent) {
-                matchClauseObject = getAppellationClause(
-                        (ISearchAppellationEvent) object, whereClause,
+                matchClauseObject = getAppellationClause((ISearchAppellationEvent) object, whereClause,
                         matchClauseObject);
             } else if (object instanceof ISearchRelationEvent) {
-                matchClauseObject = getRelationEventsClause(
-                        (ISearchRelationEvent) object, whereClause,
+                matchClauseObject = getRelationEventsClause((ISearchRelationEvent) object, whereClause,
                         matchClauseObject);
             }
 
@@ -450,8 +387,7 @@ public class DbConnector implements IDbConnector {
      * @param matchClause
      * @return
      */
-    private StringBuilder getAppellationClause(
-            ISearchAppellationEvent queryObject, StringBuilder whereClause,
+    private StringBuilder getAppellationClause(ISearchAppellationEvent queryObject, StringBuilder whereClause,
             StringBuilder matchClause) {
         String matchClauseCopy = new String();
         StringBuilder matchClauseTerm = new StringBuilder();
@@ -462,57 +398,44 @@ public class DbConnector implements IDbConnector {
 
         matchClauseTerm.append(queryObject.getName() + "-");
 
-        whereClause
-                .append((queryObject.getCreationDate() != null) ? (buildWhereCluse(
-                        queryObject.getName(), IXmlElements.CREATION_DATE,
-                        queryObject.getCreationDate().getTime() + "")) : "");
+        whereClause.append((queryObject.getCreationDate() != null) ? (buildWhereCluse(queryObject.getName(),
+                IXmlElements.CREATION_DATE, queryObject.getCreationDate().getTime() + "")) : "");
 
         if (queryObject.getCreationDate() != null)
-            whereClause.append(queryObject.getConnector() != null ? " "
-                    + queryObject.getConnector() + " " : " " + IXmlElements.AND
-                    + " ");
+            whereClause.append(queryObject.getConnector() != null ? " " + queryObject.getConnector() + " "
+                    : " " + IXmlElements.AND + " ");
 
         whereClause
-                .append((queryObject.getCreator() != null) ? (buildWhereClause(
-                        queryObject.getName(), IXmlElements.CREATOR,
-                        queryObject.getCreator().getSourceURI(), queryObject
-                                .getCreator().getSearchType())) : "");
+                .append((queryObject.getCreator() != null)
+                        ? (buildWhereClause(queryObject.getName(), IXmlElements.CREATOR,
+                                queryObject.getCreator().getSourceURI(), queryObject.getCreator().getSearchType()))
+                        : "");
 
         if (queryObject.getCreator() != null)
-            whereClause.append(queryObject.getConnector() != null ? " "
-                    + queryObject.getConnector() + " " : " " + IXmlElements.AND
-                    + " ");
+            whereClause.append(queryObject.getConnector() != null ? " " + queryObject.getConnector() + " "
+                    : " " + IXmlElements.AND + " ");
 
-        whereClause
-                .append((queryObject.getCreationPlace() != null) ? (buildWhereClause(
-                        queryObject.getName(), IXmlElements.CREATION_PLACE,
-                        queryObject.getCreationPlace().getSourceURI(),
-                        queryObject.getCreationPlace().getSearchType())) : "");
+        whereClause.append((queryObject.getCreationPlace() != null)
+                ? (buildWhereClause(queryObject.getName(), IXmlElements.CREATION_PLACE,
+                        queryObject.getCreationPlace().getSourceURI(), queryObject.getCreationPlace().getSearchType()))
+                : "");
 
         if (queryObject.getCreationPlace() != null)
 
-            whereClause.append(queryObject.getConnector() != null ? " "
-                    + queryObject.getConnector() + " " : " " + IXmlElements.AND
-                    + " ");
+            whereClause.append(queryObject.getConnector() != null ? " " + queryObject.getConnector() + " "
+                    : " " + IXmlElements.AND + " ");
 
-        whereClause
-                .append((queryObject.getInterpretationCreator() != null) ? (buildWhereClause(
-                        queryObject.getName(),
-                        IXmlElements.INTERPRETATION_CREATOR, queryObject
-                                .getInterpretationCreator().getSourceURI(),
-                        queryObject.getInterpretationCreator().getSearchType()))
-                        : "");
+        whereClause.append((queryObject.getInterpretationCreator() != null) ? (buildWhereClause(queryObject.getName(),
+                IXmlElements.INTERPRETATION_CREATOR, queryObject.getInterpretationCreator().getSourceURI(),
+                queryObject.getInterpretationCreator().getSearchType())) : "");
 
         if (queryObject.getInterpretationCreator() != null)
-            whereClause.append(queryObject.getConnector() != null ? " "
-                    + queryObject.getConnector() + " " : " " + IXmlElements.AND
-                    + " ");
+            whereClause.append(queryObject.getConnector() != null ? " " + queryObject.getConnector() + " "
+                    : " " + IXmlElements.AND + " ");
 
-        whereClause
-                .append((queryObject.getSourceReference() != null) ? (buildWhereClause(
-                        queryObject.getName(), IXmlElements.SOURCE_REFERENCE,
-                        queryObject.getSourceReference().getSourceURI(),
-                        queryObject.getSourceReference().getSearchType())) : "");
+        whereClause.append((queryObject.getSourceReference() != null) ? (buildWhereClause(queryObject.getName(),
+                IXmlElements.SOURCE_REFERENCE, queryObject.getSourceReference().getSourceURI(),
+                queryObject.getSourceReference().getSearchType())) : "");
 
         if (queryObject.getSourceReference() != null)
             whereClause.append(" " + IXmlElements.AND + " ");
@@ -520,300 +443,200 @@ public class DbConnector implements IDbConnector {
         termObject = ((SearchAppellationEvent) queryObject).getTerm();
 
         if (termObject != null) {
-            matchClauseTerm.append("[r"
-                    + UUID.randomUUID().toString().replaceAll("-", "") + ":"
-                    + IXmlElements.RELATED_TO_TERM + "] ->"
-                    + termObject.getName());
+            matchClauseTerm.append("[r" + UUID.randomUUID().toString().replaceAll("-", "") + ":"
+                    + IXmlElements.RELATED_TO_TERM + "] ->" + termObject.getName());
 
-            whereClause
-                    .append((termObject.getCreationDate() != null) ? (buildWhereCluse(
-                            termObject.getName(), IXmlElements.CREATION_DATE,
-                            termObject.getCreationDate().getTime() + "")) : "");
+            whereClause.append((termObject.getCreationDate() != null) ? (buildWhereCluse(termObject.getName(),
+                    IXmlElements.CREATION_DATE, termObject.getCreationDate().getTime() + "")) : "");
 
             if (termObject.getCreationDate() != null)
-                whereClause.append(termObject.getConnector() != null ? " "
-                        + termObject.getConnector() + " " : " "
-                        + IXmlElements.AND + " ");
+                whereClause.append(termObject.getConnector() != null ? " " + termObject.getConnector() + " "
+                        : " " + IXmlElements.AND + " ");
 
             whereClause
-                    .append((termObject.getCreator() != null) ? (buildWhereClause(
-                            termObject.getName(), IXmlElements.CREATOR,
-                            termObject.getCreator().getSourceURI(), termObject
-                                    .getCreator().getSearchType())) : "");
+                    .append((termObject.getCreator() != null)
+                            ? (buildWhereClause(termObject.getName(), IXmlElements.CREATOR,
+                                    termObject.getCreator().getSourceURI(), termObject.getCreator().getSearchType()))
+                            : "");
 
             if (termObject.getCreator() != null)
 
-                whereClause.append(termObject.getConnector() != null ? " "
-                        + termObject.getConnector() + " " : " "
-                        + IXmlElements.AND + " ");
+                whereClause.append(termObject.getConnector() != null ? " " + termObject.getConnector() + " "
+                        : " " + IXmlElements.AND + " ");
 
-            whereClause
-                    .append((termObject.getCreationPlace() != null) ? (buildWhereClause(
-                            termObject.getName(), IXmlElements.CREATION_PLACE,
-                            termObject.getCreationPlace().getSourceURI(),
-                            termObject.getCreationPlace().getSearchType()))
-                            : "");
+            whereClause.append((termObject.getCreationPlace() != null) ? (buildWhereClause(termObject.getName(),
+                    IXmlElements.CREATION_PLACE, termObject.getCreationPlace().getSourceURI(),
+                    termObject.getCreationPlace().getSearchType())) : "");
 
             if (termObject.getCreationPlace() != null)
 
-                whereClause.append(termObject.getConnector() != null ? " "
-                        + termObject.getConnector() + " " : " "
-                        + IXmlElements.AND + " ");
+                whereClause.append(termObject.getConnector() != null ? " " + termObject.getConnector() + " "
+                        : " " + IXmlElements.AND + " ");
 
-            whereClause
-                    .append((termObject.getSourceReference() != null) ? (buildWhereClause(
-                            termObject.getName(),
-                            IXmlElements.SOURCE_REFERENCE, termObject
-                                    .getSourceReference().getSourceURI(),
-                            termObject.getSourceReference().getSearchType()))
-                            : "");
+            whereClause.append((termObject.getSourceReference() != null) ? (buildWhereClause(termObject.getName(),
+                    IXmlElements.SOURCE_REFERENCE, termObject.getSourceReference().getSourceURI(),
+                    termObject.getSourceReference().getSearchType())) : "");
 
             if (termObject.getSourceReference() != null)
-                whereClause.append(termObject.getConnector() != null ? " "
-                        + termObject.getConnector() + " " : " "
-                        + IXmlElements.AND + " ");
+                whereClause.append(termObject.getConnector() != null ? " " + termObject.getConnector() + " "
+                        : " " + IXmlElements.AND + " ");
 
-            whereClause.append((termObject.getCertain() != null) ? ("( HAS ("
-                    + termObject.getName() + "." + IXmlElements.CERTAIN
-                    + ") and " + termObject.getName() + "."
-                    + IXmlElements.CERTAIN + "=" + termObject.getCreationDate()
-                    .getTime()) + ") " + IXmlElements.AND + " " : "");
+            whereClause.append((termObject.getCertain() != null)
+                    ? ("( HAS (" + termObject.getName() + "." + IXmlElements.CERTAIN + ") and " + termObject.getName()
+                            + "." + IXmlElements.CERTAIN + "=" + termObject.getCreationDate().getTime()) + ") "
+                            + IXmlElements.AND + " "
+                    : "");
 
             if (termObject.getCertain() != null)
-                whereClause.append(termObject.getConnector() != null ? " "
-                        + termObject.getConnector() + " " : " "
-                        + IXmlElements.AND + " ");
+                whereClause.append(termObject.getConnector() != null ? " " + termObject.getConnector() + " "
+                        : " " + IXmlElements.AND + " ");
 
-            whereClause
-                    .append((termObject.getInterpretation() != null) ? (buildWhereClause(
-                            termObject.getName(), IXmlElements.INTERPRETATION,
-                            termObject.getInterpretation().getSourceURI(),
-                            termObject.getInterpretation().getSearchType()))
-                            : "");
+            whereClause.append((termObject.getInterpretation() != null) ? (buildWhereClause(termObject.getName(),
+                    IXmlElements.INTERPRETATION, termObject.getInterpretation().getSourceURI(),
+                    termObject.getInterpretation().getSearchType())) : "");
 
             if (termObject.getInterpretation() != null)
-                whereClause.append(termObject.getConnector() != null ? " "
-                        + termObject.getConnector() + " " : " "
-                        + IXmlElements.AND + " ");
+                whereClause.append(termObject.getConnector() != null ? " " + termObject.getConnector() + " "
+                        : " " + IXmlElements.AND + " ");
 
-            whereClause
-                    .append((termObject.getNormalizedRepresentation() != null) ? (buildWhereClause(
-                            termObject.getName(),
-                            IXmlElements.NORMALIZED_REPRESENTATION, termObject
-                                    .getNormalizedRepresentation()
-                                    .getSourceURI(), termObject
-                                    .getNormalizedRepresentation()
-                                    .getSearchType()
-                                    + "")) : "");
+            whereClause.append((termObject.getNormalizedRepresentation() != null)
+                    ? (buildWhereClause(termObject.getName(), IXmlElements.NORMALIZED_REPRESENTATION,
+                            termObject.getNormalizedRepresentation().getSourceURI(),
+                            termObject.getNormalizedRepresentation().getSearchType() + ""))
+                    : "");
 
             if (termObject.getNormalizedRepresentation() != null)
                 whereClause.append(" " + IXmlElements.AND + " ");
 
             termPartsObject = termObject.getPrintedRepresentation();
             if (termPartsObject != null) {
-                matchClauseTerm.append(" - [r"
-                        + UUID.randomUUID().toString().replaceAll("-", "")
-                        + ":" + IXmlElements.RELATED_TO_TERMPARTS + "] ->"
-                        + termPartsObject.getName());
+                matchClauseTerm.append(" - [r" + UUID.randomUUID().toString().replaceAll("-", "") + ":"
+                        + IXmlElements.RELATED_TO_TERMPARTS + "] ->" + termPartsObject.getName());
 
-                whereClause
-                        .append((termPartsObject.getCreationDate() != null) ? (buildWhereCluse(
-                                termPartsObject.getName(),
-                                IXmlElements.CREATION_DATE, termPartsObject
-                                        .getCreationDate().getTime() + ""))
-                                : "");
+                whereClause.append(
+                        (termPartsObject.getCreationDate() != null) ? (buildWhereCluse(termPartsObject.getName(),
+                                IXmlElements.CREATION_DATE, termPartsObject.getCreationDate().getTime() + "")) : "");
 
                 if (termPartsObject.getCreationDate() != null)
-                    whereClause
-                            .append(termPartsObject.getConnector() != null ? " "
-                                    + termPartsObject.getConnector() + " "
-                                    : " " + IXmlElements.AND + " ");
+                    whereClause.append(termPartsObject.getConnector() != null
+                            ? " " + termPartsObject.getConnector() + " " : " " + IXmlElements.AND + " ");
 
-                whereClause
-                        .append((termPartsObject.getCreationPlace() != null) ? (buildWhereClause(
-                                termPartsObject.getName(),
-                                IXmlElements.CREATION_PLACE, termPartsObject
-                                        .getCreationPlace().getSourceURI(),
-                                termPartsObject.getCreationPlace()
-                                        .getSearchType())) : "");
+                whereClause.append(
+                        (termPartsObject.getCreationPlace() != null) ? (buildWhereClause(termPartsObject.getName(),
+                                IXmlElements.CREATION_PLACE, termPartsObject.getCreationPlace().getSourceURI(),
+                                termPartsObject.getCreationPlace().getSearchType())) : "");
 
                 if (termPartsObject.getCreationPlace() != null)
-                    whereClause
-                            .append(termPartsObject.getConnector() != null ? " "
-                                    + termPartsObject.getConnector() + " "
-                                    : " " + IXmlElements.AND + " ");
+                    whereClause.append(termPartsObject.getConnector() != null
+                            ? " " + termPartsObject.getConnector() + " " : " " + IXmlElements.AND + " ");
 
-                whereClause
-                        .append((termPartsObject.getCreator() != null) ? (buildWhereClause(
-                                termPartsObject.getName(),
-                                IXmlElements.CREATOR, termPartsObject
-                                        .getCreator().getSourceURI(),
-                                termPartsObject.getCreator().getSearchType()))
-                                : "");
+                whereClause.append((termPartsObject.getCreator() != null) ? (buildWhereClause(termPartsObject.getName(),
+                        IXmlElements.CREATOR, termPartsObject.getCreator().getSourceURI(),
+                        termPartsObject.getCreator().getSearchType())) : "");
 
                 if (termPartsObject.getCreator() != null)
                     whereClause.append(" " + IXmlElements.AND + " ");
 
-                Set<ISearchTermPart> termPartList = termPartsObject
-                        .getSearchTermParts();
+                Set<ISearchTermPart> termPartList = termPartsObject.getSearchTermParts();
                 if (termPartList != null) {
-                    Iterator<ISearchTermPart> termPartIterator = termPartList
-                            .iterator();
+                    Iterator<ISearchTermPart> termPartIterator = termPartList.iterator();
                     while (termPartIterator.hasNext()) {
-                        ISearchTermPart termPartObject = termPartIterator
-                                .next();
-                        matchClauseCopy = "- [r"
-                                + UUID.randomUUID().toString()
-                                        .replaceAll("-", "") + ":"
-                                + IXmlElements.RELATED_TO_TERMPART + " ] ->"
-                                + termPartObject.getName();
+                        ISearchTermPart termPartObject = termPartIterator.next();
+                        matchClauseCopy = "- [r" + UUID.randomUUID().toString().replaceAll("-", "") + ":"
+                                + IXmlElements.RELATED_TO_TERMPART + " ] ->" + termPartObject.getName();
 
-                        whereClause
-                                .append((termPartObject.getCreationDate() != null) ? (buildWhereCluse(
-                                        termPartObject.getName(),
-                                        IXmlElements.CREATION_DATE,
-                                        termPartObject.getCreationDate()
-                                                .getTime() + "")) : "");
+                        whereClause.append((termPartObject.getCreationDate() != null)
+                                ? (buildWhereCluse(termPartObject.getName(), IXmlElements.CREATION_DATE,
+                                        termPartObject.getCreationDate().getTime() + ""))
+                                : "");
 
                         if (termPartObject.getCreationDate() != null)
-                            whereClause
-                                    .append(termPartObject.getConnector() != null ? " "
-                                            + termPartObject.getConnector()
-                                            + " "
-                                            : " " + IXmlElements.AND + " ");
+                            whereClause.append(termPartObject.getConnector() != null
+                                    ? " " + termPartObject.getConnector() + " " : " " + IXmlElements.AND + " ");
 
-                        whereClause
-                                .append((termPartObject.getCreationPlace() != null) ? (buildWhereClause(
-                                        termPartObject.getName(),
-                                        IXmlElements.CREATION_PLACE,
-                                        termPartObject.getCreationPlace()
-                                                .getSourceURI(), termPartObject
-                                                .getCreationPlace()
-                                                .getSearchType())) : "");
+                        whereClause.append((termPartObject.getCreationPlace() != null)
+                                ? (buildWhereClause(termPartObject.getName(), IXmlElements.CREATION_PLACE,
+                                        termPartObject.getCreationPlace().getSourceURI(),
+                                        termPartObject.getCreationPlace().getSearchType()))
+                                : "");
 
                         if (termPartObject.getCreationPlace() != null)
-                            whereClause
-                                    .append(termPartObject.getConnector() != null ? " "
-                                            + termPartObject.getConnector()
-                                            + " "
-                                            : " " + IXmlElements.AND + " ");
+                            whereClause.append(termPartObject.getConnector() != null
+                                    ? " " + termPartObject.getConnector() + " " : " " + IXmlElements.AND + " ");
 
-                        whereClause
-                                .append((termPartObject.getCreator() != null) ? (buildWhereClause(
-                                        termPartObject.getName(),
-                                        IXmlElements.CREATOR, termPartObject
-                                                .getCreator().getSourceURI(),
-                                        termPartObject.getCreator()
-                                                .getSearchType())) : "");
+                        whereClause.append(
+                                (termPartObject.getCreator() != null) ? (buildWhereClause(termPartObject.getName(),
+                                        IXmlElements.CREATOR, termPartObject.getCreator().getSourceURI(),
+                                        termPartObject.getCreator().getSearchType())) : "");
 
                         if (termPartObject.getCreator() != null)
-                            whereClause
-                                    .append(termPartObject.getConnector() != null ? " "
-                                            + termPartObject.getConnector()
-                                            + " "
-                                            : " " + IXmlElements.AND + " ");
+                            whereClause.append(termPartObject.getConnector() != null
+                                    ? " " + termPartObject.getConnector() + " " : " " + IXmlElements.AND + " ");
 
-                        whereClause
-                                .append((termPartObject.getNormalization() != null) ? (buildWhereClause(
-                                        termPartObject.getName(),
-                                        IXmlElements.NORMALIZATION,
-                                        termPartObject.getNormalization()
-                                                .getSourceURI(), termPartObject
-                                                .getNormalization()
-                                                .getSearchType())) : "");
+                        whereClause.append((termPartObject.getNormalization() != null)
+                                ? (buildWhereClause(termPartObject.getName(), IXmlElements.NORMALIZATION,
+                                        termPartObject.getNormalization().getSourceURI(),
+                                        termPartObject.getNormalization().getSearchType()))
+                                : "");
 
                         if (termPartObject.getNormalization() != null)
-                            whereClause
-                                    .append(termPartObject.getConnector() != null ? " "
-                                            + termPartObject.getConnector()
-                                            + " "
-                                            : " " + IXmlElements.AND + " ");
+                            whereClause.append(termPartObject.getConnector() != null
+                                    ? " " + termPartObject.getConnector() + " " : " " + IXmlElements.AND + " ");
 
-                        whereClause
-                                .append((termPartObject.getSearchExpression() != null) ? (buildWhereClause(
-                                        termPartObject.getName(),
-                                        IXmlElements.EXPRESSION, termPartObject
-                                                .getSearchExpression()
-                                                .getExpression(),
-                                        termPartObject.getSearchExpression()
-                                                .getSearchType())) : "");
+                        whereClause.append((termPartObject.getSearchExpression() != null)
+                                ? (buildWhereClause(termPartObject.getName(), IXmlElements.EXPRESSION,
+                                        termPartObject.getSearchExpression().getExpression(),
+                                        termPartObject.getSearchExpression().getSearchType()))
+                                : "");
 
                         if (termPartObject.getSearchExpression() != null)
-                            whereClause
-                                    .append(termPartObject.getConnector() != null ? " "
-                                            + termPartObject.getConnector()
-                                            + " "
-                                            : " " + IXmlElements.AND + " ");
+                            whereClause.append(termPartObject.getConnector() != null
+                                    ? " " + termPartObject.getConnector() + " " : " " + IXmlElements.AND + " ");
 
-                        whereClause
-                                .append((termPartObject.getSearchFormat() != null) ? (buildWhereClause(
-                                        termPartObject.getName(),
-                                        IXmlElements.FORMAT, termPartObject
-                                                .getSearchFormat().getFormat(),
-                                        termPartObject.getSearchFormat()
-                                                .getSearchType())) : "");
+                        whereClause.append(
+                                (termPartObject.getSearchFormat() != null) ? (buildWhereClause(termPartObject.getName(),
+                                        IXmlElements.FORMAT, termPartObject.getSearchFormat().getFormat(),
+                                        termPartObject.getSearchFormat().getSearchType())) : "");
 
                         if (termPartObject.getSearchFormat() != null)
-                            whereClause
-                                    .append(termPartObject.getConnector() != null ? " "
-                                            + termPartObject.getConnector()
-                                            + " "
-                                            : " " + IXmlElements.AND + " ");
+                            whereClause.append(termPartObject.getConnector() != null
+                                    ? " " + termPartObject.getConnector() + " " : " " + IXmlElements.AND + " ");
 
-                        whereClause
-                                .append((termPartObject
-                                        .getSearchFormattedPointer() != null) ? (buildWhereClause(
-                                        termPartObject.getName(),
-                                        IXmlElements.FORMATTED_POINTER,
-                                        termPartObject
-                                                .getSearchFormattedPointer()
-                                                .getFormattedPointer(),
-                                        termPartObject
-                                                .getSearchFormattedPointer()
-                                                .getSearchType())) : "");
+                        whereClause.append((termPartObject.getSearchFormattedPointer() != null)
+                                ? (buildWhereClause(termPartObject.getName(), IXmlElements.FORMATTED_POINTER,
+                                        termPartObject.getSearchFormattedPointer().getFormattedPointer(),
+                                        termPartObject.getSearchFormattedPointer().getSearchType()))
+                                : "");
 
                         if (termPartObject.getSearchFormattedPointer() != null)
-                            whereClause
-                                    .append(termPartObject.getConnector() != null ? " "
-                                            + termPartObject.getConnector()
-                                            + " "
-                                            : " " + IXmlElements.AND + " ");
+                            whereClause.append(termPartObject.getConnector() != null
+                                    ? " " + termPartObject.getConnector() + " " : " " + IXmlElements.AND + " ");
 
-                        whereClause
-                                .append((termPartObject.getSourceReference() != null) ? (buildWhereClause(
-                                        termPartObject.getName(),
-                                        IXmlElements.SOURCE_REFERENCE,
-                                        termPartObject.getSourceReference()
-                                                .getSourceURI(), termPartObject
-                                                .getSourceReference()
-                                                .getSearchType())) : "");
+                        whereClause.append((termPartObject.getSourceReference() != null)
+                                ? (buildWhereClause(termPartObject.getName(), IXmlElements.SOURCE_REFERENCE,
+                                        termPartObject.getSourceReference().getSourceURI(),
+                                        termPartObject.getSourceReference().getSearchType()))
+                                : "");
                         // temp = matchClauseTerm.toString() + matchClauseCopy;
                         matchClauseTerm.append(matchClauseCopy);
                     }
                 } else {
-                    matchClauseCopy = "- [r"
-                            + UUID.randomUUID().toString().replaceAll("-", "")
-                            + ":" + IXmlElements.RELATED_TO_TERMPART
-                            + "] -> termPart";
+                    matchClauseCopy = "- [r" + UUID.randomUUID().toString().replaceAll("-", "") + ":"
+                            + IXmlElements.RELATED_TO_TERMPART + "] -> termPart";
                 }
 
             } else {
-                matchClauseTerm.append("- [r"
-                        + UUID.randomUUID().toString().replaceAll("-", "")
-                        + ":" + IXmlElements.RELATED_TO_TERMPARTS
-                        + "] -> termParts - [r"
-                        + UUID.randomUUID().toString().replaceAll("-", "")
-                        + ":" + IXmlElements.RELATED_TO_TERMPART
+                matchClauseTerm.append("- [r" + UUID.randomUUID().toString().replaceAll("-", "") + ":"
+                        + IXmlElements.RELATED_TO_TERMPARTS + "] -> termParts - [r"
+                        + UUID.randomUUID().toString().replaceAll("-", "") + ":" + IXmlElements.RELATED_TO_TERMPART
                         + " ] -> termPart");
             }
         } else {
-            matchClauseTerm.append("- [r "
-                    + UUID.randomUUID().toString().replaceAll("-", "") + ":"
-                    + IXmlElements.RELATED_TO_TERM + "term -[r"
-                    + UUID.randomUUID().toString().replaceAll("-", "") + ":"
+            matchClauseTerm.append("- [r " + UUID.randomUUID().toString().replaceAll("-", "") + ":"
+                    + IXmlElements.RELATED_TO_TERM + "term -[r" + UUID.randomUUID().toString().replaceAll("-", "") + ":"
                     + IXmlElements.RELATED_TO_TERMPARTS + "] -> termParts -[r"
-                    + UUID.randomUUID().toString().replaceAll("-", "") + ":"
-                    + IXmlElements.RELATED_TO_TERMPART + "] -> termPart");
+                    + UUID.randomUUID().toString().replaceAll("-", "") + ":" + IXmlElements.RELATED_TO_TERMPART
+                    + "] -> termPart");
         }
 
         return matchClauseTerm;
@@ -829,15 +652,12 @@ public class DbConnector implements IDbConnector {
      * @param searchType
      * @return
      */
-    private String buildWhereClause(String name, String property, String value,
-            String searchType) {
+    private String buildWhereClause(String name, String property, String value, String searchType) {
 
         if (searchType != null && searchType.equals("regex"))
-            return "( HAS (" + name + "." + property + ") and " + name + "."
-                    + property + "=~'" + value + "') ";
+            return "( HAS (" + name + "." + property + ") and " + name + "." + property + "=~'" + value + "') ";
 
-        return "( HAS (" + name + "." + property + ") and " + name + "."
-                + property + "='" + value + "') ";
+        return "( HAS (" + name + "." + property + ") and " + name + "." + property + "='" + value + "') ";
     }
 
     /**
@@ -850,8 +670,24 @@ public class DbConnector implements IDbConnector {
      */
 
     private String buildWhereCluse(String name, String property, String value) {
-        return "( HAS (" + name + "." + property + ") and " + name + "."
-                + property + "='" + value + "') ";
+        return "( HAS (" + name + "." + property + ") and " + name + "." + property + "='" + value + "') ";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<CreationEvent> executeQuery(String query, Class<?> clazz) {
+
+        Iterable<?> results = template.queryForObjects(clazz, query, new HashMap<String, String>());
+
+        Iterator<?> iterator = results.iterator();
+
+        List<CreationEvent> elementList = new ArrayList<>();
+        while (iterator.hasNext()) {
+            elementList.add((CreationEvent) iterator.next());
+        }
+        return elementList;
     }
 
 }

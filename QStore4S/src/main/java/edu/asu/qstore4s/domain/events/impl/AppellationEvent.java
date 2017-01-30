@@ -12,17 +12,17 @@ import edu.asu.qstore4s.domain.elements.impl.Term;
  *
  */
 @XmlRootElement
-public class AppellationEvent extends CreationEvent{
- 
-	@Relationship(type="hasTerm", direction=Relationship.OUTGOING)
-	private Term term;
-	
-	@XmlElement
-	public Term getTerm() {
-		return term;
-	}
+public class AppellationEvent extends CreationEvent {
 
-	public void setTerm(Term term) {
-		this.term = term;
-	}
+    @Relationship(type = "hasTerm", direction = Relationship.OUTGOING)
+    private Term term;
+
+    @XmlElement
+    public Term getTerm() {
+        return term;
+    }
+
+    public void setTerm(Term term) {
+        this.term = term;
+    }
 }

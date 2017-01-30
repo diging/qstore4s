@@ -58,9 +58,7 @@ public class Converter implements IConverter {
      */
 
     @Override
-    public String convertToJson(
-            edu.asu.qstore4s.domain.elements.impl.Element element)
-            throws JSONException {
+    public String convertToJson(edu.asu.qstore4s.domain.elements.impl.Element element) throws JSONException {
 
         JSONObject jsonObj;
 
@@ -76,8 +74,7 @@ public class Converter implements IConverter {
      */
 
     @Override
-    public String convertToJson(List<CreationEvent> creationEventList)
-            throws JSONException {
+    public String convertToJson(List<CreationEvent> creationEventList) throws JSONException {
 
         JSONObject jsonObj;
 
@@ -93,9 +90,7 @@ public class Converter implements IConverter {
      */
 
     @Override
-    public String convertToJsonShallow(
-            edu.asu.qstore4s.domain.elements.impl.Element element)
-            throws JSONException {
+    public String convertToJsonShallow(edu.asu.qstore4s.domain.elements.impl.Element element) throws JSONException {
 
         JSONObject jsonObj;
 
@@ -159,8 +154,7 @@ public class Converter implements IConverter {
      */
 
     @Override
-    public String convertToXML(
-            edu.asu.qstore4s.domain.elements.impl.Element element) {
+    public String convertToXML(edu.asu.qstore4s.domain.elements.impl.Element element) {
         Document xmldocument = instanstiateXML();
         Namespace namespace = Namespace.getNamespace(IXmlElements.NAMESPACE);
 
@@ -176,16 +170,13 @@ public class Converter implements IConverter {
     }
 
     private void addElementToXML(Document document, Namespace namespace,
-            edu.asu.qstore4s.domain.elements.impl.Element element,
-            boolean shallow) {
+            edu.asu.qstore4s.domain.elements.impl.Element element, boolean shallow) {
         if (element instanceof AppellationEvent) {
-            Element appellationEvent = addAppellationNode(
-                    (AppellationEvent) element, namespace);
+            Element appellationEvent = addAppellationNode((AppellationEvent) element, namespace);
             document.getRootElement().addContent(appellationEvent);
 
         } else if (element instanceof RelationEvent) {
-            Element relationEvent = addRelationEventNode(
-                    (RelationEvent) element, namespace, shallow);
+            Element relationEvent = addRelationEventNode((RelationEvent) element, namespace, shallow);
             document.getRootElement().addContent(relationEvent);
 
         }
@@ -195,8 +186,7 @@ public class Converter implements IConverter {
      * {@inheritDoc}
      */
     @Override
-    public String convertToXMLShallow(
-            edu.asu.qstore4s.domain.elements.impl.Element element) {
+    public String convertToXMLShallow(edu.asu.qstore4s.domain.elements.impl.Element element) {
         Document xmldocument = instanstiateXML();
         Namespace namespace = Namespace.getNamespace(IXmlElements.NAMESPACE);
 
@@ -219,11 +209,9 @@ public class Converter implements IConverter {
      * @param isShallow
      * @return relationeventnode
      */
-    private Element addRelationEventNode(RelationEvent creationEvent,
-            Namespace namespace, boolean isShallow) {
+    private Element addRelationEventNode(RelationEvent creationEvent, Namespace namespace, boolean isShallow) {
 
-        Element relationEvent = new Element(IXmlElements.RELATION_EVENT,
-                namespace);
+        Element relationEvent = new Element(IXmlElements.RELATION_EVENT, namespace);
         {
 
             boolean idFlag = true;
@@ -242,53 +230,41 @@ public class Converter implements IConverter {
             if (idFlag) {
 
                 if (creationEvent.getCreator() != null) {
-                    Element creater = new Element(IXmlElements.CREATOR,
-                            namespace);
+                    Element creater = new Element(IXmlElements.CREATOR, namespace);
                     creater.setText(creationEvent.getCreator().getSourceURI());
                     relationEvent.addContent(creater);
                 }
-                Element creation_date = new Element(IXmlElements.CREATION_DATE,
-                        namespace);
-                SimpleDateFormat format = new SimpleDateFormat(
-                        IXmlElements.DATE_FORMAT);
+                Element creation_date = new Element(IXmlElements.CREATION_DATE, namespace);
+                SimpleDateFormat format = new SimpleDateFormat(IXmlElements.DATE_FORMAT);
                 StringBuffer datestring = new StringBuffer();
                 if (creationEvent.getCreationDate() != null) {
-                    format.format(creationEvent.getCreationDate(), datestring,
-                            new FieldPosition(0));
+                    format.format(creationEvent.getCreationDate(), datestring, new FieldPosition(0));
                     creation_date.setText(datestring.toString());
                     relationEvent.addContent(creation_date);
                 }
 
                 if (creationEvent.getCreationPlace() != null) {
 
-                    Element creation_Place = new Element(
-                            IXmlElements.CREATION_PLACE, namespace);
-                    creation_Place.setText(creationEvent.getCreationPlace()
-                            .getSourceURI());
+                    Element creation_Place = new Element(IXmlElements.CREATION_PLACE, namespace);
+                    creation_Place.setText(creationEvent.getCreationPlace().getSourceURI());
                     relationEvent.addContent(creation_Place);
                 }
 
                 if (creationEvent.getSourceReference() != null) {
-                    Element source_reference = new Element(
-                            IXmlElements.SOURCE_REFERENCE, namespace);
-                    source_reference.setText(creationEvent.getSourceReference()
-                            .getSourceURI());
+                    Element source_reference = new Element(IXmlElements.SOURCE_REFERENCE, namespace);
+                    source_reference.setText(creationEvent.getSourceReference().getSourceURI());
                     relationEvent.addContent(source_reference);
                 }
 
                 if (creationEvent.getInterpretationCreator() != null) {
-                    Element interpretation_creator = new Element(
-                            IXmlElements.INTERPRETATION_CREATOR, namespace);
-                    interpretation_creator.setText(creationEvent
-                            .getInterpretationCreator().getSourceURI());
+                    Element interpretation_creator = new Element(IXmlElements.INTERPRETATION_CREATOR, namespace);
+                    interpretation_creator.setText(creationEvent.getInterpretationCreator().getSourceURI());
                     relationEvent.addContent(interpretation_creator);
                 }
 
                 if (creationEvent.getRelationCreator() != null) {
-                    Element relation_creator = new Element(
-                            IXmlElements.RELATION_CREATOR, namespace);
-                    relation_creator.setText(creationEvent.getRelationCreator()
-                            .getSourceURI());
+                    Element relation_creator = new Element(IXmlElements.RELATION_CREATOR, namespace);
+                    relation_creator.setText(creationEvent.getRelationCreator().getSourceURI());
                     relationEvent.addContent(relation_creator);
                 }
 
@@ -315,16 +291,14 @@ public class Converter implements IConverter {
                 Relation relation = creationEvent.getRelation();
 
                 if (isShallow) {
-                    Element relationNode = addRelationNode(relation, namespace,
-                            true);
+                    Element relationNode = addRelationNode(relation, namespace, true);
                     relationEvent.addContent(relationNode);
 
                 }
 
                 else {
 
-                    Element relationNode = addRelationNode(relation, namespace,
-                            false);
+                    Element relationNode = addRelationNode(relation, namespace, false);
                     relationEvent.addContent(relationNode);
 
                 }
@@ -343,11 +317,13 @@ public class Converter implements IConverter {
      * @return appellationevent node
      */
 
-    private Element addAppellationNode(AppellationEvent creationEvent,
-            Namespace namespace) {
+    private Element addAppellationNode(AppellationEvent creationEvent, Namespace namespace) {
 
-        Element appellationevent = new Element(IXmlElements.APPELLATION_EVENT,
-                namespace);
+        if (creationEvent.getTerm() == null) {
+            creationEvent = template.load(AppellationEvent.class, creationEvent.getGraphId(), 2);
+        }
+
+        Element appellationevent = new Element(IXmlElements.APPELLATION_EVENT, namespace);
 
         Element id = new Element(IXmlElements.ID, namespace);
         id.setText(creationEvent.getId());
@@ -360,31 +336,25 @@ public class Converter implements IConverter {
             appellationevent.addContent(creater);
         }
 
-        Element creation_date = new Element(IXmlElements.CREATION_DATE,
-                namespace);
+        Element creation_date = new Element(IXmlElements.CREATION_DATE, namespace);
         SimpleDateFormat format = new SimpleDateFormat(IXmlElements.DATE_FORMAT);
         StringBuffer datestring = new StringBuffer();
         if (creationEvent.getCreationDate() != null) {
-            format.format(creationEvent.getCreationDate(), datestring,
-                    new FieldPosition(0));
+            format.format(creationEvent.getCreationDate(), datestring, new FieldPosition(0));
             creation_date.setText(datestring.toString());
             appellationevent.addContent(creation_date);
         }
 
-        Element creation_Place = new Element(IXmlElements.CREATION_PLACE,
-                namespace);
+        Element creation_Place = new Element(IXmlElements.CREATION_PLACE, namespace);
 
         if (creationEvent.getCreationPlace() != null) {
-            creation_Place.setText(creationEvent.getCreationPlace()
-                    .getSourceURI());
+            creation_Place.setText(creationEvent.getCreationPlace().getSourceURI());
             appellationevent.addContent(creation_Place);
         }
 
         if (creationEvent.getSourceReference() != null) {
-            Element source_reference = new Element(
-                    IXmlElements.SOURCE_REFERENCE, namespace);
-            source_reference.setText(creationEvent.getSourceReference()
-                    .getSourceURI());
+            Element source_reference = new Element(IXmlElements.SOURCE_REFERENCE, namespace);
+            source_reference.setText(creationEvent.getSourceReference().getSourceURI());
             appellationevent.addContent(source_reference);
         }
 
@@ -395,10 +365,8 @@ public class Converter implements IConverter {
         }
 
         if (creationEvent.getInterpretationCreator() != null) {
-            Element interpretation_creator = new Element(
-                    IXmlElements.INTERPRETATION_CREATOR, namespace);
-            interpretation_creator.setText(creationEvent
-                    .getInterpretationCreator().getSourceURI());
+            Element interpretation_creator = new Element(IXmlElements.INTERPRETATION_CREATOR, namespace);
+            interpretation_creator.setText(creationEvent.getInterpretationCreator().getSourceURI());
             appellationevent.addContent(interpretation_creator);
         }
 
@@ -434,9 +402,8 @@ public class Converter implements IConverter {
      * @return relation node
      */
 
-    private Element addRelationNode(Relation relation, Namespace namespace,
-            boolean isShallow) {
-        
+    private Element addRelationNode(Relation relation, Namespace namespace, boolean isShallow) {
+
         if (relation.getPredicate() == null) {
             relation = template.load(Relation.class, relation.getGraphId(), 2);
         }
@@ -449,51 +416,42 @@ public class Converter implements IConverter {
         idList.add(relation.getId());
 
         if (relation.getCreator() != null) {
-            Element createrRelation = new Element(IXmlElements.CREATOR,
-                    namespace);
+            Element createrRelation = new Element(IXmlElements.CREATOR, namespace);
             createrRelation.setText(relation.getCreator().getSourceURI());
             relationNode.addContent(createrRelation);
         }
-        Element creation_dateRelation = new Element(IXmlElements.CREATION_DATE,
-                namespace);
+        Element creation_dateRelation = new Element(IXmlElements.CREATION_DATE, namespace);
         SimpleDateFormat format = new SimpleDateFormat(IXmlElements.DATE_FORMAT);
         StringBuffer datestring = new StringBuffer();
         if (relation.getCreationDate() != null) {
-            format.format(relation.getCreationDate(), datestring,
-                    new FieldPosition(0));
+            format.format(relation.getCreationDate(), datestring, new FieldPosition(0));
             creation_dateRelation.setText(datestring.toString());
 
             relationNode.addContent(creation_dateRelation);
         }
 
-        Element creation_PlaceRelation = new Element(
-                IXmlElements.CREATION_PLACE, namespace);
+        Element creation_PlaceRelation = new Element(IXmlElements.CREATION_PLACE, namespace);
 
         if (relation.getCreationPlace() != null) {
-            creation_PlaceRelation.setText(relation.getCreationPlace()
-                    .getSourceURI());
+            creation_PlaceRelation.setText(relation.getCreationPlace().getSourceURI());
             relationNode.addContent(creation_PlaceRelation);
         }
 
         if (relation.getSourceReference() != null) {
-            Element source_reference = new Element(
-                    IXmlElements.SOURCE_REFERENCE, namespace);
-            source_reference.setText(relation.getSourceReference()
-                    .getSourceURI());
+            Element source_reference = new Element(IXmlElements.SOURCE_REFERENCE, namespace);
+            source_reference.setText(relation.getSourceReference().getSourceURI());
 
             relationNode.addContent(source_reference);
         }
 
         if (relation.getExternal_refId() != null) {
-            Element external_Id = new Element(IXmlElements.EXTERNAL_REFID,
-                    namespace);
+            Element external_Id = new Element(IXmlElements.EXTERNAL_REFID, namespace);
             external_Id.setText(relation.getExternal_refId());
             relationNode.addContent(external_Id);
         }
 
         if (relation.getInternal_refId() != null) {
-            Element internal_Id = new Element(IXmlElements.INTERNAL_REFID,
-                    namespace);
+            Element internal_Id = new Element(IXmlElements.INTERNAL_REFID, namespace);
             internal_Id.setText(relation.getInternal_refId());
             relationNode.addContent(internal_Id);
         }
@@ -511,12 +469,10 @@ public class Converter implements IConverter {
 
             if (subject instanceof AppellationEvent) {
 
-                Element appellationEvent = addAppellationNode(
-                        (AppellationEvent) subject, namespace);
+                Element appellationEvent = addAppellationNode((AppellationEvent) subject, namespace);
                 subjectnode.addContent(appellationEvent);
             } else if (subject instanceof RelationEvent) {
-                Element relationsubEvent = addRelationEventNode(
-                        (RelationEvent) subject, namespace, false);
+                Element relationsubEvent = addRelationEventNode((RelationEvent) subject, namespace, false);
                 subjectnode.addContent(relationsubEvent);
             }
 
@@ -536,14 +492,12 @@ public class Converter implements IConverter {
             if (object instanceof AppellationEvent) {
                 // if (((AppellationEvent) object).getTerm() == null)
                 // template.fetch(object);
-                Element appellationEvent = addAppellationNode(
-                        (AppellationEvent) object, namespace);
+                Element appellationEvent = addAppellationNode((AppellationEvent) object, namespace);
                 objectnode.addContent(appellationEvent);
             } else if (object instanceof RelationEvent) {
                 // if (((RelationEvent) object).getRelation() == null)
                 // template.fetch(object);
-                Element relationsubEvent = addRelationEventNode(
-                        (RelationEvent) object, namespace, false);
+                Element relationsubEvent = addRelationEventNode((RelationEvent) object, namespace, false);
                 objectnode.addContent(relationsubEvent);
             }
         }
@@ -560,8 +514,7 @@ public class Converter implements IConverter {
         } else {
 
             {
-                Element appellationEvent = addAppellationNode(
-                        (AppellationEvent) predicate, namespace);
+                Element appellationEvent = addAppellationNode((AppellationEvent) predicate, namespace);
                 predicatenode.addContent(appellationEvent);
             }
         }
@@ -591,54 +544,43 @@ public class Converter implements IConverter {
                 creater.setText(term.getCreator().getSourceURI());
                 termnode.addContent(creater);
             }
-            Element creation_date = new Element(IXmlElements.CREATION_DATE,
-                    namespace);
-            SimpleDateFormat format = new SimpleDateFormat(
-                    IXmlElements.DATE_FORMAT);
+            Element creation_date = new Element(IXmlElements.CREATION_DATE, namespace);
+            SimpleDateFormat format = new SimpleDateFormat(IXmlElements.DATE_FORMAT);
             StringBuffer datestring = new StringBuffer();
             if (term.getCreationDate() != null) {
-                format.format(term.getCreationDate(), datestring,
-                        new FieldPosition(0));
+                format.format(term.getCreationDate(), datestring, new FieldPosition(0));
                 creation_date.setText(datestring.toString());
                 termnode.addContent(creation_date);
             }
 
             if (term.getCreationPlace() != null) {
-                Element creation_Place = new Element(
-                        IXmlElements.CREATION_PLACE, namespace);
+                Element creation_Place = new Element(IXmlElements.CREATION_PLACE, namespace);
                 creation_Place.setText(term.getCreationPlace().getSourceURI());
                 termnode.addContent(creation_Place);
             }
 
             if (term.getSourceReference() != null) {
-                Element source_reference = new Element(
-                        IXmlElements.SOURCE_REFERENCE, namespace);
-                source_reference.setText(term.getSourceReference()
-                        .getSourceURI());
+                Element source_reference = new Element(IXmlElements.SOURCE_REFERENCE, namespace);
+                source_reference.setText(term.getSourceReference().getSourceURI());
                 termnode.addContent(source_reference);
             }
 
             // add interpretation
             if (term.getInterpretation() != null) {
-                Element interpretation = new Element(
-                        IXmlElements.INTERPRETATION, namespace);
+                Element interpretation = new Element(IXmlElements.INTERPRETATION, namespace);
                 interpretation.setText(term.getInterpretation().getSourceURI());
 
                 // add datatype
                 if (term.getDatatype() != null && !term.getDatatype().isEmpty()) {
-                    interpretation.setAttribute(
-                            IXmlElements.INTERPRETATION_DATATYPE,
-                            term.getDatatype());
+                    interpretation.setAttribute(IXmlElements.INTERPRETATION_DATATYPE, term.getDatatype());
                 }
 
                 termnode.addContent(interpretation);
             }
 
             if (term.getNormalizedRepresentation() != null) {
-                Element normalized_representation = new Element(
-                        IXmlElements.NORMALIZED_REPRESENTATION, namespace);
-                normalized_representation.setText(term
-                        .getNormalizedRepresentation().getSourceURI());
+                Element normalized_representation = new Element(IXmlElements.NORMALIZED_REPRESENTATION, namespace);
+                normalized_representation.setText(term.getNormalizedRepresentation().getSourceURI());
                 termnode.addContent(normalized_representation);
             }
         }
@@ -646,8 +588,7 @@ public class Converter implements IConverter {
         TermParts printedrepresentation = term.getPrintedRepresentation();
 
         if (printedrepresentation != null) {
-            Element printed_representation = addTermPartsNode(
-                    printedrepresentation, namespace);
+            Element printed_representation = addTermPartsNode(printedrepresentation, namespace);
 
             termnode.addContent(printed_representation);
         }
@@ -659,8 +600,7 @@ public class Converter implements IConverter {
             certain.setText("false");
         }
 
-        Element referenced_terms = new Element(IXmlElements.REFERENCED_TERMS,
-                namespace);
+        Element referenced_terms = new Element(IXmlElements.REFERENCED_TERMS, namespace);
 
         Set<Term> referencedTerms = term.getReferencedTerms();
 
@@ -688,11 +628,9 @@ public class Converter implements IConverter {
      * @return TermPartsnode
      */
 
-    private Element addTermPartsNode(TermParts printedrepresentation,
-            Namespace namespace) {
+    private Element addTermPartsNode(TermParts printedrepresentation, Namespace namespace) {
 
-        Element printed_representation = new Element(
-                IXmlElements.PRINTED_REPRESENTATION, namespace);
+        Element printed_representation = new Element(IXmlElements.PRINTED_REPRESENTATION, namespace);
 
         {
             Element id = new Element(IXmlElements.ID, namespace);
@@ -701,34 +639,26 @@ public class Converter implements IConverter {
 
             if (printedrepresentation.getCreator() != null) {
                 Element creater = new Element(IXmlElements.CREATOR, namespace);
-                creater.setText(printedrepresentation.getCreator()
-                        .getSourceURI());
+                creater.setText(printedrepresentation.getCreator().getSourceURI());
                 printed_representation.addContent(creater);
             }
-            Element creation_date = new Element(IXmlElements.CREATION_DATE,
-                    namespace);
-            SimpleDateFormat format = new SimpleDateFormat(
-                    IXmlElements.DATE_FORMAT);
+            Element creation_date = new Element(IXmlElements.CREATION_DATE, namespace);
+            SimpleDateFormat format = new SimpleDateFormat(IXmlElements.DATE_FORMAT);
             StringBuffer datestring = new StringBuffer();
             if (printedrepresentation.getCreationDate() != null)
-                format.format(printedrepresentation.getCreationDate(),
-                        datestring, new FieldPosition(0));
+                format.format(printedrepresentation.getCreationDate(), datestring, new FieldPosition(0));
             creation_date.setText(datestring.toString());
             printed_representation.addContent(creation_date);
 
             if (printedrepresentation.getCreationPlace() != null) {
-                Element creation_Place = new Element(
-                        IXmlElements.CREATION_PLACE, namespace);
-                creation_Place.setText(printedrepresentation.getCreationPlace()
-                        .getSourceURI());
+                Element creation_Place = new Element(IXmlElements.CREATION_PLACE, namespace);
+                creation_Place.setText(printedrepresentation.getCreationPlace().getSourceURI());
                 printed_representation.addContent(creation_Place);
             }
 
             if (printedrepresentation.getReferencedSource() != null) {
-                Element source_reference = new Element(
-                        IXmlElements.SOURCE_REFERENCE, namespace);
-                source_reference.setText(printedrepresentation
-                        .getReferencedSource().getSourceURI());
+                Element source_reference = new Element(IXmlElements.SOURCE_REFERENCE, namespace);
+                source_reference.setText(printedrepresentation.getReferencedSource().getSourceURI());
                 printed_representation.addContent(source_reference);
 
             }
@@ -769,31 +699,25 @@ public class Converter implements IConverter {
             termpartnode.addContent(creater);
         }
 
-        Element creation_date = new Element(IXmlElements.CREATION_DATE,
-                namespace);
-        SimpleDateFormat dateformat = new SimpleDateFormat(
-                IXmlElements.DATE_FORMAT);
+        Element creation_date = new Element(IXmlElements.CREATION_DATE, namespace);
+        SimpleDateFormat dateformat = new SimpleDateFormat(IXmlElements.DATE_FORMAT);
         StringBuffer datestring = new StringBuffer();
 
         if (termpart.getCreationDate() != null) {
-            dateformat.format(termpart.getCreationDate(), datestring,
-                    new FieldPosition(0));
+            dateformat.format(termpart.getCreationDate(), datestring, new FieldPosition(0));
             creation_date.setText(datestring.toString());
             termpartnode.addContent(creation_date);
         }
 
         if (termpart.getCreationPlace() != null) {
-            Element creation_Place = new Element(IXmlElements.CREATION_PLACE,
-                    namespace);
+            Element creation_Place = new Element(IXmlElements.CREATION_PLACE, namespace);
             creation_Place.setText(termpart.getCreationPlace().getSourceURI());
             termpartnode.addContent(creation_Place);
         }
 
         if (termpart.getSourceReference() != null) {
-            Element source_reference = new Element(
-                    IXmlElements.SOURCE_REFERENCE, namespace);
-            source_reference.setText(termpart.getSourceReference()
-                    .getSourceURI());
+            Element source_reference = new Element(IXmlElements.SOURCE_REFERENCE, namespace);
+            source_reference.setText(termpart.getSourceReference().getSourceURI());
             termpartnode.addContent(source_reference);
         }
 
@@ -806,13 +730,11 @@ public class Converter implements IConverter {
         termpartnode.addContent(expression);
 
         if (termpart.getNormalization() != null) {
-            Element normalization = new Element(IXmlElements.NORMALIZATION,
-                    namespace);
+            Element normalization = new Element(IXmlElements.NORMALIZATION, namespace);
             normalization.setText(termpart.getNormalization().getSourceURI());
             termpartnode.addContent(normalization);
         }
-        Element formatted_pointer = new Element(IXmlElements.FORMATTED_POINTER,
-                namespace);
+        Element formatted_pointer = new Element(IXmlElements.FORMATTED_POINTER, namespace);
         formatted_pointer.setText(termpart.getFormattedPointer());
         termpartnode.addContent(formatted_pointer);
 
