@@ -40,15 +40,18 @@ public class QStore {
     private static final String XML = "application/xml";
     private static final String JSON = "application/json";
 
-    private static final HashMap<String, Class<?>> classMap = new HashMap<String, Class<?>>() {
+    private final String RELATION_EVENT = "relationevent";
+    private final String APPELLATION_EVENT = "appellationevent";
+
+    private final HashMap<String, Class<?>> classMap = new HashMap<String, Class<?>>() {
         {
-            put("relationevent", RelationEvent.class);
-            put("appellationevent", AppellationEvent.class);
+            put(RELATION_EVENT, RelationEvent.class);
+            put(APPELLATION_EVENT, AppellationEvent.class);
         }
     };
 
     @Autowired
-    IRepositoryManager repositorymanager;
+    private IRepositoryManager repositorymanager;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String testStatus(ModelMap model) {
@@ -134,12 +137,9 @@ public class QStore {
             @RequestHeader("Accept") String accept) throws ParserException, IOException, URISyntaxException,
                     ParseException, JSONException, InvalidDataException {
 
-        edu.asu.qstore4s.error.Error error = null;
-
         if (xml.equals("")) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            error = new Error("Please provide XML in body of the post request.");
-            return error.toString(accept);
+            return new Error("Please provide XML in body of the post request.").toString(accept);
         }
 
         String returnString = "";
@@ -202,18 +202,16 @@ public class QStore {
             @RequestHeader("Accept") String accept, @RequestBody String query, @RequestParam("class") String clas)
                     throws JSONException {
 
-        edu.asu.qstore4s.error.Error error = null;
+        query = query.trim();
         if (query.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            error = new Error("Please provide the query to execute the request");
-            return error.toString(accept);
+            return new Error("Please provide the query to execute the request").toString(accept);
         }
 
         Class<?> classs = classMap.get(clas);
         if (classs == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            error = new Error("Please provide a valid Class to execute the request");
-            return error.toString(accept);
+            return new Error("Please provide a valid Class to execute the request").toString(accept);
         }
 
         String returnString = "";
@@ -289,11 +287,9 @@ public class QStore {
 
         String trimmedXML = xml.trim();
 
-        edu.asu.qstore4s.error.Error error = null;
         if (trimmedXML.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            error = new Error("Please provide XML in body of the post request.");
-            return error.toString(accept);
+            return new Error("Please provide XML in body of the post request.").toString(accept);
 
         } else {
             String returnString = "";
@@ -335,11 +331,9 @@ public class QStore {
 
         String trimmedXML = xml.trim();
 
-        edu.asu.qstore4s.error.Error error = null;
         if (trimmedXML.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            error = new Error("Please provide XML in body of the post request.");
-            return error.toString(accept);
+            return new Error("Please provide XML in body of the post request.").toString(accept);
         } else {
             String returnString = "";
             if (accept != null && accept.equals(RETURN_JSON)) {

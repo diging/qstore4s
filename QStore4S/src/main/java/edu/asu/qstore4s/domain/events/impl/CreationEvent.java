@@ -29,8 +29,7 @@ public class CreationEvent extends Element {
 	@GraphId
 	Long graphId;
 	
-
-	@Property(name = "source_reference")
+    @Property(name = "source_reference")
 	@Convert(SourceReferenceConverter.class)
 	private SourceReference source_reference;
 	
@@ -69,5 +68,13 @@ public class CreationEvent extends Element {
 	public void setInterpretationCreator(Actor interpretationCreator) {
 		this.interpretation_creator = interpretationCreator;
 	}
+	
+	public Long getGraphId() {
+        return graphId;
+    }
+
+    public void setGraphId(Long graphId) {
+        this.graphId = graphId;
+    }
 
 }
