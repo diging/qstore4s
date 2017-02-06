@@ -12,6 +12,9 @@ import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
+import org.neo4j.ogm.annotation.typeconversion.Convert;
+
+import edu.asu.qstore4s.db.neo4j.converters.SourceReferenceConverter;
 
 /**
  * This file contains the definition of TermParts class.
@@ -28,6 +31,7 @@ public class TermParts extends Element {
 	private Set<TermPart> termParts;
 	
 	@Property(name = "source_reference")
+	@Convert(SourceReferenceConverter.class)
 	private SourceReference source_reference;
 	
 	public TermParts() {

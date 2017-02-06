@@ -9,13 +9,15 @@ public class PlaceConverter implements AttributeConverter<Place, String> {
     @Override
     public Place toEntityAttribute(String arg0) {
         Place place = new Place();
-
-        place.setSourceURI(arg0);
+        place.setSourceURI(arg0 == null ? "" : arg0);
         return place;
     }
 
     @Override
     public String toGraphProperty(Place place) {
+        if (place == null) {
+            return "";
+        }
         return place.getSourceURI();
     }
 

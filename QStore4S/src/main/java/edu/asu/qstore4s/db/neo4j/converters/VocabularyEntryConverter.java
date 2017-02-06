@@ -9,7 +9,7 @@ public class VocabularyEntryConverter implements AttributeConverter<VocabularyEn
     @Override
     public VocabularyEntry toEntityAttribute(String arg0) {
         VocabularyEntry vocabularyEntryObject = new VocabularyEntry();
-        vocabularyEntryObject.setSourceURI(arg0);
+        vocabularyEntryObject.setSourceURI(arg0 == null ? "" : arg0);
         return vocabularyEntryObject;
     }
 
