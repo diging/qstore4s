@@ -23,112 +23,111 @@ import edu.asu.qstore4s.db.neo4j.converters.VocabularyEntryConverter;
 @XmlRootElement
 @NodeEntity
 public class Term extends Element {
-	
-	@GraphId
-	Long graphId;
-	
-	@Property(name = "interpretation")
-	@Convert(ConceptConverter.class)
-	private Concept interpretation;
-	
-	@Property(name = "normalized_representation")
-	@Convert(VocabularyEntryConverter.class)
-	private VocabularyEntry normalized_representation;
-	
-	@Relationship(type="hasTermParts", direction=Relationship.OUTGOING)
-	private TermParts printedRepresentation;
-	
-	@Property(name = "certain")
-	private Boolean certain;
-	
-	@Property(name = "datatype")
-	private String datatype;
 
-    @Relationship(type="referencedTerm", direction=Relationship.OUTGOING)
-	private Set<Term> referencedTerms;
-	
-	@Property
-	@Convert(SourceReferenceConverter.class)
-	private SourceReference source_reference;
-	
-	public Term() {
-		referencedTerms = new HashSet<Term>();
-	}
+    @GraphId
+    Long graphId;
 
-	public Concept getInterpretation() {
-		return interpretation;
-	}
-	
-	@XmlElement(type=Concept.class)
-	public void setInterpretation(Concept concept) {
-		this.interpretation = concept;
-	}
+    @Property(name = "interpretation")
+    @Convert(ConceptConverter.class)
+    private Concept interpretation;
 
-	@XmlElement(type=VocabularyEntry.class)
-	public VocabularyEntry getNormalizedRepresentation() {
-		return normalized_representation;
-	}
-		
-	public void setNormalizedRepresentation(VocabularyEntry entry) {
-		this.normalized_representation = entry;
-	}
+    @Property(name = "normalized_representation")
+    @Convert(VocabularyEntryConverter.class)
+    private VocabularyEntry normalized_representation;
 
-	@XmlElement(type=TermParts.class)
-	public TermParts getPrintedRepresentation() {
-		return printedRepresentation;
-	}
+    @Relationship(type = "hasTermParts", direction = Relationship.OUTGOING)
+    private TermParts printedRepresentation;
 
-	public void setPrintedRepresentation(TermParts parts) {
-		this.printedRepresentation = parts;
-	}
+    @Property(name = "certain")
+    private Boolean certain;
 
-	public Boolean isCertain() {
-		return certain;
-	}
-	
-	/**
-	 * Getter method for hibernate.
-	 **/
-	public Boolean getCertain() {
-		return certain;
-	}
+    @Property(name = "datatype")
+    private String datatype;
 
-	public void setIsCertain(Boolean certainty) {
-		this.certain = certainty;
-	}
-	
-	/**
-	  * Setter method for hibernate.
-	 **/
-	public void setCertain(boolean certainty) {
-		this.certain = certainty;
-	}
+    @Relationship(type = "referencedTerm", direction = Relationship.OUTGOING)
+    private Set<Term> referencedTerms;
 
-	@XmlElement(type=Term.class)
-	public Set<Term> getReferencedTerms() {
-		return referencedTerms;
-	}
+    @Property(name = "source_reference")
+    @Convert(SourceReferenceConverter.class)
+    private SourceReference source_reference;
 
-	public void setReferencedTerms(Set<Term> terms) {
-		this.referencedTerms = terms;
-	}
-	
-	@XmlElement(type=SourceReference.class)
-	public SourceReference getSourceReference() {
-		return source_reference;
-	}
+    public Term() {
+        referencedTerms = new HashSet<Term>();
+    }
 
-	public void setSourceReference(SourceReference reference) {
-		this.source_reference = reference;
-	}
-	
-	public String getDatatype() {
+    public Concept getInterpretation() {
+        return interpretation;
+    }
+
+    @XmlElement(type = Concept.class)
+    public void setInterpretation(Concept concept) {
+        this.interpretation = concept;
+    }
+
+    @XmlElement(type = VocabularyEntry.class)
+    public VocabularyEntry getNormalizedRepresentation() {
+        return normalized_representation;
+    }
+
+    public void setNormalizedRepresentation(VocabularyEntry entry) {
+        this.normalized_representation = entry;
+    }
+
+    @XmlElement(type = TermParts.class)
+    public TermParts getPrintedRepresentation() {
+        return printedRepresentation;
+    }
+
+    public void setPrintedRepresentation(TermParts parts) {
+        this.printedRepresentation = parts;
+    }
+
+    public Boolean isCertain() {
+        return certain;
+    }
+
+    /**
+     * Getter method for hibernate.
+     **/
+    public Boolean getCertain() {
+        return certain;
+    }
+
+    public void setIsCertain(Boolean certainty) {
+        this.certain = certainty;
+    }
+
+    /**
+     * Setter method for hibernate.
+     **/
+    public void setCertain(boolean certainty) {
+        this.certain = certainty;
+    }
+
+    @XmlElement(type = Term.class)
+    public Set<Term> getReferencedTerms() {
+        return referencedTerms;
+    }
+
+    public void setReferencedTerms(Set<Term> terms) {
+        this.referencedTerms = terms;
+    }
+
+    @XmlElement(type = SourceReference.class)
+    public SourceReference getSourceReference() {
+        return source_reference;
+    }
+
+    public void setSourceReference(SourceReference reference) {
+        this.source_reference = reference;
+    }
+
+    public String getDatatype() {
         return datatype;
     }
 
     public void setDatatype(String datatype) {
         this.datatype = datatype;
     }
-
 
 }
