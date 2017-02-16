@@ -37,151 +37,159 @@ import edu.asu.qstore4s.service.IStoreManager;
 @Service
 public class RepositoryManager implements IRepositoryManager {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(RepositoryManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(RepositoryManager.class);
 
-	private static final String JSON = "application/json";
+    private static final String JSON = "application/json";
 
-	@Autowired
-	IStoreManager storeManager;
+    @Autowired
+    IStoreManager storeManager;
 
-	@Autowired
-	IXmltoObject xmlToObject;
+    @Autowired
+    IXmltoObject xmlToObject;
 
-	@Autowired
-	IConverter converter;
+    @Autowired
+    IConverter converter;
 
-	@Autowired
-	ISearchXmlParser searchXmlParser;
+    @Autowired
+    ISearchXmlParser searchXmlParser;
 
-	@Autowired
-	IGetConverter getConverter;
-	
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String processXMLandStoretoDb(String xml, String type)
-			throws URISyntaxException, ParserException, IOException,
-			ParseException, JSONException, InvalidDataException {
+    @Autowired
+    IGetConverter getConverter;
 
-		List<List<Element>> creationEventList = new ArrayList<List<Element>>();
-		List<CreationEvent> creationEventListwithID = new ArrayList<CreationEvent>();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String processXMLandStoretoDb(String xml, String type) throws URISyntaxException, ParserException,
+            IOException, ParseException, JSONException, InvalidDataException {
 
-		creationEventList = xmlToObject.parseXML(xml);
+        List<List<Element>> creationEventList = new ArrayList<List<Element>>();
+        List<CreationEvent> creationEventListwithID = new ArrayList<CreationEvent>();
 
-		creationEventListwithID = storeManager.insertIntoDb(creationEventList);
+        creationEventList = xmlToObject.parseXML(xml);
 
-		if (type.equals((JSON))) {
-			return converter.convertToJson(creationEventListwithID);
-		} else {
-			return converter.convertToXML(creationEventListwithID);
-		}
+        creationEventListwithID = storeManager.insertIntoDb(creationEventList);
 
-	}
+        if (type.equals((JSON))) {
+            return converter.convertToJson(creationEventListwithID);
+        } else {
+            return converter.convertToXML(creationEventListwithID);
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
+    }
 
-	@Override
-	public String searchByAppellationId(String xml, String type)
-			throws URISyntaxException, ParserException, IOException,
-			ParseException, JSONException, InvalidDataException {
+    /**
+     * {@inheritDoc}
+     */
 
-		logger.info("inside searchXML method of repository manager");
+    @Override
+    public String searchByAppellationId(String xml, String type) throws URISyntaxException, ParserException,
+            IOException, ParseException, JSONException, InvalidDataException {
 
-		List<List<Element>> creationEventList = new ArrayList<List<Element>>();
-		List<CreationEvent> creationEventListwithID = new ArrayList<CreationEvent>();
+        logger.info("inside searchXML method of repository manager");
 
-		creationEventList = xmlToObject.parseXML(xml);
+        List<List<Element>> creationEventList = new ArrayList<List<Element>>();
+        List<CreationEvent> creationEventListwithID = new ArrayList<CreationEvent>();
 
-		creationEventListwithID = storeManager
-				.searchRelationFromDb(creationEventList);
+        creationEventList = xmlToObject.parseXML(xml);
 
-		if (type.equals(JSON)) {
-			return converter.convertToJson(creationEventListwithID);
-		} else {
-			return converter.convertToXML(creationEventListwithID);
-		}
+        creationEventListwithID = storeManager.searchRelationFromDb(creationEventList);
 
-	}
+        if (type.equals(JSON)) {
+            return converter.convertToJson(creationEventListwithID);
+        } else {
+            return converter.convertToXML(creationEventListwithID);
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
+    }
 
-	@Override
-	public String search(String xml, String type) throws URISyntaxException,
-			ParserException, IOException, ParseException, JSONException,
-			InvalidDataException {
+    /**
+     * {@inheritDoc}
+     */
 
-		ISearchCreationEvent queryObject = searchXmlParser.parseXML(xml);
+    @Override
+    public String search(String xml, String type) throws URISyntaxException, ParserException, IOException,
+            ParseException, JSONException, InvalidDataException {
 
-		List<CreationEvent> elementList = storeManager
-				.searchObjectFromDb(queryObject);
+        ISearchCreationEvent queryObject = searchXmlParser.parseXML(xml);
 
-		if (type.equals(JSON)) {
-			return converter.convertToJson(elementList);
-		} else {
-			return converter.convertToXML(elementList);
-		}
-	}
+        List<CreationEvent> elementList = storeManager.searchObjectFromDb(queryObject);
 
-	/**
-	 * {@inheritDoc}
-	 */
+        if (type.equals(JSON)) {
+            return converter.convertToJson(elementList);
+        } else {
+            return converter.convertToXML(elementList);
+        }
+    }
 
-	@Override
-	public String getShallow(String id, String type) throws JSONException,
-			InvalidDataException {
+    /**
+     * {@inheritDoc}
+     */
 
-		Element element = storeManager.getObjectFromDb(id);
-		if (type.equals(JSON)) {
-			return converter.convertToJsonShallow(element);
-		} else {
-			return converter.convertToXMLShallow(element);
-		}
+    @Override
+    public String getShallow(String id, String type) throws JSONException, InvalidDataException {
 
-	}
+        Element element = storeManager.getObjectFromDb(id);
+        if (type.equals(JSON)) {
+            return converter.convertToJsonShallow(element);
+        } else {
+            return converter.convertToXMLShallow(element);
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
+    }
 
-	@Override
-	public String getFull(String id, String type) throws JSONException,
-			InvalidDataException {
+    /**
+     * {@inheritDoc}
+     */
 
-		Element element = storeManager.getObjectFromDb(id);
-		
-		if (type.equals(JSON)) {
-			return converter.convertToJson(element);
-		} else {
-			return converter.convertToXML(element);
-		}
+    @Override
+    public String getFull(String id, String type) throws JSONException, InvalidDataException {
 
-	}
+        Element element = storeManager.getObjectFromDb(id);
 
-	/**
-	 * {@inheritDoc}
-	 */
+        if (type.equals(JSON)) {
+            return converter.convertToJson(element);
+        } else {
+            return converter.convertToXML(element);
+        }
 
-	@Override
-	public String getList(String xml, String accept) throws ParserException,
-			IOException, URISyntaxException, ParseException,
-			InvalidDataException, JSONException {
+    }
 
-		List<String> idList = getConverter.parseXML(xml);
+    /**
+     * {@inheritDoc}
+     */
 
-		List<CreationEvent> elementList = storeManager.getObjectFromDb(idList);
+    @Override
+    public String getList(String xml, String accept) throws ParserException, IOException, URISyntaxException,
+            ParseException, InvalidDataException, JSONException {
 
-		if (accept.equals(JSON)) {
-			return converter.convertToJson(elementList);
-		} else {
-			return converter.convertToXML(elementList);
-		}
+        List<String> idList = getConverter.parseXML(xml);
 
-	}
+        List<CreationEvent> elementList = storeManager.getObjectFromDb(idList);
+
+        if (accept.equals(JSON)) {
+            return converter.convertToJson(elementList);
+        } else {
+            return converter.convertToXML(elementList);
+        }
+
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws JSONException
+     */
+    @Override
+    public String executeQuery(String query, Class<?> clazz, String accept) throws JSONException {
+
+        List<CreationEvent> elementList = storeManager.executeQuery(query, clazz);
+
+        if (accept.equals(JSON)) {
+            return converter.convertToJson(elementList);
+        } else {
+            return converter.convertToXML(elementList);
+        }
+
+    }
 }

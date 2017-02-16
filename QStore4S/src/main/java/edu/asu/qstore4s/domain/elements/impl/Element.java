@@ -4,13 +4,13 @@ import java.util.Date;
 
 import javax.xml.bind.annotation.XmlElement;
 
+import org.neo4j.ogm.annotation.Property;
+import org.neo4j.ogm.annotation.typeconversion.Convert;
+import org.neo4j.ogm.annotation.typeconversion.DateLong;
 import org.springframework.data.annotation.Transient;
-import org.springframework.data.annotation.TypeAlias;
-import org.springframework.data.neo4j.annotation.GraphId;
-import org.springframework.data.neo4j.annotation.GraphProperty;
-import org.springframework.data.neo4j.annotation.Indexed;
-import org.springframework.data.neo4j.annotation.NodeEntity;
-import org.springframework.data.neo4j.support.index.IndexType;
+
+import edu.asu.qstore4s.db.neo4j.converters.ActorConverter;
+import edu.asu.qstore4s.db.neo4j.converters.PlaceConverter;
 
 /**
  * This file contains the definition of Element class.
@@ -18,7 +18,6 @@ import org.springframework.data.neo4j.support.index.IndexType;
  */
 public class Element {
 	
-	@Indexed(unique=true, indexType=IndexType.SIMPLE)
 	private String id;
 	
 	@Transient
@@ -33,13 +32,16 @@ public class Element {
 	@Transient
 	private Boolean isIdAssigned;
 	
-	@GraphProperty(propertyType = String.class)
+	@Property(name = "creator")
+	@Convert(ActorConverter.class)
 	private Actor creator;
 	
-	@GraphProperty
+	@Property(name = "creation_date")
+	@DateLong
 	private Date creation_date;
 	
-	@GraphProperty
+	@Property(name = "creation_place")
+	@Convert(PlaceConverter.class)
 	private Place creation_place;
 	
 	public String getId() {

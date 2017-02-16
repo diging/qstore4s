@@ -1,6 +1,6 @@
 package edu.asu.qstore4s.search.elements.impl;
 
-import org.springframework.data.neo4j.annotation.GraphProperty;
+import org.neo4j.ogm.annotation.Property;
 
 import edu.asu.qstore4s.search.elements.ISearchExpression;
 import edu.asu.qstore4s.search.elements.ISearchFormat;
@@ -27,7 +27,7 @@ public class SearchTermPart extends SearchElement implements ISearchTermPart {
 	private ISearchVocabularyEntry normalization;
 
 	
-	@GraphProperty
+	@Property
 	private ISearchSourceReference source_reference;
 	
 	@Override

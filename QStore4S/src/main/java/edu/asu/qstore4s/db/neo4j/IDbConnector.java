@@ -17,49 +17,57 @@ import edu.asu.qstore4s.search.events.ISearchCreationEvent;
 
 public interface IDbConnector {
 
-	/**
-	 * This method is used to call database to get information of relation or
-	 * appellation event.
-	 * 
-	 * @param id
-	 * @return
-	 * @throws InvalidDataException
-	 */
-	Element get(String id) throws InvalidDataException;
+    /**
+     * This method is used to call database to get information of relation or
+     * appellation event.
+     * 
+     * @param id
+     * @return
+     * @throws InvalidDataException
+     */
+    Element get(String id) throws InvalidDataException;
 
-	/**
-	 * This method is used to get parent relation event from appellation event.
-	 * 
-	 * @param creationEventList
-	 * @return
-	 * @throws URISyntaxException
-	 * @throws InvalidDataException
-	 */
+    /**
+     * This method is used to get parent relation event from appellation event.
+     * 
+     * @param creationEventList
+     * @return
+     * @throws URISyntaxException
+     * @throws InvalidDataException
+     */
 
-	List<CreationEvent> searchRelationInDb(List<Element> creationEventList)
-			throws URISyntaxException, InvalidDataException;
+    List<CreationEvent> searchRelationInDb(List<Element> creationEventList)
+            throws URISyntaxException, InvalidDataException;
 
-	/**
-	 * The method returns information of multiple relation or appellation event
-	 * from list of ids.
-	 * 
-	 * @param idList
-	 * @return
-	 * @throws InvalidDataException
-	 */
+    /**
+     * The method returns information of multiple relation or appellation event
+     * from list of ids.
+     * 
+     * @param idList
+     * @return
+     * @throws InvalidDataException
+     */
 
-	List<CreationEvent> get(List<String> idList) throws InvalidDataException;
+    List<CreationEvent> get(List<String> idList) throws InvalidDataException;
 
-	/**
-	 * The method search appellation or relation event from the database using
-	 * given parameters.
-	 * 
-	 * @param queryObject
-	 * @return
-	 * @throws InvalidDataException
-	 */
+    /**
+     * The method search appellation or relation event from the database using
+     * given parameters.
+     * 
+     * @param queryObject
+     * @return
+     * @throws InvalidDataException
+     */
 
-	List<CreationEvent> searchFromDb(ISearchCreationEvent queryObject)
-			throws InvalidDataException;
+    List<CreationEvent> searchFromDb(ISearchCreationEvent queryObject) throws InvalidDataException;
+
+    /**
+     * This method executes the Query and returns the result
+     * 
+     * @param query
+     * @param clazz
+     * @return
+     */
+    List<CreationEvent> executeQuery(String query, Class<?> clazz);
 
 }
