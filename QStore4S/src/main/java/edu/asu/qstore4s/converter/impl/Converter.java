@@ -289,18 +289,15 @@ public class Converter implements IConverter {
                 // }
 
                 Relation relation = creationEvent.getRelation();
+                if (relation != null) {
+                    if (isShallow) {
+                        Element relationNode = addRelationNode(relation, namespace, true);
+                        relationEvent.addContent(relationNode);
 
-                if (isShallow) {
-                    Element relationNode = addRelationNode(relation, namespace, true);
-                    relationEvent.addContent(relationNode);
-
-                }
-
-                else {
-
-                    Element relationNode = addRelationNode(relation, namespace, false);
-                    relationEvent.addContent(relationNode);
-
+                    } else {
+                        Element relationNode = addRelationNode(relation, namespace, false);
+                        relationEvent.addContent(relationNode);
+                    }
                 }
             }
         }
