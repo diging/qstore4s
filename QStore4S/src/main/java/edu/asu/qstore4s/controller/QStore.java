@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import java.security.Principal;
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,9 +23,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import edu.asu.qstore4s.domain.events.impl.AppellationEvent;
 import edu.asu.qstore4s.domain.events.impl.RelationEvent;
-import edu.asu.qstore4s.error.Error;
 import edu.asu.qstore4s.exception.InvalidDataException;
 import edu.asu.qstore4s.exception.ParserException;
+import edu.asu.qstore4s.message.Message;
 import edu.asu.qstore4s.service.IRepositoryManager;
 
 /**
@@ -42,6 +43,8 @@ public class QStore {
 
     private final String RELATION_EVENT = "relationevent";
     private final String APPELLATION_EVENT = "appellationevent";
+
+    private final String RUNNING = "RUNNING";
 
     private final HashMap<String, Class<?>> classMap = new HashMap<String, Class<?>>() {
         {
@@ -139,7 +142,7 @@ public class QStore {
 
         if (xml.equals("")) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return new Error("Please provide XML in body of the post request.").toString(accept);
+            return new Message("Please provide XML in body of the post request.").toString(accept);
         }
 
         String returnString = "";
@@ -200,31 +203,41 @@ public class QStore {
     @RequestMapping(value = "/query", method = RequestMethod.POST)
     public String query(HttpServletRequest request, HttpServletResponse response,
             @RequestHeader("Accept") String accept, @RequestBody String query, @RequestParam("class") String clas)
-                    throws JSONException {
+                    throws JSONException, InterruptedException, ExecutionException {
 
         query = query.trim();
         if (query.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return new Error("Please provide the query to execute the request").toString(accept);
+            return new Message("Please provide the query to execute the request").toString(accept);
         }
 
         Class<?> clazz = classMap.get(clas);
         if (clazz == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return new Error("Please provide a valid Class to execute the request").toString(accept);
+            return new Message("Please provide a valid Class to execute the request").toString(accept);
         }
 
-        String returnString = "";
-
         if (accept != null && accept.equals(RETURN_JSON)) {
-            returnString = repositorymanager.executeQuery(query, clazz, JSON);
+            repositorymanager.executeQueryAsync(query, clazz, JSON);
         } else {
-            returnString = repositorymanager.executeQuery(query, clazz, XML);
+            repositorymanager.executeQueryAsync(query, clazz, XML);
         }
 
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(accept);
-        return returnString;
+        return new Message(RUNNING).toString(accept);
+
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/queryStatus", method = RequestMethod.GET)
+    public String isQueryExecuting(@RequestHeader("Accept") String accept)
+            throws InterruptedException, ExecutionException {
+        if (!repositorymanager.isAsyncQueryExecuting()) {
+            return repositorymanager.getAsyncQueryResult();
+        }
+
+        return new Message(RUNNING).toString(accept);
 
     }
 
@@ -289,7 +302,7 @@ public class QStore {
 
         if (trimmedXML.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return new Error("Please provide XML in body of the post request.").toString(accept);
+            return new Message("Please provide XML in body of the post request.").toString(accept);
 
         } else {
             String returnString = "";
@@ -333,7 +346,7 @@ public class QStore {
 
         if (trimmedXML.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return new Error("Please provide XML in body of the post request.").toString(accept);
+            return new Message("Please provide XML in body of the post request.").toString(accept);
         } else {
             String returnString = "";
             if (accept != null && accept.equals(RETURN_JSON)) {

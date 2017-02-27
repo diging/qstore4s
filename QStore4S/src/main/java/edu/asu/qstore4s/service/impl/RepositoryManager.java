@@ -8,11 +8,13 @@ import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import edu.asu.qstore4s.converter.IConverter;
@@ -175,6 +177,44 @@ public class RepositoryManager implements IRepositoryManager {
 
     }
 
+    private String res = "";
+
+    private AtomicBoolean queryExecuting = new AtomicBoolean(false);
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws JSONException
+     */
+    @Override
+    @Async
+    public void executeQueryAsync(String query, Class<?> clazz, String accept) throws JSONException {
+
+        queryExecuting.set(true);
+
+        try {
+            List<CreationEvent> elementList = storeManager.executeQuery(query, clazz);
+
+            if (accept.equals(JSON)) {
+                res = converter.convertToJson(elementList);
+            } else {
+                res = converter.convertToXML(elementList);
+            }
+        } finally {
+            queryExecuting.set(false);
+        }
+    }
+
+    @Override
+    public String getAsyncQueryResult() {
+        return res;
+    }
+
+    @Override
+    public boolean isAsyncQueryExecuting() {
+        return queryExecuting.get();
+    }
+
     /**
      * {@inheritDoc}
      * 
@@ -192,4 +232,5 @@ public class RepositoryManager implements IRepositoryManager {
         }
 
     }
+
 }

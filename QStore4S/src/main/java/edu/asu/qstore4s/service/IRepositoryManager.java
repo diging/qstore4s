@@ -113,6 +113,22 @@ public interface IRepositoryManager {
             ParseException, InvalidDataException, JSONException;
 
     /**
+     * This method asynchronously executes the query that is passed and returns
+     * the result
+     * 
+     * @param query
+     * @param clazz
+     * @param accept
+     * @return
+     * @throws JSONException
+     */
+    void executeQueryAsync(String query, Class<?> clazz, String accept) throws JSONException;
+
+    String getAsyncQueryResult();
+
+    boolean isAsyncQueryExecuting();
+
+    /**
      * This method executes the query that is passed and returns the result
      * 
      * @param query
