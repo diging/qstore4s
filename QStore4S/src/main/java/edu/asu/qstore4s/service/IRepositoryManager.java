@@ -119,14 +119,11 @@ public interface IRepositoryManager {
      * @param query
      * @param clazz
      * @param accept
+     * @param queryID
      * @return
      * @throws JSONException
      */
-    void executeQueryAsync(String query, Class<?> clazz, String accept) throws JSONException;
-
-    String getAsyncQueryResult();
-
-    boolean isAsyncQueryExecuting();
+    void executeQueryAsync(String query, Class<?> clazz, String accept, String queryID) throws JSONException;
 
     /**
      * This method executes the query that is passed and returns the result

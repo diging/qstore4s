@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import edu.asu.qstore4s.async.manager.IAsyncQueryManager;
 import edu.asu.qstore4s.domain.events.impl.AppellationEvent;
 import edu.asu.qstore4s.domain.events.impl.RelationEvent;
 import edu.asu.qstore4s.exception.InvalidDataException;
@@ -55,6 +56,9 @@ public class QStore {
 
     @Autowired
     private IRepositoryManager repositorymanager;
+
+    @Autowired
+    private IAsyncQueryManager asyncQueryManager;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String testStatus(ModelMap model) {
@@ -202,8 +206,16 @@ public class QStore {
     @ResponseBody
     @RequestMapping(value = "/query", method = RequestMethod.POST)
     public String query(HttpServletRequest request, HttpServletResponse response,
-            @RequestHeader("Accept") String accept, @RequestBody String query, @RequestParam("class") String clas)
-                    throws JSONException, InterruptedException, ExecutionException {
+            @RequestHeader("Accept") String accept, @RequestBody String query, @RequestParam("class") String clas,
+            @RequestParam("queryID") String queryID) throws JSONException, InterruptedException, ExecutionException {
+
+        Boolean isQueryRunning = asyncQueryManager.isQueryRunning(queryID);
+
+        if (isQueryRunning != null && isQueryRunning) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.setContentType(accept);
+            return new Message(RUNNING).toString(accept);
+        }
 
         query = query.trim();
         if (query.isEmpty()) {
@@ -218,9 +230,9 @@ public class QStore {
         }
 
         if (accept != null && accept.equals(RETURN_JSON)) {
-            repositorymanager.executeQueryAsync(query, clazz, JSON);
+            repositorymanager.executeQueryAsync(query, clazz, JSON, queryID);
         } else {
-            repositorymanager.executeQueryAsync(query, clazz, XML);
+            repositorymanager.executeQueryAsync(query, clazz, XML, queryID);
         }
 
         response.setStatus(HttpServletResponse.SC_OK);
@@ -230,11 +242,11 @@ public class QStore {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/queryStatus", method = RequestMethod.GET)
-    public String isQueryExecuting(@RequestHeader("Accept") String accept)
+    @RequestMapping(value = "/asyncQueryResult", method = RequestMethod.GET)
+    public String getAysncQueryResult(@RequestHeader("Accept") String accept, @RequestParam("queryID") String queryID)
             throws InterruptedException, ExecutionException {
-        if (!repositorymanager.isAsyncQueryExecuting()) {
-            return repositorymanager.getAsyncQueryResult();
+        if (!asyncQueryManager.isQueryRunning(queryID)) {
+            return asyncQueryManager.getQueryResult(queryID);
         }
 
         return new Message(RUNNING).toString(accept);

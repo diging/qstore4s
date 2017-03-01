@@ -8,7 +8,6 @@ import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.json.JSONException;
 import org.slf4j.Logger;
@@ -17,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import edu.asu.qstore4s.async.manager.IAsyncQueryManager;
 import edu.asu.qstore4s.converter.IConverter;
 import edu.asu.qstore4s.converter.IGetConverter;
 import edu.asu.qstore4s.converter.ISearchXmlParser;
@@ -44,19 +44,22 @@ public class RepositoryManager implements IRepositoryManager {
     private static final String JSON = "application/json";
 
     @Autowired
-    IStoreManager storeManager;
+    private IStoreManager storeManager;
 
     @Autowired
-    IXmltoObject xmlToObject;
+    private IXmltoObject xmlToObject;
 
     @Autowired
-    IConverter converter;
+    private IConverter converter;
 
     @Autowired
-    ISearchXmlParser searchXmlParser;
+    private ISearchXmlParser searchXmlParser;
 
     @Autowired
-    IGetConverter getConverter;
+    private IGetConverter getConverter;
+
+    @Autowired
+    private IAsyncQueryManager asyncQueryManager;
 
     /**
      * {@inheritDoc}
@@ -177,10 +180,6 @@ public class RepositoryManager implements IRepositoryManager {
 
     }
 
-    private String res = "";
-
-    private AtomicBoolean queryExecuting = new AtomicBoolean(false);
-
     /**
      * {@inheritDoc}
      * 
@@ -188,11 +187,13 @@ public class RepositoryManager implements IRepositoryManager {
      */
     @Override
     @Async
-    public void executeQueryAsync(String query, Class<?> clazz, String accept) throws JSONException {
+    public void executeQueryAsync(String query, Class<?> clazz, String accept, String queryID) throws JSONException {
 
-        queryExecuting.set(true);
+        asyncQueryManager.setQueryStatus(queryID, true);
 
         try {
+            String res = "";
+
             List<CreationEvent> elementList = storeManager.executeQuery(query, clazz);
 
             if (accept.equals(JSON)) {
@@ -200,19 +201,10 @@ public class RepositoryManager implements IRepositoryManager {
             } else {
                 res = converter.convertToXML(elementList);
             }
+            asyncQueryManager.setQueryResult(queryID, res);
         } finally {
-            queryExecuting.set(false);
+            asyncQueryManager.setQueryStatus(queryID, false);
         }
-    }
-
-    @Override
-    public String getAsyncQueryResult() {
-        return res;
-    }
-
-    @Override
-    public boolean isAsyncQueryExecuting() {
-        return queryExecuting.get();
     }
 
     /**
