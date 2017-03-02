@@ -188,13 +188,13 @@ public class QStoreTest {
 		{
 			String returnString = qStore.search(request, response,
 					"","application/json");
-			Assert.assertEquals("{\"errorMessage\" = \"Please provide XML in body of the post request.\" }", returnString);
+			Assert.assertEquals("{\"message\" = \"Please provide XML in body of the post request.\" }", returnString);
 		}
 		
 		{
 			String returnString = qStore.search(request, response,
 					"  ","application/xml");
-			Assert.assertEquals("<errorMessage>Please provide XML in body of the post request.</errorMessage>", returnString);
+			Assert.assertEquals("<message>Please provide XML in body of the post request.</message>", returnString);
 		}
 		
 	}
