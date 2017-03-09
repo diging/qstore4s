@@ -316,9 +316,8 @@ public class Converter implements IConverter {
 
     private Element addAppellationNode(AppellationEvent creationEvent, Namespace namespace) {
 
-        if (creationEvent.getTerm() == null) {
-            creationEvent = template.load(AppellationEvent.class, creationEvent.getGraphId(), 2);
-        }
+        creationEvent = template.load(AppellationEvent.class, creationEvent.getGraphId(), 3);
+        
 
         Element appellationevent = new Element(IXmlElements.APPELLATION_EVENT, namespace);
 
@@ -627,6 +626,7 @@ public class Converter implements IConverter {
 
     private Element addTermPartsNode(TermParts printedrepresentation, Namespace namespace) {
 
+        
         Element printed_representation = new Element(IXmlElements.PRINTED_REPRESENTATION, namespace);
 
         {
@@ -662,7 +662,7 @@ public class Converter implements IConverter {
         }
 
         Set<TermPart> termpartList = printedrepresentation.getTermParts();
-
+        
         for (TermPart termpart : termpartList) {
 
             Element termpartnode = addTermPartNode(termpart, namespace);
