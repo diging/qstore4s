@@ -3,6 +3,7 @@ package edu.asu.qstore4s.service;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
+import java.util.concurrent.ExecutionException;
 
 import org.json.JSONException;
 import org.springframework.stereotype.Service;
@@ -121,9 +122,9 @@ public interface IRepositoryManager {
      * @param accept
      * @param queryID
      * @return
-     * @throws JSONException
+     * @throws ExecutionException 
      */
-    void executeQueryAsync(String query, Class<?> clazz, String accept, String queryID) throws JSONException;
+    void executeQueryAsync(String query, Class<?> clazz, String accept, Integer queryID) throws ExecutionException;
 
     /**
      * This method executes the query that is passed and returns the result

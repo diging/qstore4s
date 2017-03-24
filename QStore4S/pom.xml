@@ -24,6 +24,7 @@
 		<qstore.admin.password>admin</qstore.admin.password>
 		<qstore.user.username>user</qstore.user.username>
 		<qstore.user.password>user</qstore.user.password>
+		<guava.version>19.0</guava.version>
 		<pullrequest></pullrequest>
 	</properties>
 	<dependencies>
@@ -227,6 +228,11 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-taglibs</artifactId>
 			<version>3.2.0.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava.version}</version>
 		</dependency>
 	</dependencies>
 

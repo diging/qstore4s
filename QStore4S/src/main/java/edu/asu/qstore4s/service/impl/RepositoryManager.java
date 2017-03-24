@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import org.json.JSONException;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import edu.asu.qstore4s.async.ExecutionStatus;
 import edu.asu.qstore4s.async.manager.IAsyncQueryManager;
 import edu.asu.qstore4s.converter.IConverter;
 import edu.asu.qstore4s.converter.IGetConverter;
@@ -183,27 +185,33 @@ public class RepositoryManager implements IRepositoryManager {
     /**
      * {@inheritDoc}
      * 
+     * @throws ExecutionException
+     * 
      * @throws JSONException
      */
     @Override
     @Async
-    public void executeQueryAsync(String query, Class<?> clazz, String accept, String queryID) throws JSONException {
+    public void executeQueryAsync(String query, Class<?> clazz, String accept, Integer queryID)
+            throws ExecutionException {
 
-        asyncQueryManager.setQueryStatus(queryID, true);
+        asyncQueryManager.setQueryStatus(queryID, ExecutionStatus.RUNNING);
 
         try {
-            String res = "";
 
             List<CreationEvent> elementList = storeManager.executeQuery(query, clazz);
 
+            String res = "";
             if (accept.equals(JSON)) {
                 res = converter.convertToJson(elementList);
             } else {
                 res = converter.convertToXML(elementList);
             }
             asyncQueryManager.setQueryResult(queryID, res);
+        } catch (JSONException e) {
+            //TODO Change logic
+            asyncQueryManager.setQueryStatus(queryID, ExecutionStatus.FAILED);
         } finally {
-            asyncQueryManager.setQueryStatus(queryID, false);
+            asyncQueryManager.setQueryStatus(queryID, ExecutionStatus.COMPLETED);
         }
     }
 

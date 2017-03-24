@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import java.security.Principal;
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import edu.asu.qstore4s.async.ExecutionStatus;
 import edu.asu.qstore4s.async.manager.IAsyncQueryManager;
 import edu.asu.qstore4s.domain.events.impl.AppellationEvent;
 import edu.asu.qstore4s.domain.events.impl.RelationEvent;
@@ -44,8 +47,6 @@ public class QStore {
 
     private final String RELATION_EVENT = "relationevent";
     private final String APPELLATION_EVENT = "appellationevent";
-
-    private final String RUNNING = "RUNNING";
 
     private final HashMap<String, Class<?>> classMap = new HashMap<String, Class<?>>() {
         {
@@ -206,50 +207,68 @@ public class QStore {
     @ResponseBody
     @RequestMapping(value = "/query", method = RequestMethod.POST)
     public String query(HttpServletRequest request, HttpServletResponse response,
-            @RequestHeader("Accept") String accept, @RequestBody String query, @RequestParam("class") String clas,
-            @RequestParam("queryID") String queryID) throws JSONException, InterruptedException, ExecutionException {
-
-        Boolean isQueryRunning = asyncQueryManager.isQueryRunning(queryID);
-
-        if (isQueryRunning != null && isQueryRunning) {
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentType(accept);
-            return new Message(RUNNING).toString(accept);
-        }
+            @RequestHeader("Accept") String accept, @RequestBody String query, @RequestParam("class") String clas) {
 
         query = query.trim();
+
+        response.setContentType(accept);
+
         if (query.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return new Message("Please provide the query to execute the request").toString(accept);
         }
 
-        Class<?> clazz = classMap.get(clas);
-        if (clazz == null) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return new Message("Please provide a valid Class to execute the request").toString(accept);
-        }
+        Map<String, String> responseParams = new HashMap<>();
+        try {
+            int queryID = query.hashCode();
+            responseParams.put("pollurl", "/query/" + queryID);
+            ExecutionStatus queryStatus = asyncQueryManager.getQueryStatus(query.hashCode());
 
-        if (accept != null && accept.equals(RETURN_JSON)) {
-            repositorymanager.executeQueryAsync(query, clazz, JSON, queryID);
-        } else {
-            repositorymanager.executeQueryAsync(query, clazz, XML, queryID);
-        }
+            // if the query is running or completed notify the client
+            if (queryStatus == ExecutionStatus.RUNNING || queryStatus == ExecutionStatus.COMPLETED) {
+                response.setStatus(HttpServletResponse.SC_OK);
+                responseParams.put("queryStatus", queryStatus.name());
+                return new Message(responseParams).toString(accept);
+            }
 
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType(accept);
-        return new Message(RUNNING).toString(accept);
+            Class<?> clazz = classMap.get(clas);
+            if (clazz == null) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return new Message("Please provide a valid Class to execute the request").toString(accept);
+            }
+
+            if (accept != null && accept.equals(RETURN_JSON)) {
+                repositorymanager.executeQueryAsync(query, clazz, JSON, queryID);
+            } else {
+                repositorymanager.executeQueryAsync(query, clazz, XML, queryID);
+            }
+
+            response.setStatus(HttpServletResponse.SC_OK);
+            responseParams.put("queryStatus", ExecutionStatus.RUNNING.name());
+            return new Message(responseParams).toString(accept);
+        } catch (ExecutionException e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            responseParams.put("queryStatus", ExecutionStatus.FAILED.name());
+            return new Message(responseParams).toString(accept);
+        }
 
     }
 
     @ResponseBody
-    @RequestMapping(value = "/asyncQueryResult", method = RequestMethod.GET)
-    public String getAysncQueryResult(@RequestHeader("Accept") String accept, @RequestParam("queryID") String queryID)
-            throws InterruptedException, ExecutionException {
-        if (!asyncQueryManager.isQueryRunning(queryID)) {
-            return asyncQueryManager.getQueryResult(queryID);
+    @RequestMapping(value = "/query/{queryID}", method = RequestMethod.GET)
+    public String getAysncQueryResult(@RequestHeader("Accept") String accept, @PathVariable("queryID") Integer queryID)
+            throws ExecutionException {
+        ExecutionStatus queryStatus = asyncQueryManager.getQueryStatus(queryID);
+
+        Map<String, String> responseParams = new HashMap<>();
+        if (queryStatus == ExecutionStatus.COMPLETED) {
+            responseParams.put("result", asyncQueryManager.getQueryResult(queryID));
+            return new Message(responseParams).toString(accept);
         }
 
-        return new Message(RUNNING).toString(accept);
+        responseParams.put("pollurl", "/query/" + queryID);
+        responseParams.put("queryStatus", queryStatus.name());
+        return new Message(responseParams).toString(accept);
 
     }
 
