@@ -1,9 +1,13 @@
 package edu.asu.qstore4s.async;
 
+import java.util.List;
+
+import edu.asu.qstore4s.domain.events.impl.CreationEvent;
+
 public class QueryInformation {
     private ExecutionStatus status;
     private Integer id;
-    private String result;
+    private List<CreationEvent> result;
 
     public ExecutionStatus getQueryStatus() {
         return status;
@@ -21,15 +25,16 @@ public class QueryInformation {
         this.id = id;
     }
 
-    public String getResult() {
+    public List<CreationEvent> getResult() {
         return result;
     }
 
-    public void setResult(String result) {
+    public void setResult(List<CreationEvent> result) {
         this.result = result;
     }
 
-    public QueryInformation(ExecutionStatus status, Integer id, String result) {
+    public QueryInformation(ExecutionStatus status, Integer id, List<CreationEvent> result) {
+        super();
         this.status = status;
         this.id = id;
         this.result = result;

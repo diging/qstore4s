@@ -40,8 +40,6 @@ import edu.asu.qstore4s.service.IRepositoryManager;
 @Controller
 public class QStore {
 
-    private static final String RETURN_JSON = "application/json";
-
     private static final String XML = "application/xml";
     private static final String JSON = "application/json";
 
@@ -152,7 +150,7 @@ public class QStore {
 
         String returnString = "";
 
-        if (accept != null && accept.equals(RETURN_JSON)) {
+        if (accept != null && accept.equals(JSON)) {
             returnString = repositorymanager.processXMLandStoretoDb(xml, JSON);
         } else {
             returnString = repositorymanager.processXMLandStoretoDb(xml, XML);
@@ -222,7 +220,7 @@ public class QStore {
         try {
             int queryID = query.hashCode();
             responseParams.put("pollurl", "/query/" + queryID);
-            ExecutionStatus queryStatus = asyncQueryManager.getQueryStatus(query.hashCode());
+            ExecutionStatus queryStatus = asyncQueryManager.getQueryStatus(queryID);
 
             // if the query is running or completed notify the client
             if (queryStatus == ExecutionStatus.RUNNING || queryStatus == ExecutionStatus.COMPLETED) {
@@ -237,11 +235,7 @@ public class QStore {
                 return new Message("Please provide a valid Class to execute the request").toString(accept);
             }
 
-            if (accept != null && accept.equals(RETURN_JSON)) {
-                repositorymanager.executeQueryAsync(query, clazz, JSON, queryID);
-            } else {
-                repositorymanager.executeQueryAsync(query, clazz, XML, queryID);
-            }
+            repositorymanager.executeQueryAsync(query, clazz, queryID);
 
             response.setStatus(HttpServletResponse.SC_OK);
             responseParams.put("queryStatus", ExecutionStatus.RUNNING.name());
@@ -256,28 +250,25 @@ public class QStore {
 
     @ResponseBody
     @RequestMapping(value = "/query/{queryID}", method = RequestMethod.GET)
-    public String getAysncQueryResult(@RequestHeader("Accept") String accept, @PathVariable("queryID") Integer queryID)
-            throws ExecutionException {
-        ExecutionStatus queryStatus = asyncQueryManager.getQueryStatus(queryID);
-
+    public String getAysncQueryResult(@RequestHeader("Accept") String accept,
+            @PathVariable("queryID") Integer queryID) {
         Map<String, String> responseParams = new HashMap<>();
         responseParams.put("pollurl", "/query/" + queryID);
-        responseParams.put("queryStatus", queryStatus.name());
+        try {
+            ExecutionStatus queryStatus = asyncQueryManager.getQueryStatus(queryID);
 
-        if (queryStatus == ExecutionStatus.COMPLETED) {
-            responseParams.put("result", convertToCData(asyncQueryManager.getQueryResult(queryID)));
-            return new Message(responseParams).toString(accept);
+            responseParams.put("queryStatus", queryStatus.name());
+
+            if (queryStatus == ExecutionStatus.COMPLETED) {
+
+                responseParams.put("result", asyncQueryManager.getQueryResult(queryID, accept));
+            }
+        } catch (ExecutionException | JSONException e) {
+            responseParams.put("queryStatus", ExecutionStatus.FAILED.name());
         }
 
         return new Message(responseParams).toString(accept);
 
-    }
-
-    private String convertToCData(String xml) {
-        if (xml.isEmpty()) {
-            return xml;
-        }
-        return "<![CDATA[" + xml + "]]>";
     }
 
     /**
@@ -345,7 +336,7 @@ public class QStore {
 
         } else {
             String returnString = "";
-            if (accept != null && accept.equals(RETURN_JSON)) {
+            if (accept != null && accept.equals(JSON)) {
 
                 returnString = repositorymanager.searchByAppellationId(xml, JSON);
             } else {
@@ -388,7 +379,7 @@ public class QStore {
             return new Message("Please provide XML in body of the post request.").toString(accept);
         } else {
             String returnString = "";
-            if (accept != null && accept.equals(RETURN_JSON)) {
+            if (accept != null && accept.equals(JSON)) {
 
                 returnString = repositorymanager.search(xml, JSON);
             } else {

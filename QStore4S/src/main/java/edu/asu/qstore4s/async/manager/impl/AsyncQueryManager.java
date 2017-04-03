@@ -1,11 +1,15 @@
 package edu.asu.qstore4s.async.manager.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+import org.json.JSONException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.common.cache.CacheBuilder;
@@ -15,6 +19,8 @@ import com.google.common.cache.LoadingCache;
 import edu.asu.qstore4s.async.ExecutionStatus;
 import edu.asu.qstore4s.async.QueryInformation;
 import edu.asu.qstore4s.async.manager.IAsyncQueryManager;
+import edu.asu.qstore4s.converter.IConverter;
+import edu.asu.qstore4s.domain.events.impl.CreationEvent;
 
 /**
  * 
@@ -24,12 +30,17 @@ import edu.asu.qstore4s.async.manager.IAsyncQueryManager;
 @Service
 public class AsyncQueryManager implements IAsyncQueryManager {
 
+    @Autowired
+    private IConverter converter;
+
+    private static final String JSON = "application/json";
+
     // This map stores all the information about the query
     private Map<Integer, QueryInformation> queryStatusMap = new ConcurrentHashMap<>();
 
     // Caches the query information for a day
-    LoadingCache<Integer, Optional<QueryInformation>> queryStatusCache = CacheBuilder.newBuilder().maximumSize(1000)
-            .expireAfterWrite(24, TimeUnit.HOURS)
+    private LoadingCache<Integer, Optional<QueryInformation>> queryStatusCache = CacheBuilder.newBuilder()
+            .maximumSize(1000).expireAfterWrite(1, TimeUnit.DAYS)
             .removalListener(notification -> queryStatusMap.remove(notification.getKey()))
             .build(new CacheLoader<Integer, Optional<QueryInformation>>() {
                 public Optional<QueryInformation> load(Integer key) throws Exception {
@@ -59,7 +70,8 @@ public class AsyncQueryManager implements IAsyncQueryManager {
         if (info.isPresent()) {
             info.get().setStatus(status);
         } else {
-            queryStatusCache.put(queryID, Optional.ofNullable(new QueryInformation(status, queryID, "")));
+            queryStatusCache.put(queryID,
+                    Optional.ofNullable(new QueryInformation(status, queryID, new ArrayList<CreationEvent>())));
         }
 
     }
@@ -70,7 +82,7 @@ public class AsyncQueryManager implements IAsyncQueryManager {
      * @throws ExecutionException
      */
     @Override
-    public void setQueryResult(Integer queryID, String res) throws ExecutionException {
+    public void setQueryResult(Integer queryID, List<CreationEvent> res) throws ExecutionException {
         Optional<QueryInformation> info = queryStatusCache.get(queryID);
         info.get().setResult(res);
     }
@@ -79,10 +91,26 @@ public class AsyncQueryManager implements IAsyncQueryManager {
      * {@inheritDoc}
      * 
      * @throws ExecutionException
+     * @throws JSONException
      */
     @Override
-    public String getQueryResult(Integer queryID) throws ExecutionException {
+    public String getQueryResult(Integer queryID, String accept) throws ExecutionException, JSONException {
         Optional<QueryInformation> info = queryStatusCache.get(queryID);
-        return info.isPresent() ? info.get().getResult() : "";
+
+        if (info.isPresent()) {
+            List<CreationEvent> elementList = info.get().getResult();
+            if (accept != null && accept.equals(JSON)) {
+                return converter.convertToJson(elementList);
+            }
+            return convertToCData(converter.convertToXML(elementList));
+        }
+        return "";
+    }
+
+    private String convertToCData(String xml) {
+        if (xml.isEmpty()) {
+            return xml;
+        }
+        return "<![CDATA[" + xml + "]]>";
     }
 }

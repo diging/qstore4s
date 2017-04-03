@@ -191,24 +191,16 @@ public class RepositoryManager implements IRepositoryManager {
      */
     @Override
     @Async
-    public void executeQueryAsync(String query, Class<?> clazz, String accept, Integer queryID)
-            throws ExecutionException {
+    public void executeQueryAsync(String query, Class<?> clazz, Integer queryID) throws ExecutionException {
 
         asyncQueryManager.setQueryStatus(queryID, ExecutionStatus.RUNNING);
 
         try {
-
             List<CreationEvent> elementList = storeManager.executeQuery(query, clazz);
 
-            String res = "";
-            if (accept.equals(JSON)) {
-                res = converter.convertToJson(elementList);
-            } else {
-                res = converter.convertToXML(elementList);
-            }
-            asyncQueryManager.setQueryResult(queryID, res);
+            asyncQueryManager.setQueryResult(queryID, elementList);
             asyncQueryManager.setQueryStatus(queryID, ExecutionStatus.COMPLETED);
-        } catch (JSONException e) {
+        } catch (Exception e) {
             asyncQueryManager.setQueryStatus(queryID, ExecutionStatus.FAILED);
         }
     }

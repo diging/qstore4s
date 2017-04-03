@@ -119,12 +119,11 @@ public interface IRepositoryManager {
      * 
      * @param query
      * @param clazz
-     * @param accept
      * @param queryID
      * @return
-     * @throws ExecutionException 
+     * @throws ExecutionException
      */
-    void executeQueryAsync(String query, Class<?> clazz, String accept, Integer queryID) throws ExecutionException;
+    void executeQueryAsync(String query, Class<?> clazz, Integer queryID) throws ExecutionException;
 
     /**
      * This method executes the query that is passed and returns the result
