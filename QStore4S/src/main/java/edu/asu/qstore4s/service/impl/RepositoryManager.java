@@ -207,11 +207,9 @@ public class RepositoryManager implements IRepositoryManager {
                 res = converter.convertToXML(elementList);
             }
             asyncQueryManager.setQueryResult(queryID, res);
-        } catch (JSONException e) {
-            //TODO Change logic
-            asyncQueryManager.setQueryStatus(queryID, ExecutionStatus.FAILED);
-        } finally {
             asyncQueryManager.setQueryStatus(queryID, ExecutionStatus.COMPLETED);
+        } catch (JSONException e) {
+            asyncQueryManager.setQueryStatus(queryID, ExecutionStatus.FAILED);
         }
     }
 

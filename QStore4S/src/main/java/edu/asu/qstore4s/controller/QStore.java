@@ -261,15 +261,23 @@ public class QStore {
         ExecutionStatus queryStatus = asyncQueryManager.getQueryStatus(queryID);
 
         Map<String, String> responseParams = new HashMap<>();
+        responseParams.put("pollurl", "/query/" + queryID);
+        responseParams.put("queryStatus", queryStatus.name());
+
         if (queryStatus == ExecutionStatus.COMPLETED) {
-            responseParams.put("result", asyncQueryManager.getQueryResult(queryID));
+            responseParams.put("result", convertToCData(asyncQueryManager.getQueryResult(queryID)));
             return new Message(responseParams).toString(accept);
         }
 
-        responseParams.put("pollurl", "/query/" + queryID);
-        responseParams.put("queryStatus", queryStatus.name());
         return new Message(responseParams).toString(accept);
 
+    }
+
+    private String convertToCData(String xml) {
+        if (xml.isEmpty()) {
+            return xml;
+        }
+        return "<![CDATA[" + xml + "]]>";
     }
 
     /**
