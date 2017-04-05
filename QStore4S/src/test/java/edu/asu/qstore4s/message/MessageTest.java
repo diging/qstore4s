@@ -9,7 +9,7 @@ import junit.framework.Assert;
 
 public class MessageTest {
     @Test
-    public void testToString() {
+    public void test_toString_success() {
         Map<String, String> messageParams = new HashMap<>();
         messageParams.put("url", "/abc/xyz");
         messageParams.put("status", "Running");
