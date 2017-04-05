@@ -185,9 +185,6 @@ public class RepositoryManager implements IRepositoryManager {
     /**
      * {@inheritDoc}
      * 
-     * @throws ExecutionException
-     * 
-     * @throws JSONException
      */
     @Override
     @Async
@@ -201,6 +198,7 @@ public class RepositoryManager implements IRepositoryManager {
             asyncQueryManager.setQueryResult(queryID, elementList);
             asyncQueryManager.setQueryStatus(queryID, ExecutionStatus.COMPLETED);
         } catch (Exception e) {
+            logger.error("Unable to execute Async Query", e);
             asyncQueryManager.setQueryStatus(queryID, ExecutionStatus.FAILED);
         }
     }

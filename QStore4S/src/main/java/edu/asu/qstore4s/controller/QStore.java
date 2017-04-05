@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import java.security.Principal;
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -25,7 +26,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import edu.asu.qstore4s.async.ExecutionStatus;
 import edu.asu.qstore4s.async.manager.IAsyncQueryManager;
+import edu.asu.qstore4s.converter.IConverter;
 import edu.asu.qstore4s.domain.events.impl.AppellationEvent;
+import edu.asu.qstore4s.domain.events.impl.CreationEvent;
 import edu.asu.qstore4s.domain.events.impl.RelationEvent;
 import edu.asu.qstore4s.exception.InvalidDataException;
 import edu.asu.qstore4s.exception.ParserException;
@@ -58,6 +61,9 @@ public class QStore {
 
     @Autowired
     private IAsyncQueryManager asyncQueryManager;
+
+    @Autowired
+    private IConverter converter;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String testStatus(ModelMap model) {
@@ -260,8 +266,14 @@ public class QStore {
             responseParams.put("queryStatus", queryStatus.name());
 
             if (queryStatus == ExecutionStatus.COMPLETED) {
-
-                responseParams.put("result", asyncQueryManager.getQueryResult(queryID, accept));
+                List<CreationEvent> elementList = asyncQueryManager.getQueryResult(queryID);
+                String res = "";
+                if (accept != null && accept.equals(JSON)) {
+                    res = converter.convertToJson(elementList);
+                } else {
+                    res = removeXMLMetadata(converter.convertToXML(elementList));
+                }
+                responseParams.put("result", res);
             }
         } catch (ExecutionException | JSONException e) {
             responseParams.put("queryStatus", ExecutionStatus.FAILED.name());
@@ -269,6 +281,10 @@ public class QStore {
 
         return new Message(responseParams).toString(accept);
 
+    }
+
+    private String removeXMLMetadata(String xml) {
+        return xml.replaceAll("\\<\\?xml(.+?)\\?\\>", "").trim();
     }
 
     /**

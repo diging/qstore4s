@@ -5,8 +5,6 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,7 +20,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import edu.asu.qstore4s.exception.InvalidDataException;
 import edu.asu.qstore4s.exception.ParserException;
-import edu.asu.qstore4s.message.Message;
 import edu.asu.qstore4s.service.IRepositoryManager;
 import junit.framework.Assert;
 
@@ -174,20 +171,6 @@ public class QStoreTest {
             Assert.assertEquals("<message>Please provide XML in body of the post request.</message>", returnString);
         }
 
-    }
-
-    @Test
-    public void testMessage() {
-        Map<String, String> messageParams = new HashMap<>();
-        messageParams.put("url", "/abc/xyz");
-        messageParams.put("status", "Running");
-        Message mess = new Message(messageParams);
-
-        Assert.assertEquals("{ \"message\" : { \"url\" : \"/abc/xyz\" , \"status\" : \"Running\" } }",
-                mess.toString("application/json"));
-
-        Assert.assertEquals("<message><url>/abc/xyz</url> <status>Running</status> </message>",
-                mess.toString("application/xml"));
     }
 
 }

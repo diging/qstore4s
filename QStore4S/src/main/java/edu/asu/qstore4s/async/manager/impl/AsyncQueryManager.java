@@ -9,7 +9,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.json.JSONException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.common.cache.CacheBuilder;
@@ -19,7 +18,6 @@ import com.google.common.cache.LoadingCache;
 import edu.asu.qstore4s.async.ExecutionStatus;
 import edu.asu.qstore4s.async.QueryInformation;
 import edu.asu.qstore4s.async.manager.IAsyncQueryManager;
-import edu.asu.qstore4s.converter.IConverter;
 import edu.asu.qstore4s.domain.events.impl.CreationEvent;
 
 /**
@@ -29,11 +27,6 @@ import edu.asu.qstore4s.domain.events.impl.CreationEvent;
  */
 @Service
 public class AsyncQueryManager implements IAsyncQueryManager {
-
-    @Autowired
-    private IConverter converter;
-
-    private static final String JSON = "application/json";
 
     // This map stores all the information about the query
     private Map<Integer, QueryInformation> queryStatusMap = new ConcurrentHashMap<>();
@@ -94,23 +87,13 @@ public class AsyncQueryManager implements IAsyncQueryManager {
      * @throws JSONException
      */
     @Override
-    public String getQueryResult(Integer queryID, String accept) throws ExecutionException, JSONException {
+    public List<CreationEvent> getQueryResult(Integer queryID) throws ExecutionException, JSONException {
         Optional<QueryInformation> info = queryStatusCache.get(queryID);
 
         if (info.isPresent()) {
-            List<CreationEvent> elementList = info.get().getResult();
-            if (accept != null && accept.equals(JSON)) {
-                return converter.convertToJson(elementList);
-            }
-            return convertToCData(converter.convertToXML(elementList));
+            return info.get().getResult();
         }
-        return "";
+        return new ArrayList<>();
     }
 
-    private String convertToCData(String xml) {
-        if (xml.isEmpty()) {
-            return xml;
-        }
-        return "<![CDATA[" + xml + "]]>";
-    }
 }

@@ -41,11 +41,10 @@ public interface IAsyncQueryManager {
      * Get the result of a query
      * 
      * @param queryID
-     * @param accept
      * @return
      * @throws ExecutionException
      * @throws JSONException
      */
-    String getQueryResult(Integer queryID, String accept) throws ExecutionException, JSONException;
+    List<CreationEvent> getQueryResult(Integer queryID) throws ExecutionException, JSONException;
 
 }
