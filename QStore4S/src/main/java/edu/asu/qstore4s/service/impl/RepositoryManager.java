@@ -197,7 +197,7 @@ public class RepositoryManager implements IRepositoryManager {
 
             asyncQueryManager.setQueryResult(queryID, elementList);
             asyncQueryManager.setQueryStatus(queryID, ExecutionStatus.COMPLETED);
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             logger.error("Unable to execute Async Query", e);
             asyncQueryManager.setQueryStatus(queryID, ExecutionStatus.FAILED);
         }
