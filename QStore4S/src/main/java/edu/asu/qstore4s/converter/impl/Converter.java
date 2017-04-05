@@ -400,10 +400,8 @@ public class Converter implements IConverter {
 
     private Element addRelationNode(Relation relation, Namespace namespace, boolean isShallow) {
 
-        if (relation.getPredicate() == null) {
-            relation = template.load(Relation.class, relation.getGraphId(), 2);
-        }
-
+        relation = template.load(Relation.class, relation.getGraphId(), 2);
+        
         Element relationNode = new Element(IXmlElements.RELATION, namespace);
 
         Element idRelation = new Element(IXmlElements.ID, namespace);
