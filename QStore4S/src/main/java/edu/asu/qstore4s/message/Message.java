@@ -58,7 +58,8 @@ public class Message {
     }
 
     private String mapToJSON(Entry<String, String> entry) {
-        return "\"" + entry.getKey() + "\" : " + "\"" + entry.getValue() + "\"";
+        return "\"" + entry.getKey() + "\" : "
+                + (entry.getValue().startsWith("{") ? entry.getValue() : "\"" + entry.getValue() + "\"");
     }
 
     private String mapToXML(Entry<String, String> entry) {
