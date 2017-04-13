@@ -5,6 +5,9 @@ import java.net.URISyntaxException;
 import java.security.Principal;
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,6 +16,7 @@ import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,11 +24,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import edu.asu.qstore4s.async.ExecutionStatus;
+import edu.asu.qstore4s.async.manager.IAsyncQueryManager;
+import edu.asu.qstore4s.converter.IConverter;
 import edu.asu.qstore4s.domain.events.impl.AppellationEvent;
+import edu.asu.qstore4s.domain.events.impl.CreationEvent;
 import edu.asu.qstore4s.domain.events.impl.RelationEvent;
-import edu.asu.qstore4s.error.Error;
 import edu.asu.qstore4s.exception.InvalidDataException;
 import edu.asu.qstore4s.exception.ParserException;
+import edu.asu.qstore4s.message.Message;
 import edu.asu.qstore4s.service.IRepositoryManager;
 
 /**
@@ -34,8 +42,6 @@ import edu.asu.qstore4s.service.IRepositoryManager;
  */
 @Controller
 public class QStore {
-
-    private static final String RETURN_JSON = "application/json";
 
     private static final String XML = "application/xml";
     private static final String JSON = "application/json";
@@ -52,6 +58,12 @@ public class QStore {
 
     @Autowired
     private IRepositoryManager repositorymanager;
+
+    @Autowired
+    private IAsyncQueryManager asyncQueryManager;
+
+    @Autowired
+    private IConverter converter;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String testStatus(ModelMap model) {
@@ -139,12 +151,12 @@ public class QStore {
 
         if (xml.equals("")) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return new Error("Please provide XML in body of the post request.").toString(accept);
+            return new Message("Please provide XML in body of the post request.").toString(accept);
         }
 
         String returnString = "";
 
-        if (accept != null && accept.equals(RETURN_JSON)) {
+        if (accept != null && accept.equals(JSON)) {
             returnString = repositorymanager.processXMLandStoretoDb(xml, JSON);
         } else {
             returnString = repositorymanager.processXMLandStoretoDb(xml, XML);
@@ -199,33 +211,80 @@ public class QStore {
     @ResponseBody
     @RequestMapping(value = "/query", method = RequestMethod.POST)
     public String query(HttpServletRequest request, HttpServletResponse response,
-            @RequestHeader("Accept") String accept, @RequestBody String query, @RequestParam("class") String clas)
-                    throws JSONException {
+            @RequestHeader("Accept") String accept, @RequestBody String query, @RequestParam("class") String clas) {
 
         query = query.trim();
+
+        response.setContentType(accept);
+
         if (query.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return new Error("Please provide the query to execute the request").toString(accept);
+            return new Message("Please provide the query to execute the request").toString(accept);
         }
 
-        Class<?> clazz = classMap.get(clas);
-        if (clazz == null) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return new Error("Please provide a valid Class to execute the request").toString(accept);
+        Map<String, String> responseParams = new HashMap<>();
+        try {
+            int queryID = query.hashCode();
+            responseParams.put("pollurl", "/query/" + queryID);
+            ExecutionStatus queryStatus = asyncQueryManager.getQueryStatus(queryID);
+
+            // if the query is running or completed notify the client
+            if (queryStatus == ExecutionStatus.RUNNING || queryStatus == ExecutionStatus.COMPLETED) {
+                response.setStatus(HttpServletResponse.SC_OK);
+                responseParams.put("queryStatus", queryStatus.name());
+                return new Message(responseParams).toString(accept);
+            }
+
+            Class<?> clazz = classMap.get(clas);
+            if (clazz == null) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return new Message("Please provide a valid Class to execute the request").toString(accept);
+            }
+
+            repositorymanager.executeQueryAsync(query, clazz, queryID);
+
+            response.setStatus(HttpServletResponse.SC_OK);
+            responseParams.put("queryStatus", ExecutionStatus.RUNNING.name());
+            return new Message(responseParams).toString(accept);
+        } catch (ExecutionException e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            responseParams.put("queryStatus", ExecutionStatus.FAILED.name());
+            return new Message(responseParams).toString(accept);
         }
 
-        String returnString = "";
+    }
 
-        if (accept != null && accept.equals(RETURN_JSON)) {
-            returnString = repositorymanager.executeQuery(query, clazz, JSON);
-        } else {
-            returnString = repositorymanager.executeQuery(query, clazz, XML);
+    @ResponseBody
+    @RequestMapping(value = "/query/{queryID}", method = RequestMethod.GET)
+    public String getAysncQueryResult(@RequestHeader("Accept") String accept,
+            @PathVariable("queryID") Integer queryID) {
+        Map<String, String> responseParams = new HashMap<>();
+        responseParams.put("pollurl", "/query/" + queryID);
+        try {
+            ExecutionStatus queryStatus = asyncQueryManager.getQueryStatus(queryID);
+
+            responseParams.put("queryStatus", queryStatus.name());
+
+            if (queryStatus == ExecutionStatus.COMPLETED) {
+                List<CreationEvent> elementList = asyncQueryManager.getQueryResult(queryID);
+                String res = "";
+                if (accept != null && accept.equals(JSON)) {
+                    res = converter.convertToJson(elementList);
+                } else {
+                    res = removeXMLMetadata(converter.convertToXML(elementList));
+                }
+                responseParams.put("result", res);
+            }
+        } catch (ExecutionException | JSONException e) {
+            responseParams.put("queryStatus", ExecutionStatus.FAILED.name());
         }
 
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType(accept);
-        return returnString;
+        return new Message(responseParams).toString(accept);
 
+    }
+
+    private String removeXMLMetadata(String xml) {
+        return xml.replaceAll("\\<\\?xml(.+?)\\?\\>", "").trim();
     }
 
     /**
@@ -289,11 +348,11 @@ public class QStore {
 
         if (trimmedXML.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return new Error("Please provide XML in body of the post request.").toString(accept);
+            return new Message("Please provide XML in body of the post request.").toString(accept);
 
         } else {
             String returnString = "";
-            if (accept != null && accept.equals(RETURN_JSON)) {
+            if (accept != null && accept.equals(JSON)) {
 
                 returnString = repositorymanager.searchByAppellationId(xml, JSON);
             } else {
@@ -333,10 +392,10 @@ public class QStore {
 
         if (trimmedXML.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return new Error("Please provide XML in body of the post request.").toString(accept);
+            return new Message("Please provide XML in body of the post request.").toString(accept);
         } else {
             String returnString = "";
-            if (accept != null && accept.equals(RETURN_JSON)) {
+            if (accept != null && accept.equals(JSON)) {
 
                 returnString = repositorymanager.search(xml, JSON);
             } else {

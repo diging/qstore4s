@@ -8,13 +8,17 @@ import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import edu.asu.qstore4s.async.ExecutionStatus;
+import edu.asu.qstore4s.async.manager.IAsyncQueryManager;
 import edu.asu.qstore4s.converter.IConverter;
 import edu.asu.qstore4s.converter.IGetConverter;
 import edu.asu.qstore4s.converter.ISearchXmlParser;
@@ -42,19 +46,22 @@ public class RepositoryManager implements IRepositoryManager {
     private static final String JSON = "application/json";
 
     @Autowired
-    IStoreManager storeManager;
+    private IStoreManager storeManager;
 
     @Autowired
-    IXmltoObject xmlToObject;
+    private IXmltoObject xmlToObject;
 
     @Autowired
-    IConverter converter;
+    private IConverter converter;
 
     @Autowired
-    ISearchXmlParser searchXmlParser;
+    private ISearchXmlParser searchXmlParser;
 
     @Autowired
-    IGetConverter getConverter;
+    private IGetConverter getConverter;
+
+    @Autowired
+    private IAsyncQueryManager asyncQueryManager;
 
     /**
      * {@inheritDoc}
@@ -178,6 +185,27 @@ public class RepositoryManager implements IRepositoryManager {
     /**
      * {@inheritDoc}
      * 
+     */
+    @Override
+    @Async
+    public void executeQueryAsync(String query, Class<?> clazz, Integer queryID) throws ExecutionException {
+
+        asyncQueryManager.setQueryStatus(queryID, ExecutionStatus.RUNNING);
+
+        try {
+            List<CreationEvent> elementList = storeManager.executeQuery(query, clazz);
+
+            asyncQueryManager.setQueryResult(queryID, elementList);
+            asyncQueryManager.setQueryStatus(queryID, ExecutionStatus.COMPLETED);
+        } catch (RuntimeException e) {
+            logger.error("Unable to execute Async Query", e);
+            asyncQueryManager.setQueryStatus(queryID, ExecutionStatus.FAILED);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
      * @throws JSONException
      */
     @Override
@@ -192,4 +220,5 @@ public class RepositoryManager implements IRepositoryManager {
         }
 
     }
+
 }

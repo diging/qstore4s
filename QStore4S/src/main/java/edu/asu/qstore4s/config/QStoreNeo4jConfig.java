@@ -1,11 +1,8 @@
 package edu.asu.qstore4s.config;
 
-import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.data.neo4j.config.Neo4jConfiguration;
 import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 import org.springframework.data.neo4j.template.Neo4jOperations;
@@ -23,13 +20,6 @@ public class QStoreNeo4jConfig extends Neo4jConfiguration {
         return new SessionFactory("edu.asu.qstore4s.domain");
     }
 
-    // needed for session in view in web-applications
-    @Bean
-    @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
-    public Session getSession() throws Exception {
-        return super.getSession();
-    }
-    
     @Bean(name = "neo4jOperations")
     public Neo4jOperations Neo4jOperations() throws Exception {
         return new Neo4jTemplate(getSession());
