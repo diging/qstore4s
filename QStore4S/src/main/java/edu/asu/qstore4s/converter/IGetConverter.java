@@ -1,7 +1,6 @@
 package edu.asu.qstore4s.converter;
 
 import java.io.IOException;
-
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.List;

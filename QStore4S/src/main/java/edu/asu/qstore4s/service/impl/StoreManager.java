@@ -23,75 +23,76 @@ import edu.asu.qstore4s.service.IStoreManager;
 @Service
 public class StoreManager implements IStoreManager {
 
-	@Autowired
-	IStoreObjectsToDb storeObjectsToDb;
+    @Autowired
+    IStoreObjectsToDb storeObjectsToDb;
 
-	@Autowired
-	IDbConnector dbConnector;
+    @Autowired
+    IDbConnector dbConnector;
 
-	/**
-	 * {@inheritDoc}
-	 */
+    /**
+     * {@inheritDoc}
+     */
 
-	@Override
-	public List<CreationEvent> insertIntoDb(
-			List<List<Element>> creationEventList) throws URISyntaxException,
-			InvalidDataException {
+    @Override
+    public List<CreationEvent> insertIntoDb(List<List<Element>> creationEventList)
+            throws URISyntaxException, InvalidDataException {
 
-		List<CreationEvent> creationEventListwithID = new ArrayList<CreationEvent>();
+        List<CreationEvent> creationEventListwithID = new ArrayList<CreationEvent>();
 
-		creationEventListwithID = storeObjectsToDb
-				.writeObjectsToDb(creationEventList);
+        creationEventListwithID = storeObjectsToDb.writeObjectsToDb(creationEventList);
 
-		return creationEventListwithID;
+        return creationEventListwithID;
 
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
+    /**
+     * {@inheritDoc}
+     */
 
-	@Override
-	public List<CreationEvent> searchRelationFromDb(
-			List<List<Element>> creationEventList) throws URISyntaxException,
-			InvalidDataException {
+    @Override
+    public List<CreationEvent> searchRelationFromDb(List<List<Element>> creationEventList)
+            throws URISyntaxException, InvalidDataException {
 
-		List<CreationEvent> creationEventListwithID = new ArrayList<CreationEvent>();
+        List<CreationEvent> creationEventListwithID = new ArrayList<CreationEvent>();
 
-		creationEventListwithID = dbConnector
-				.searchRelationInDb(creationEventList.get(0));
+        creationEventListwithID = dbConnector.searchRelationInDb(creationEventList.get(0));
 
-		return creationEventListwithID;
+        return creationEventListwithID;
 
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Element getObjectFromDb(String id) throws InvalidDataException {
-		return dbConnector.get(id);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Element getObjectFromDb(String id) throws InvalidDataException {
+        return dbConnector.get(id);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<CreationEvent> searchObjectFromDb(
-			ISearchCreationEvent queryObject) throws InvalidDataException {
-		List<CreationEvent> elementList = dbConnector
-				.searchFromDb(queryObject);
-		return elementList;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<CreationEvent> searchObjectFromDb(ISearchCreationEvent queryObject) throws InvalidDataException {
+        List<CreationEvent> elementList = dbConnector.searchFromDb(queryObject);
+        return elementList;
 
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<CreationEvent> getObjectFromDb(List<String> idList)
-			throws InvalidDataException {
-		return dbConnector.get(idList);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<CreationEvent> getObjectFromDb(List<String> idList) throws InvalidDataException {
+        return dbConnector.get(idList);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<CreationEvent> executeQuery(String query, Class<?> clazz) {
+        return dbConnector.executeQuery(query, clazz);
+    }
 
 }
