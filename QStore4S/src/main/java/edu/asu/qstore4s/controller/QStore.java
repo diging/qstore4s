@@ -14,6 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,7 +53,7 @@ public class QStore {
     private final String RELATION_EVENT = "relationevent";
     private final String APPELLATION_EVENT = "appellationevent";
 
-    private final HashMap<String, Class<?>> classMap = new HashMap<String, Class<?>>() {
+    private final Map<String, Class<?>> classMap = new HashMap<String, Class<?>>() {
         {
             put(RELATION_EVENT, RelationEvent.class);
             put(APPELLATION_EVENT, AppellationEvent.class);
@@ -184,27 +188,31 @@ public class QStore {
      */
     @ResponseBody
     @RequestMapping(value = "/get", method = RequestMethod.GET)
-    public String getData(HttpServletRequest request, HttpServletResponse response,
+    public ResponseEntity<String> getData(HttpServletRequest request,
             @RequestHeader("Accept") String accept, @RequestParam(value = "shallow", defaultValue = "") String shallow,
             @RequestParam(value = "id", defaultValue = "") String idString) throws JSONException, InvalidDataException {
 
-        if (idString.equals("")) {
+        idString = idString.trim();
+        if (idString.isEmpty()) {
             throw new InvalidDataException("Please provide id.");
         }
 
-        String trimid = idString.trim();
+        
         String returnString = "";
 
         if (shallow != null && shallow.equals("true")) {
-            returnString = repositorymanager.getShallow(trimid, accept);
+            returnString = repositorymanager.getShallow(idString, accept);
         } else {
-            returnString = repositorymanager.getFull(trimid, accept);
-
+            returnString = repositorymanager.getFull(idString, accept);
         }
 
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType(accept);
-        return returnString;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaTypes(accept).get(0));
+        ResponseEntity<String> response = new ResponseEntity<>(returnString, headers, HttpStatus.OK);
+        
+//        response.setStatus(HttpStatus.OK);
+//        response.setContentType(accept);
+        return response;
 
     }
 
@@ -309,7 +317,7 @@ public class QStore {
             @RequestHeader("Accept") String accept, @RequestBody String xml) throws JSONException, InvalidDataException,
                     ParserException, IOException, URISyntaxException, ParseException {
 
-        if (xml.equals("")) {
+        if (xml.trim().isEmpty()) {
             throw new InvalidDataException("Please provide content in given XML.");
         }
 
