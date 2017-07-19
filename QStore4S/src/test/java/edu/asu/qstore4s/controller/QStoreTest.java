@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.http.ResponseEntity;
 
 import edu.asu.qstore4s.exception.InvalidDataException;
 import edu.asu.qstore4s.exception.ParserException;
@@ -102,29 +103,29 @@ public class QStoreTest {
         // shallow=true
 
         {
-            String returnString = qStore.getData(request, response, "application/xml", "true", "test");
-            Assert.assertEquals("inGetXmlShallow", returnString);
+            ResponseEntity<String> returnString = qStore.getData(request, "application/xml", "true", "test");
+            Assert.assertEquals("inGetXmlShallow", returnString.getBody());
         }
         // accept=application/json
         // shallow = true
         {
-            String returnString = qStore.getData(request, response, "application/json", "true", "test");
-            Assert.assertEquals("inGetJsonShallow", returnString);
+            ResponseEntity<String> returnString = qStore.getData(request, "application/json", "true", "test");
+            Assert.assertEquals("inGetJsonShallow", returnString.getBody());
         }
 
         // accept=application/xml
         // shallow=false
         {
-            String returnString = qStore.getData(request, response, "application/xml", "false", "test");
-            Assert.assertEquals("inGetXmlFull", returnString);
+            ResponseEntity<String> returnString = qStore.getData(request, "application/xml", "false", "test");
+            Assert.assertEquals("inGetXmlFull", returnString.getBody());
         }
 
         // accept=application/json
         // shallow=false
 
         {
-            String returnString = qStore.getData(request, response, "application/json", "false", "test");
-            Assert.assertEquals("inGetJsonFull", returnString);
+            ResponseEntity<String> returnString = qStore.getData(request, "application/json", "false", "test");
+            Assert.assertEquals("inGetJsonFull", returnString.getBody());
         }
 
         // accept=application/json
@@ -132,8 +133,8 @@ public class QStoreTest {
         // for any shallow random value full method should be called
 
         {
-            String returnString = qStore.getData(request, response, "application/json", "random", "test");
-            Assert.assertEquals("inGetJsonFull", returnString);
+            ResponseEntity<String> returnString = qStore.getData(request, "application/json", "random", "test");
+            Assert.assertEquals("inGetJsonFull", returnString.getBody());
         }
 
         // accept=application/json
@@ -141,8 +142,8 @@ public class QStoreTest {
         // for shallow null full method should be called
 
         {
-            String returnString = qStore.getData(request, response, "application/json", null, "test");
-            Assert.assertEquals("inGetJsonFull", returnString);
+            ResponseEntity<String> returnString = qStore.getData(request, "application/json", null, "test");
+            Assert.assertEquals("inGetJsonFull", returnString.getBody());
         }
 
     }
