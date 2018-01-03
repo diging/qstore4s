@@ -1,6 +1,6 @@
 # QStore4S 
 
-Build status: <a href='http://diging-dev.asu.edu/jenkins/job/QStore4S on Push to Develop'><img src='http://diging-dev.asu.edu/jenkins/buildStatus/icon?job=QStore4S on Push to Develop'></a>
+Build status: <a href='http://diging-dev.asu.edu/jenkins/view/QStore4S/job/QStore4S%20on%20Push%20to%20Develop/'><img src='https://diging-dev.asu.edu/jenkins/view/QStore4S/job/QStore4S%20on%20Push%20to%20Develop/badge/icon'></a>
 
 QStore4S uses the open-source graph database Neo4j to store quadruples used in the [Quadriga System](http://quadriga.sf.net). 
 
